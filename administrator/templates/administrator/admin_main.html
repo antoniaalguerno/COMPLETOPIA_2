@@ -1,0 +1,1221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>COMPLETOPIA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'assets/img/logo.png' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Two+Tone" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/inicio_styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/inicio_styles.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMPLETOPIA</title>
+    {% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMy65R2bqU2BqJ/Ex2+ip0EXn1Huxf1W6hJ6gD" crossorigin="anonymous">
+        <style>
+            /* Import Google font - Poppins */
+            @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #a6ba535c;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-attachment: fixed;
+                font-family: "Poppins", sans-serif;
+                color: white;
+                position: relative;
+            }
+
+            .welcome-banner {
+                display: grid;
+                background-color: rgba(158, 178, 59, 0.8);
+                color: white;
+                height: 260px;
+                padding: 10px 20px;
+                align-items: center;
+                text-align: center;
+                border-radius: 10px;
+                margin: auto;
+                max-width: 800px;
+                font-size: 1.5em;
+                position: relative;
+                z-index: 1;
+            }
+
+            .main-content {
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;                
+                text-align: center;
+                background-color: rgba(255, 255, 255, 0.8);
+                border-radius: 10px;
+                margin: 20px;
+                color: #333;
+                position: relative;
+                z-index: 1;
+                box-shadow: 0 0 1px #333;
+            }
+
+            .section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            }
+
+            .section h2 {
+                font-size: 2em;
+                color: #333;
+                display: inline-block;
+                margin-right: 100px;
+            }
+
+            .section p {
+                font-size: 1.2em;
+                color: #666;
+            }
+
+
+            .custom-complete {
+                margin-top: 50px;
+                background-color: #9EB23B;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                color: white;
+                text-align: center;
+            }
+
+            .custom-complete h2 {
+                font-size: 2.5em;
+                margin-bottom: 15px;
+            }
+
+            .custom-complete p {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            .custom-complete a {
+                display: inline-block;
+                padding: 15px 30px;
+                font-size: 1.5em;
+                color: white;
+                background-color: #333;
+                border-radius: 5px;
+                text-decoration: none;
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            .custom-complete a:hover {
+                background-color: #555;
+                transform: scale(1.05);
+            }
+
+            .menu-icon {
+                display: flex;
+                position: relative;
+                top: 10px;
+                justify-content: center;
+                align-items: center;
+                width: 40px;
+                height: 40px;
+                cursor: pointer;
+                border-radius: 50%; /* Hace que el contenedor sea redondo */
+                background-color: #333; /* Color de fondo del contenedor */
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            .menu-icon:hover {
+                background-color: rgb(37, 37, 37); /* Cambia el color de fondo cuando se pasa el cursor */
+                transform: scale(1.1); /* Aumenta el tamaño cuando se pasa el cursor */
+            }
+
+            .menu-icon:active {
+                background-color: #1a1a1a; /* Cambia el color de fondo cuando se hace clic */
+                transform: scale(0.9); /* Reduce el tamaño cuando se hace clic */
+            }
+
+            .menu-icon:focus {
+                outline: none;
+            }
+
+
+
+            .sidebar {
+                background-color: #9eb23b;
+                width: 250px; /* Ajusta el ancho según tus necesidades */
+                height: fit-content; /* Ajusta la altura según tus necesidades */
+                position: fixed;
+                top: 60px; /* Ajusta la distancia desde la parte superior de la ventana */
+                left: -350px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+                border-radius: 15px; /* Redondea las esquinas */
+                padding: 5px; /* Ajusta el relleno interior */
+                z-index: 100;
+                overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+                box-shadow: 0 0 10px var(--grey-color-light);
+                transition: left 0.3s ease;
+            }
+
+            
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .sidebar-content {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .settingsbar {
+                display: none;
+                background-color: #9eb23b;
+                width: 250px; /* Ajusta el ancho según tus necesidades */
+                height: fit-content; /* Ajusta la altura según tus necesidades */
+                position: fixed;
+                top: 60px; /* Ajusta la distancia desde la parte superior de la ventana */
+                    /* Ajusta la distancia desde el lado izquierdo de la ventana */
+                border-radius: 15px; /* Redondea las esquinas */
+                padding: 5px; /* Ajusta el relleno interior */
+                z-index: 100;
+                overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+                box-shadow: 0 0 10px var(--grey-color-light);
+                transition: left 0.3s ease;
+                
+                }
+
+            .settingsbar.open {
+                position: end;
+                display: flex;
+                right: 0;
+                width: 215px;
+                box-shadow: 0 0 10px var(--grey-color-light);
+                transition: left 0.3s ease;
+            }
+
+            .settingsbar-content {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            
+
+
+
+            .nav-title {
+                font-size: 1.8em;
+                color: #333;
+                margin-bottom: 20px;
+                text-align: center;
+                font-family: "Poppins", sans-serif;
+            }
+
+            .nav-menu {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                flex-grow: 1;
+            }
+
+            .nav-menu li {
+                margin-bottom: 10px;
+            }
+
+            .nav-menu a {
+                display: block;
+                text-decoration: none;
+                color: #333;
+                font-size: 1.2em;
+                padding: 10px 20px;
+                transition: background-color 0.3s, transform 0.3s;
+                border-radius: 10px;
+                text-align: center;
+                background-color: rgba(158, 178, 59, 0.8);
+            }
+
+            .nav-menu a:hover {
+                background-color: rgba(158, 178, 59, 1);
+                transform: scale(1.05);
+            }
+
+            .search-container {
+                display: flex;
+                align-items: center;
+                background-color: rgba(158, 178, 59, 0.8);
+                padding: 10px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                transition: background-color 0.3s, transform 0.3s;
+            }
+
+            .search-container:hover {
+                background-color: rgba(158, 178, 59, 1);
+                transform: scale(1.05);
+            }
+
+            .search-container input {
+                border: none;
+                background: none;
+                color: #333;
+                font-size: 1.2em;
+                margin-left: 10px;
+                width: 100%;
+            }
+
+            .search-container input:focus {
+                outline: none;
+            }
+
+            .close-button {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 1.5em;
+                color: #333;
+                cursor: pointer;
+            }
+
+            .logout-button {
+                display: block;
+                text-align: center;
+                margin-top: 20px;
+                padding: 10px;
+                color: #333;
+                font-size: 1.2em;
+                border: none;
+                background-color: rgba(158, 178, 59, 0.8);
+                cursor: pointer;
+                transition: background-color 0.3s, transform 0.3s;
+                border-radius: 10px;
+            }
+
+            .logout-button:hover {
+                background-color: rgba(158, 178, 59, 1);
+                transform: scale(1.05);
+            }
+
+            .pie {
+                background-color: #9EB23B;
+                color: white;
+                padding: 5px 10px;
+                text-align: left;
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                font-size: 0.9em;
+                border-top-left-radius: 10px;
+                z-index: 1;
+            }
+
+            .pie p {
+                margin: 0;
+            }
+
+            .pie a {
+                color: white;
+                text-decoration: underline;
+            }
+
+            .logo {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                max-width: 100px;
+                z-index: 1000;
+            }
+
+            .panel-logo {
+                display: block;
+                margin: 0 auto 20px;
+                max-width: 80%;
+            }
+            .header {
+                background-color: #c5d18a;
+                color: white;
+                text-align: center;
+                padding: 20px;
+            }
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 20px 20px;
+                width: 100%;
+            }
+            .sidebutton {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+
+            h3 {
+                color: #333;
+                text-align: center;
+                margin-top: 50px;
+                margin-bottom: 20px;
+                font-size: 24px;
+            }
+
+            .sidebutton .button {
+                display: ruby;
+                background-color: #333;
+                color: white;
+                padding: 15px 20px;
+                margin: 10px 0;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s, box-shadow 0.3s;
+            }
+
+            .sidebutton .button:hover {
+                background-color: #414141;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            .sidebutton .button:active {
+                background-color: rgb(40, 40, 40);
+                box-shadow: 0 5px #666;
+                transform: translateY(4px);
+            }
+
+            .sidebutton .button:focus {
+                outline: none;
+                box-shadow: 0 0 10px #0f0f0f;
+            }
+            
+
+            .main {
+                flex: 3;
+            }
+            .dashboard {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 20px; /* Espacio entre los contenedores */
+            }
+
+            .dashboard > div {
+                background-color: #e0e0e0;
+                border-radius: 10px;
+                padding: 20px;
+                box-sizing: content-box;
+                flex: 1 1 48%; /* Permitir que los contenedores crezcan y se ajusten */
+                min-width: 300px; /* Evitar que se encojan demasiado en pantallas pequeñas */
+                overflow: auto;
+                max-height: 600px;
+                height: fit-content;
+            }
+            .chart-container {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 20px;
+                justify-content: space-between;
+                background-color: white;
+                padding: 10px;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .chart {
+                width: 100%; /* Ocupa todo el ancho disponible */
+                height: 100%; /* Ocupa toda la altura disponible */
+                min-height: 300px; /* Altura mínima para el gráfico */
+                background-color: whitesmoke;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+            .logout-icon {
+                position: fixed;
+                top: 5px;
+                left: 93%;
+                display: flex;
+                cursor: pointer;
+                padding: 15px;
+                z-index: 999;
+                color: #333;
+            }
+
+            .logout-link {
+                text-decoration: none;
+                color: inherit;
+                font-size: 24px; /* Tamaño del icono */
+                transition: color 0.3s;
+            }
+
+            .logout-link:hover {
+                color: rgb(69, 69, 69); /* Cambia el color del icono cuando se pasa el cursor */
+            }
+
+            .logout-link:active {
+                color: rgb(34, 34, 34); /* Cambia el color del icono cuando se hace clic */
+            }
+
+            .logout-link:focus {
+                outline: none;
+            }
+
+            .submenu_item .arrow-left {
+                    position: absolute;
+                    right: -15px;
+                    display: inline-block;
+                    margin-right: auto;
+                    }
+
+            
+
+
+            @media (max-width: 450px) {
+                .container {
+                    flex-direction: column;
+                    padding: 20px 20px;
+                    width: 100%;
+                    box-sizing: border-box;
+                    word-wrap: break-word;
+                }
+                .sidebutton {
+                    max-width: 100%;
+                    margin: 0 0 20px 0;
+                }
+                .main {
+                    width: 100%;
+                    padding: 0;
+                }
+
+
+                .main-content {
+                    display: flex;
+                    width: 95%;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 10px;
+                    text-align: center;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+                    margin: 20px;
+                    color: #333;
+                    position: relative;
+                    z-index: 1;
+                    box-shadow: 0 0 1px #333;
+                }
+
+                .welcome-banner {
+                    width: 80%;
+                    overflow-x: auto;
+                    background-color: rgba(158, 178, 59, 0.8);
+                    color: white;
+                    height: 260px;
+                    padding: 10px 20px;
+                    align-items: center;
+                    text-align: center;
+                    border-radius: 10px;
+                    margin: auto;
+                    font-size: 0.8em !important;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .sidebar.open {
+                    height: fit-content;
+                    left: 0;
+                }
+
+                .table-user th, .table-user td {
+                    padding: 8px; /* Adjust padding as needed */
+                    word-wrap: break-word; /* Allow content to wrap within cells */
+                }
+                .menu-icon{
+                    top:-60px;
+                }
+
+                .sidebutton .button {
+                display: ruby-text;
+                
+                }
+                .logout-icon {
+                    position: relative;
+                    top: 5px;
+                    left: 70%;
+                    display: flex;
+                    
+                    padding: 10px;
+                    z-index: 999;
+                    color: #333;
+                }
+                .settingsbar.open{
+                    position: relative;
+                    position: fixed;
+                    
+                    z-index: 999;
+                }
+                h1{
+                    font-size: 30px;
+                }
+                .chart-container {
+                    
+                    padding: auto; /* Ajusta el padding según tus necesidades */
+                }
+                .chart {
+                    width: 100%; /* Ocupa todo el ancho disponible */
+                    min-height: 200px; /* Altura mínima para el gráfico */
+                }
+
+
+                .dashboard {
+                    flex-direction: column; /* Cambia a columna para dispositivos pequeños */
+                    align-items: center; /* Centra los elementos */
+                }
+                .dashboard > div {
+                    width: 100%; /* Ocupa todo el ancho disponible */
+                    min-width: auto; /* Ancho mínimo automático */
+                    margin-bottom: 20px; /* Espacio entre los elementos */
+                }
+            }
+
+                            /* Estilos generales para el menú */
+                .settingsbar.custom-side-bar {
+                    display: none;
+                    background-color: #9eb23b;
+                    width: fit-content; /* Ajusta el ancho según tus necesidades */
+                    height: fit-content; /* Ajusta la altura según tus necesidades */
+                    position: fixed;
+                    left: auto;
+                    top: 60px; /* Ajusta la distancia desde la parte superior de la ventana */
+                        /* Ajusta la distancia desde el lado izquierdo de la ventana */
+                    border-radius: 15px; /* Redondea las esquinas */
+                    padding: 5px; /* Ajusta el relleno interior */
+                    z-index: 100;
+                    
+                    box-shadow: 0 0 10px var(--grey-color-light);
+                    transition: left 0.3s ease;
+                }
+
+                /* Estilos para los enlaces del menú */
+                .settingsbar .custom-nav-link {
+                    display: flex;
+                    align-items: center;
+                    width: 100%;
+                    padding: 4px 0px; /* del contenido dentro de la sidebar */
+                    border-radius: 8px;
+                    text-decoration: none;
+                    color: var(--grey-color);
+                    white-space: nowrap;
+                }
+
+                /* Estilos para los iconos de los enlaces del menú */
+                .settingsbar .custom-navlink-icon {
+                margin-right: 10px;
+                font-size: 20px; /* Tamaño del icono */
+                color: white; /* Cambia el color del icono según sea necesario */
+                }
+
+                /* Efecto al pasar el ratón sobre los enlaces del menú */
+                .settingsbar .custom-nav-link:hover {
+                background-color: var(--light-green-color);
+                color: white; /* Cambia el color del texto al pasar el ratón */
+                }
+
+                /* Estilos para las flechas de los submenús */
+                .settingsbar .custom-arrow-left {
+                margin-left: auto;
+                color: white; /* Cambia el color de la flecha según sea necesario */
+                }
+
+
+            @media (min-width: 451px) and (max-width: 767px) {
+                .container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center; /* Center container contents horizontally */
+                    padding: 0;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .main {
+                    width: 100%;
+                    padding: 0;
+                    text-align: center; /* Center text inside main */
+                }
+
+
+                .main-content {
+                    display: flex;
+                    width: 93%; /* Set width to 93% for some padding on the sides */
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    
+                    text-align: center;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+                    margin: 20px auto; /* Center the main content horizontally */
+                    color: #333;
+                    position: relative;
+                    z-index: 1;
+                    box-shadow: 0 0 1px #333;
+                }
+
+                .sidebar.open {
+                    height: fit-content;
+                    left: 0;
+                }
+
+                .welcome-banner {
+                    width: 60%; /* Set width to 60% for some padding on the sides */
+                    background-color: rgba(158, 178, 59, 0.8);
+                    color: white;
+                    height: 260px;
+                    padding: 10px 20px;
+                    
+                    align-items: center;
+                    text-align: center;
+                    border-radius: 10px;
+                    margin: 20px; /* Center the welcome banner horizontally */
+                    font-size: 1.15em !important;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .logout-icon {
+                    position: relative;
+                    top: 5px;
+                    left: 80%;
+                    display: flex;
+                    
+                    padding: 10px;
+                    z-index: 999;
+                    color: #333;
+                }
+
+                table {
+                    width: 100%; /* Ensure the table takes the full width */
+                }
+
+                .table-user th, .table-user td {
+                    padding: 8px; /* Adjust padding as needed */
+                    word-wrap: break-word; /* Allow content to wrap within cells */
+                    text-align: center; /* Center the table cell contents */
+                }
+
+                .sidebutton .button {
+                display: ruby-text;
+                
+                }
+                .menu-icon{
+                    top:-60px;
+                }
+
+                h1{
+                    
+                    font-size: 30px;
+                }
+
+                .settingsbar.open {
+                    
+                    display: flex;
+                    
+                    box-shadow: 0 0 10px var(--grey-color-light);
+                    transition: left 0.3s ease;
+                }
+                .chart-container {
+                    padding: 10px; /* Ajusta el padding según tus necesidades */
+                }
+                .chart {
+                    width: 100%; /* Ocupa todo el ancho disponible */
+                    min-height: 250px; /* Altura mínima para el gráfico */
+                }
+
+                .dashboard {
+                    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+                    justify-content: center; /* Centra los elementos */
+                    gap: 20px; /* Espacio entre los elementos */
+                }
+                .dashboard > div {
+                    flex: 1 1 calc(50% - 20px); /* Distribuye en dos columnas */
+                    min-width: 300px; /* Ancho mínimo para cada elemento */
+                }
+
+
+            }
+
+
+            @media (min-width:768px ) and (max-width: 1500px)  {
+                .container {
+                    flex-direction: column;
+                    padding: 20px 20px;
+                    width: 98%;
+                    align-items: center;
+                    justify-content: center
+                }
+                
+                .main {
+                    width: 100%;
+                    padding: 0;
+                }
+
+                .chart-container {
+                    padding: 20px; /* Ajusta el padding según tus necesidades */
+                }
+                .chart {
+                    width: 100%; /* Ocupa todo el ancho disponible */
+                    min-height: 300px; /* Altura mínima para el gráfico */
+                }
+
+                .dashboard {
+                    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+                    justify-content: space-between; /* Espacio uniforme entre los elementos */
+                    gap: 20px; /* Espacio entre los elementos */
+                }
+                .dashboard > div {
+                    flex: 1 1 calc(48% - 20px); /* Distribuye en dos columnas */
+                    min-width: 300px; /* Ancho mínimo para cada elemento */
+                }
+
+            }
+
+                .main-content {
+                    display: flex;
+                    width: 92.5%;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    
+                    text-align: center;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+                    margin: 20px;
+                    color: #333;
+                    position: relative;
+                    z-index: 1;
+                    box-shadow: 0 0 1px #333;
+                }
+
+                .welcome-banner {
+                    width: 60%;
+                    background-color: rgba(158, 178, 59, 0.8);
+                    color: white;
+                    height: 260px;
+                    padding: 10px 20px;
+                    align-items: center;
+                    text-align: center;
+                    border-radius: 10px;
+                    margin: auto;
+                    font-size: 1.35em;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .sidebar.open {
+                    height: fit-content;
+                    left: 0;
+                }
+
+                
+
+                @media (min-width:1501px ) {
+
+                    .main-content {
+                    display: flex;
+                    position: relative;
+                    width: 98.5%;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+                    margin: 20px;
+                    color: #333;
+                    z-index: 1;
+                    box-shadow: 0 0 1px #333;
+                }
+                .container {
+                    flex-direction: column;
+                    padding: 20px 20px;
+                    width: 98%;
+                }
+
+                .chart-container {
+                    padding: 20px; /* Ajusta el padding según tus necesidades */
+                }
+                .chart {
+                    width: 100%; /* Ocupa todo el ancho disponible */
+                    min-height: 350px; /* Altura mínima para el gráfico */
+                }
+                .dashboard {
+                    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
+                    justify-content: space-between; /* Espacio uniforme entre los elementos */
+                    gap: 20px; /* Espacio entre los elementos */
+                }
+                .dashboard > div {
+                    flex: 1 1 calc(24% - 20px); /* Distribuye en cuatro columnas */
+                    min-width: 300px; /* Ancho mínimo para cada elemento */
+                }
+
+
+            }
+                
+                .popup {
+                    position: fixed;
+                    z-index: 1;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(
+                        0,
+                        0,
+                        0,
+                        0.4
+                    );
+                    display: none;
+                }
+                .popup-content {
+                    background-color: white;
+                    margin: 10% auto;
+                    padding: 20px;
+                    border: 1px solid #888888;
+                    width: 30%;
+                    font-weight: bolder;
+                    border-radius: 15px ;
+                    color: #333;
+                    text-align: center;
+                    font-size: 10px;
+                    width: 300px;
+                }
+                .popup-content button {
+                    background-color: #87963C;
+                    color: white;
+                    padding: 12px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    width: 45%;
+                    margin-top: 10px;
+                    font-size: 16px;
+                }
+                .show {
+                    display: block;
+                }
+
+        </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="logout-icon">
+        <a onclick="toggleSettingsPanel()" class="logout-link">
+            <i class="fas fa-cog"></i>
+        </a>
+        <a id="Buttonlogout" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+            <div id="Popup" class="popup">
+                <div class="popup-content">
+                    <h1 style="color: #333">
+                        ¿Seguro que quiere cerrar su sesion?
+                    </h1>
+                    <button id="Aceptar">Aceptar</button>
+                    <button id="Cancelar">Cancelar</button>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="menu-icon" onclick="toggleNavPanel()">
+        <i class="fas fa-bars"></i>
+    </div>
+    
+    {% block content %}
+    <div class="welcome-banner">
+        <h1>¡Bienvenido a Completopia, {{request.user.first_name}}!</h1>
+        <p>La utopía del sabor en cada Completo</p>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="main">
+                <div class="sidebutton">
+                    <h3>Atajos Rápidos</h3>
+                    <a class="button" href="{% url 'venta_crear' %}">Nueva venta</a>
+                    <a class="button" href="{% url 'orden_crear' %}">Nueva compra</a>
+                    <a class="button" href="{% url 'proveedores_crear' %}">Nuevo proveedor</a>
+                </div>
+                <h3>Dashboard</h3>
+                <div class="dashboard">
+                    <div>
+                        <table class="table table-user">
+                            <thead>
+                                <tr>
+                                    <th width="10%" scope="col">Producto</th>
+                                    <th width="12%" scope="col">Codigo</th>
+                                    <th width="10%" scope="col">Unidad</th>
+                                    <th width="10%" scope="col">Stock Actual</th>
+                                    <th width="10%" scope="col" style="padding:15px;">Alarma Establecida (>5 KG o Packs de latas)</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in p_list_paginate %}
+                                    <tr>
+                                        <td>{{ p.supply_name }}</td>
+                                        <td>{{ p.supply_code }}</td>
+                                        <td>{{ p.supply_unit }}</td>
+                                        <td>{{ p.supply_total }}</td>
+                                        <td><span class="low-stock-alert">⚠️ ¡Stock bajo!</span></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+
+
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <div id="chart2" class="chart"></div>
+                        </div>
+                        <div class="chart-container">
+                            <div id="chart3" class="chart"></div>
+                        </div>
+                        <div class="chart-container">
+                            <div id="chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apache ECharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main2.js' %}"></script>
+
+    <!-- Panel de Navegación -->
+    <nav class="side-bar to-left">
+        <div class="menu">
+            <!--=== Menu Inicio ===-->
+            <nav class="sidebar">
+                <div class="sidebar" id="navPanel">
+                    <ul class="menu_items">
+                        <li class="item">
+                            <a href="{% url 'admin_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-home"></i>
+                                </span>
+                                <span class="navlink">Inicio</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'admin_main' %}" class="nav_link sublink">Inicio</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'list_user_active' group_id=1 %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-user"></i>
+                                </span>
+                                <span class="navlink">Usuarios</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'proveedores_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-id-card"></i>
+                                </span>
+                                <span class="navlink">Proveedores</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'proveedores_main' %}" class="nav_link sublink">Proveedores Main</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'inventario_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-archive"></i>
+                                </span>
+                                <span class="navlink">Inventario</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'inventario_main' %}" class="nav_link sublink">Inventario Main</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'orden_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-cart"></i>
+                                </span>
+                                <span class="navlink">Compras</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'orden_main' %}" class="nav_link sublink">Órden Main</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'ventas_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                </span>
+                                <span class="navlink">Ventas</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'ventas_main' %}" class="nav_link sublink">Ventas Main</a></li>
+                            </ul>
+                        </li>
+                        
+                        <!-- Más ítems del menú -->
+                        
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </nav>
+        <!-- Menu de la tuerca -->
+        <nav class="custom-side-bar">
+            <div class="menu">
+                <!--=== Menu Inicio ===-->
+                <nav class="custom-sidebar">
+                    <div class="settingsbar" id="SettingsPanel">
+                        <ul class="menu_items">
+                            <li class="item">
+                                <a href="{% url 'password_reset' %}" class="custom-nav-link submenu_item">
+                                    <span class="custom-navlink-icon">
+                                        <i class="bx bx-lock"></i>
+                                    </span>
+                                    <span class="custom-navlink">Contraseña</span>
+                                    <i class="bx bx-chevron-right custom-arrow-left"></i>
+                                </a>
+                                <ul class="menu_items submenu">
+                                    <li><a href="{% url 'password_reset' %}" class="custom-nav-link sublink">Contraseña</a></li>
+                                </ul>
+                            </li>
+                            
+                            <li class="item">
+                                <a href="{% url 'edit_perfil' %}" class="custom-nav-link submenu_item">
+                                    <span class="custom-navlink-icon">
+                                        <i class="bx bx-edit"></i>
+                                    </span>
+                                    <span class="custom-navlink">Editar Perfil</span>
+                                    <i class="bx bx-chevron-right custom-arrow-left"></i>
+                                </a>
+                            </li>
+                            
+                            <li class="item">
+                                <a href="{% url 'user_detail' user_id=request.user.id %}" class="custom-nav-link submenu_item">
+                                    <span class="custom-navlink-icon">
+                                        <i class="bx bx-user-circle"></i>
+                                    </span>
+                                    <span class="custom-navlink">Ver perfil</span>
+                                    <i class="bx bx-chevron-right custom-arrow-left"></i>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </nav>
+
+
+    men
+    {% endblock %}
+
+    <!-- Pie de página -->
+    <div class="pie">
+        <p>Contacto: ¿Tienes alguna pregunta o comentario? <a href="mailto:completopia@gmail.com">¡Contáctanos!</a></p>
+    </div>
+
+    <script>
+        function toggleNavPanel() {
+            var navPanel = document.getElementById('navPanel');
+            var settingsPanel = document.getElementById('SettingsPanel');
+
+            // Cierra el panel de configuración si está abierto
+            if (settingsPanel.classList.contains('open')) {
+                settingsPanel.classList.remove('open');
+            }
+
+            // Alterna el panel de navegación
+            navPanel.classList.toggle('open');
+        }
+
+        function toggleSettingsPanel() {
+            var navPanel = document.getElementById('navPanel');
+            var settingsPanel = document.getElementById('SettingsPanel');
+
+            // Cierra el panel de navegación si está abierto
+            if (navPanel.classList.contains('open')) {
+                navPanel.classList.remove('open');
+            }
+
+            // Alterna el panel de configuración
+            settingsPanel.classList.toggle('open');
+        }
+
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                window.location.href = '{% url "logout" %}';
+            }
+        }
+        Buttonlogout.addEventListener(
+                "click",
+                function () {
+                    Popup.classList.add("show");
+                }
+            );
+            Aceptar.addEventListener(
+                "click",
+                function () {
+                    window.location.href = "{% url 'logout' %}";
+                }
+            );
+            Cancelar.addEventListener(
+                "click",
+                function () {
+                        Popup.classList.remove(
+                        "show");
+                    }
+            );
+
+        // Lógica de búsqueda
+        document.getElementById('searchInput').addEventListener('input', function() {
+            var filter = this.value.toLowerCase();
+            var items = document.querySelectorAll('.nav-menu li');
+            items.forEach(function(item) {
+                if (item.textContent.toLowerCase().includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

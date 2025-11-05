@@ -1,0 +1,581 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+{% block extrahead %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    body {
+        background-color: rgb(236, 236, 236); /* Establece el fondo de la página a blanco */
+    }
+    .errorlist { color: red; }
+    .pagination { 
+        position: absolute; /* Cambiado a absolute para estar dentro del contenedor */
+        bottom: 20px; /* Ajusta esta distancia según tus necesidades */
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex; 
+        justify-content: center; 
+        z-index: 999; /* Asegura que la paginación esté sobre otros elementos */
+        background-color: #9EB23B;
+        border-radius: 12px;
+        font-weight: bold;
+        padding: 5px 10px; /* Espaciado interno */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para mejorar la estética */
+    }
+    .pagination .page-item { 
+        margin: 0 5px; 
+        list-style: none; /* Elimina los estilos de lista */
+        height: 30px; /* Altura fija para los elementos <li> */
+        display: flex; /* Para usar flexbox */
+        align-items: center; /* Centrar verticalmente el contenido */
+    } 
+    .pagination .page-link { 
+        text-decoration: none; 
+        color: #000; 
+        font-size: 18px; 
+        padding: 5px 10px; /* Añade un poco de espacio alrededor del número */
+    }
+    .pagination .page-item.active .page-link { 
+        background-color: #505c14; /* Cambia el color de fondo para la página activa */
+        color: #000; /* Cambia el color del texto para la página activa */
+        border-radius: 5px; /* Agrega bordes redondeados */
+    }
+    .list-container {
+        height: 400px;
+        text-align: center;
+        background-color: white;
+        padding: 70px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative; /* Añade posición relativa */
+    }
+    .search-form {
+        display: inline-block;
+        vertical-align: middle;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+    .search-form input[type="text"] {
+        border-radius: 15px; /* Bordes redondeados */
+        background-color: #f0f0f0; /* Color de fondo gris claro */
+        border: 1px solid #ccc; /* Borde gris claro */
+        padding: 5px 10px; /* Espaciado interno */
+        margin-right: 5px; /* Espacio entre el input y el botón */
+    }
+    .search-form button {
+        border-radius: 15px; /* Bordes redondeados */
+        background-color: #d3d3d3; /* Color de fondo gris claro */
+        border: 1px solid #ccc; /* Borde gris claro */
+        padding: 5px 10px; /* Espaciado interno */
+    }
+    .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .title-button-container {
+        display: flex;
+        align-items: center;
+    }
+    .title-button-container h2 {
+        margin-right: 10px; /* Espacio entre el título y el botón de agregar */
+    }
+    .btn {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    table th, table td {
+        background-color: white; /* Establece el fondo de las celdas a blanco */
+        padding-top: 15px;
+    }
+    .button-container {
+        display: flex;
+        align-items: center;
+    }
+    .button-wrapper {
+        margin-right: 10px; /* Ajusta el margen entre los botones si es necesario */
+    }
+
+    .popup {
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(
+            0,
+            0,
+            0,
+            0.4
+        );
+        display: none;
+    }
+    .popup-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888888;
+        width: 30%;
+        font-weight: bolder;
+        border-radius: 15px ;
+        color: #333;
+        text-align: center;
+        font-size: 10px;
+        width: 300px;
+    }
+    .popup-content button {
+        background-color: #87963C;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 45%;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+    .show {
+        display: block;
+    }
+
+    .messages {
+        color: rgb(23, 23, 23);
+        background-color: #ededed;
+        box-shadow: #333;
+        list-style: none;
+        text-align: center;
+    }
+
+    .error-message { 
+        color: red; 
+        text-align: center; 
+    }
+
+    h2 {
+        display: block;
+        font-size: 1.5em;
+        margin-block-start: 70px;
+        margin-inline-start: 250px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+    }
+
+    @media screen and (max-width: 500px) {
+        h2 {
+            margin-block-start: -5px;
+            margin-inline-start: -150px;
+        }
+        
+        .list-container{
+            left: -155px;
+            width: 377px;
+            height: 500px;
+        }
+        
+        .add-icon{
+            position: relative;
+            top: -4px;
+            left: -5px;
+            color: #000;
+        }
+
+        .upload{
+            position: fixed;
+            top: 95px;
+            left: 400px;
+            color: #000000;
+            font-size: 20px;
+        }
+
+        .download{
+            position: fixed;
+            top: 90px;
+            left: 350px;
+            color: #000;
+            font-size: 30px;
+        }
+
+        .arrow{
+            position: relative;
+            top: -20px;
+            left: -15px;
+            color: #000;
+        }
+
+        .search-form input[type="text"] {
+            position:relative;
+            top: -25px;
+        }
+
+        .search-form button {
+            position: relative;
+            top: -25px;
+        }
+
+        .container{
+            position: relative;
+            top: -33px;
+            left: -80px;
+            width: 5px;
+        }
+        th.hidden-column,
+        td.hidden-column {
+            align-items: flex-start;
+            display: none;
+        }
+    }
+
+    @media (min-width: 501px) and (max-width: 767px) {
+        h2 {
+            margin-block-start: -10px;
+            margin-inline-start: -5px;
+        }
+        
+        .list-container{
+            left: -10px;
+            max-width: 600px;
+            height: 500px;
+        }
+        
+        .add-icon{
+            position: relative;
+            top: -4px;
+            left: -5px;
+            color: #000;
+        }
+
+        .upload{
+            position: fixed;
+            top: 95px;
+            left: 600px;
+            color: #000000;
+            font-size: 20px;
+        }
+
+        .download{
+            position: fixed;
+            top: 90px;
+            left: 550px;
+            color: #000;
+            font-size: 30px;
+        }
+
+        .arrow{
+            position: relative;
+            top: -20px;
+            left: -15px;
+            color: #000;
+        }
+
+        .search-form input[type="text"] {
+            position:relative;
+            top: -25px;
+        }
+
+        .search-form button {
+            position: relative;
+            top: -25px;
+        }
+
+        .container{
+            position: relative;
+            top: -33px;
+            left: -40px;
+            width: 100%;
+        }
+        th.hidden-column,
+        td.hidden-column {
+            align-items: flex-start;
+            display: none;
+        }
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        h2 {
+            margin-block-start: -10px;
+            margin-inline-start: -5px;
+        }
+        
+        .list-container{
+            left: -10px;
+            width: 750px;
+            height: 600px;
+        }
+        
+        .add-icon{
+            position: relative;
+            top: -4px;
+            left: -5px;
+            color: #000;
+        }
+
+        .upload{
+            position: fixed;
+            top: 95px;
+            left: 900px;
+            color: #000000;
+            font-size: 20px;
+        }
+
+        .download{
+            position: fixed;
+            top: 90px;
+            left: 850px;
+            color: #000;
+            font-size: 30px;
+        }
+
+        .arrow{
+            position: relative;
+            top: -20px;
+            left: -15px;
+            color: #000;
+        }
+
+        .search-form input[type="text"] {
+            position:relative;
+            top: -25px;
+        }
+
+        .search-form button {
+            position: relative;
+            top: -25px;
+        }
+
+        .container{
+            position: relative;
+            top: -33px;
+            left: -40px;
+            width: 100%;
+        }
+    }
+
+    @media screen and (min-width: 1025px){
+        h2 {
+            margin-block-start: -10px;
+            margin-inline-start: -5px;
+        }
+        
+        .list-container{
+            left: 0px;
+            width: 1050px;
+            height: 400px;
+        }
+        
+        .add-icon{
+            position: relative;
+            top: -4px;
+            left: -5px;
+            color: #000;
+        }
+
+        .upload{
+            position: fixed;
+            top: 95px;
+            left: 1200px;
+            color: #000000;
+            font-size: 20px;
+        }
+
+        .download{
+            position: fixed;
+            top: 90px;
+            left: 1150px;
+            color: #000;
+            font-size: 30px;
+        }
+
+        .arrow{
+            position: relative;
+            top: -20px;
+            left: -15px;
+            color: #000;
+        }
+
+        .search-form input[type="text"] {
+            position:relative;
+            top: -25px;
+        }
+
+        .search-form button {
+            position: relative;
+            top: -25px;
+        }
+
+        .container{
+            position: relative;
+            top: -33px;
+            left: 0px;
+            width: 100%;
+        }
+    } 
+
+</style>
+{% endblock %}
+{% block extra_css %}    
+{% endblock extra_css %}    
+<main role="main" style="margin-left: 250px;">
+    <header class='mb-5'>
+        <div class="header-container">
+            <div class="title-button-container" style="margin-top: 60px;">
+                <h2 class='h2'>Inventario</h2>
+                <a href="{% url 'crear_producto' %}" class="btn btn-success new-product-button">
+                    <i class="fas fa-plus add-icon"></i> <!-- Icono de signo de más -->
+                </a>
+            </div>
+            <div class="button-container ml-auto d-flex" style="margin-top: 70px;">
+                <div class="button-wrapper">
+                    <a href="{% url 'carga_masiva_producto' %}" class="btn btn-info bulk-load">
+                        <i class="fas fa-upload upload" style="position: fixed;"></i> <!-- Icono de carga con flecha hacia arriba -->
+                    </a>
+                </div>
+                <div class="button-wrapper">
+                    <a href="{% url 'descarga_reporte_producto' %}" title="Descarga Productos">
+                        <span class="material-icons-outlined download">
+                            cloud_download
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="list-container"> <!-- Contenedor de fondo blanco -->
+        <div class="back-button">
+            <a href="{% url 'inventario_main' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left arrow"> </i>
+            </a>
+        </div>
+        <div class="d-flex flex-column flex-lg-row my-5">
+            <div class="my-auto d-flex flex-column flex-lg-row ms-lg-auto">
+                <div class="feedback body--small normal"></div>
+            </div>
+            <div class="search-form">
+                <form method="post" action="" class='input-container-search my-auto'>
+                    {% csrf_token %}
+                    <input name="search" id="search" type="text" placeholder='Buscar por Nombre'/>
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>      
+        </div>
+        <div class="table-container mt-5">
+            <table class="container">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Codigo</th>
+                        <th class="hidden-column">Unidad</th>
+                        <th class="hidden-column">Stock Inicial</th>
+                        <th>Entradas</th>
+                        <th class=>Salidas</th>
+                        <th>Total</th>                      
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in p_list_paginate %}
+                        <tr>
+                            <td>{{p.supply_name}}</td>
+                            <td>{{p.supply_code}}</td>
+                            <td class="hidden-column">{{p.supply_unit}}</td>
+                            <td class="hidden-column">{{p.supply_initial_stock}}</td>
+                            <td>{{p.supply_input}}</td>
+                            <td>{{p.supply_output}}</td>
+                            <td>{{p.supply_total}}</td>
+                            <td>
+                                <a href="{% url 'producto_ver' p.id %}"><i class="fas fa-edit" style="color: #000000;"></i></a>
+                                <a id="Buttondeleteitem" onclick="mostrar('{{ p.id }}')">
+                                    <i class="fas fa-trash-alt" style="color: #000000;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <div id="popupdeleteitem" class="popup">
+                        <div class="popup-content">
+                            <h1 style="color: #333">
+                                ¿Seguro que quiere eliminar permanentemente este producto?
+                            </h1>
+                            <button id="Aceptar1" href="#" onclick="aceptar1(a)">Aceptar</button>
+                            <button id="Cancelar1">Cancelar</button>
+                        </div>
+                    </div>
+                </tbody>
+            </table>
+            <!-- Paginación -->
+            {% if paginator.num_pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if p_list_paginate.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ p_list_paginate.previous_page_number }}&search={{ search }}">
+                                <i class="fas fa-chevron-left"></i> <!-- Icono de flecha hacia la izquierda -->
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                        </li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                        <li class="page-item {% if p_list_paginate.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}&search={{ search }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if p_list_paginate.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ p_list_paginate.next_page_number }}&search={{ search }}">
+                                <i class="fas fa-chevron-right"></i> <!-- Icono de flecha hacia la derecha -->
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            <!-- Fin de la Paginación B -->
+        </div>
+        {% if messages %}
+        <ul class="messages" id="message5">
+            {% for message in messages %}
+                <li{% if messages.tags %} class="{{message.tags}}" {% endif %}>{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+</main>
+{% block extrajs %}    
+<!--FUNCIÓN PARA CONFIRMAR LA ELIMINACIÓN DE UN INSUMO-->
+<script>
+    function mostrar(id) {
+            popupdeleteitem.classList.add("show");
+            a = id;
+        };
+        function aceptar1 (id) {
+            window.location.href = "{% url 'producto_delete' 0 %}".replace('0', id);
+        };
+    Cancelar1.addEventListener(
+        "click",
+        function () {
+                popupdeleteitem.classList.remove(
+                "show");
+            }
+    );
+</script>
+{% endblock extrajs %}    
+{% endblock %}

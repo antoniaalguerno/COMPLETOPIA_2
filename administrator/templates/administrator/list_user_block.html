@@ -1,0 +1,609 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+{% block extrahead %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+    body {
+        background-color: rgb(236, 236, 236); /* Establece el fondo de la página a blanco */
+    }
+    .errorlist { color: red; }
+    .pagination { 
+        position: absolute; /* Cambiado a absolute para estar dentro del contenedor */
+        margin-top:360px ;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex; 
+        justify-content: center; 
+        z-index: 999; /* Asegura que la paginación esté sobre otros elementos */
+        background-color: #9EB23B;
+        border-radius: 12px;
+        font-weight: bold;
+        padding: 5px 10px; /* Espaciado interno */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para mejorar la estética */
+    }
+    .pagination .page-item { 
+        margin: 0 5px; 
+        list-style: none; /* Elimina los estilos de lista */
+        height: 30px; /* Altura fija para los elementos <li> */
+        display: flex; /* Para usar flexbox */
+        align-items: center; /* Centrar verticalmente el contenido */
+    } 
+    .pagination .page-link { 
+        text-decoration: none; 
+        color: #000; 
+        font-size: 18px; 
+        padding: 5px 10px; /* Añade un poco de espacio alrededor del número */
+    }
+    .pagination .page-item.active .page-link { 
+        background-color: #505c14; /* Cambia el color de fondo para la página activa */
+        color: #000; /* Cambia el color del texto para la página activa */
+        border-radius: 5px; /* Agrega bordes redondeados */
+    }
+
+    .header-row {
+        background-color: #d3d3d3; /* Establece el color de fondo de la fila de encabezados a gris */
+    }
+    .action-buttons {
+        display: inline-block; /* Cambia a inline-block para dejar ambos botones uno al lado del otro */
+        align-items: center; /* Alinea los elementos verticalmente */
+    }
+    .action-buttons a {
+        margin-right: 10px; /* Ajusta el espacio entre los botones */
+    }
+    .container {
+        border: 2px solid white;
+        border-radius: 15px;
+        padding: 20px;
+        position: relative;
+        background-color: white; /* Ajusta el fondo del contenedor */
+        min-height: 600px;
+    }
+    .search-form {
+        position: absolute;
+        top: 10px;
+        right: 10px; /* Ajusta la posición a la esquina superior derecha */
+    }
+    .search-form input[type="text"] {
+        border-radius: 15px; /* Bordes redondeados */
+        background-color: #f0f0f0; /* Color de fondo gris claro */
+        border: 1px solid #ccc; /* Borde gris claro */
+        padding: 5px 10px; /* Espaciado interno */
+        margin-right: 5px; /* Espacio entre el input y el botón */
+    }
+    .search-form button {
+        border-radius: 15px; /* Bordes redondeados */
+        background-color: #d3d3d3; /* Color de fondo gris claro */
+        border: 1px solid #ccc; /* Borde gris claro */
+        padding: 5px 10px; /* Espaciado interno */
+    }
+    .nav-tabs {
+        display: flex;
+        gap: 20px;
+        padding-left: 0;
+        list-style: none; /* Elimina los puntos de la lista */
+        margin-top: 20px;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan en múltiples líneas si es necesario */
+    }
+    .nav-tabs .nav-item .nav-link {
+        border: 1px #000000;
+        border-radius: 0.25rem 0.25rem 0 0;
+        padding: 10px 15px;
+        color: #000;
+        margin-right: -15px;
+        background-color: #c8d0a2;
+        text-decoration: none;
+    }
+    .nav-tabs .nav-item .nav-link.active {
+        background-color: #ffffff;
+    } 
+
+    table th, table td {
+        background-color: white; /* Establece el fondo de las celdas a blanco */
+        padding-top: 15px;
+    }
+
+    .list-container {
+    background-color: white;
+
+    max-height: 600px; /* Ajusta la altura según tus necesidades */
+    position: fixed;
+    top: 120px; /* Ajusta la distancia desde la parte superior de la ventana */
+    left: -100px; /* Centra el contenedor */
+    padding: 5px; /* Ajusta el relleno interior */
+    z-index: 0;
+        /* Ajusta la barra de desplazamiento si es necesario */
+   
+    transition: all 0.5s ease;
+    border-radius: 15px;
+    }
+    
+    .container {
+    /* Estilo para el contenedor externo */
+    max-width: 100%; /* El contenedor externo ocupa el ancho completo disponible */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding: 20px; /* Espacio interno del contenedor */
+    }
+
+    .inner-container {
+    background-color: white;
+    height: 90%; /* Ajusta la altura según tus necesidades */
+    position: fixed;
+    top: 120px; /* Ajusta la distancia desde la parte superior de la ventana */
+    left: -100px;  /* Centra el contenedor */
+    padding: 5px; /* Ajusta el relleno interior */
+    z-index: 100;
+    /* Ajusta la barra de desplazamiento si es necesario */
+    
+    transition: all 0.5s ease;
+    border-radius: 15px;
+    }
+
+    h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 70px;
+    margin-inline-start: 250px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    }
+
+@media screen and (max-width: 500px) {
+        .list-container{
+            position: relative;
+            max-width: 378px;
+            height: 800px;
+            left: 90px;
+            top: -6px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+
+        }
+        .inner-container{
+            max-width: 380px;
+            height: 800px;
+            left: 110px;
+            top: 161px;
+            
+
+        }
+        .pagination {
+            position: absolute;
+            margin-top: 20px;
+            top: 500px;
+        }
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -6px;
+            left: 99px;
+            padding: 1px 2px;
+            margin: 5px;
+            flex: 1 1 auto; /* Permitir que los botones crezcan y se encojan */
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+
+        /* Ocultar columna de correo en pantallas pequeñas */
+        th.email-column,
+        td.email-column {
+            align-items: flex-start;
+            display: none;
+        }
+
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            display: block;
+            position: relative;
+            left: -145px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            position: absolute;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+        
+
+
+    }
+
+@media (min-width: 501px) and (max-width: 767px) {
+    .list-container{
+            position: relative;
+            max-width: 495px;
+            height: 800px;
+            left: 240px;
+            top: -5px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+
+        }
+        .inner-container{
+            max-width: 380px;
+            height: 800px;
+            left: 110px;
+            top: 161px;
+            
+
+        }
+        .pagination {
+            position: absolute;
+            margin-top: 20px;
+            top: 500px;
+        }
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -1px;
+            left: 238px;
+            padding: 1px 2px;
+            margin: 5px;
+            flex: 1 1 auto; /* Permitir que los botones crezcan y se encojan */
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+
+        
+
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            display: block;
+            position: relative;
+            left: 6px;
+            top: 3px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            position: absolute;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+
+    }
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .list-container{
+            position: relative;
+            max-width: 700px;
+            height: 800px;
+            left: 240px;
+            top: -5px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+
+        }
+        .inner-container{
+            max-width: 380px;
+            height: 800px;
+            left: 110px;
+            top: 161px;
+            
+
+        }
+        .pagination {
+            position: absolute;
+            margin-top: 20px;
+            top: 500px;
+        }
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -1px;
+            left: 238px;
+            padding: 1px 2px;
+            margin: 5px;
+            flex: 1 1 auto; /* Permitir que los botones crezcan y se encojan */
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+
+        
+
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            display: block;
+            position: relative;
+            left: 6px;
+            top: 3px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            position: absolute;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+
+    }
+
+@media screen and (min-width: 1025px){
+    .list-container{
+            position: relative;
+            max-width: 700px;
+            height: 800px;
+            left: 240px;
+            top: -5px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+
+        }
+        .inner-container{
+            max-width: 1000px;
+            height: 600px;
+            left: 260px;
+            top: 161px;
+            
+
+        }
+        .pagination {
+            position: absolute;
+            margin-top: 20px;
+            top: 500px;
+        }
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -1px;
+            left: 238px;
+            padding: 1px 2px;
+            margin: 5px;
+            flex: 1 1 auto; /* Permitir que los botones crezcan y se encojan */
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+
+
+        
+
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            display: block;
+            position: relative;
+            left: 6px;
+            top: 3px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            position: absolute;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+
+    }
+    .messages {
+        color: rgb(23, 23, 23);
+        background-color: #ededed;
+        box-shadow: #333;
+        list-style: none;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .popup {
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(
+            0,
+            0,
+            0,
+            0.4
+        );
+        display: none;
+    }
+    .popup-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888888;
+        width: 30%;
+        font-weight: bolder;
+        border-radius: 15px ;
+        color: #333;
+        text-align: center;
+        font-size: 10px;
+        width: 300px;
+    }
+    .popup-content button {
+        background-color: #87963C;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 45%;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+    .show {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+<main role="main">
+    <h2 class="page-title">Usuarios Eliminados</h1>
+    <header class='mb-5'>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'list_user_active' group.id %}">Activos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Eliminados</a>
+            </li>
+        </ul>
+    </header>
+    <div class="list-container col-12">
+        <div class="col-12 border" style="position: relative;">
+            <div class="btn-container">
+                <div class="action-buttons">
+                    <a href="{% url 'list_user_active' group.id %}" class="btn btn-danger btn-volver">
+                        <i class="fas fa-arrow-left" style="color: #000000;"></i>
+                    </a>
+                    <div class="search-form">
+                        <form method="get" action="" class='input-container-search'>
+                            <input name="search" id="search" type="text" placeholder='Buscar por Nombre' />
+                            <button type="submit">Buscar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <table id="service" class="table mt-2 table-hover table-sm table-bordered">      
+                <thead class="table-danger">
+                    <tr class="text-center">
+                        <th width="300" scope="col">Nombre</th>
+                        <th width="350" scope="col" class="email-column">Correo</th>
+                        <th width="900" scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in user_list %}
+                        <tr>
+                            <th scope="row" style="font-weight:400;">{{s.name}}</th>
+                            <th scope="row" style="font-weight:400;" class="email-column">{{s.mail}}</th>
+                            {% if profiles.group_id == 1 %}
+                                <th scope="row">
+                                    {% if s.id != request.user.id %}
+                                    <a id="Buttonrestoreuser" onclick="mostrar1('{{ s.id }}')">
+                                        <i class="fa-solid fa-arrow-rotate-left" style="color: #000000;"></i>
+                                    </a>
+                                    <a id="Buttoneraseuser" onclick="mostrar2('{{ s.id }}')">
+                                        <i class="fa-solid fa-trash-can" style="color: #000000;"></i>
+                                    </a>
+                                    {% endif %}
+                                </th>   
+                            {% endif %}                            
+                        </tr>
+                    {% endfor %}
+                    <div id="Popuprestoreuser" class="popup">
+                        <div class="popup-content">
+                            <h1 style="color: #333">
+                                ¿Seguro que quiere restaurar este usuario?
+                            </h1>
+                            <button id="Aceptar1" href="#" onclick="aceptar1(a)">Aceptar</button>
+                            <button id="Cancelar1">Cancelar</button>
+                        </div>
+                    </div>  
+                    <div id="Popuperaseuser" class="popup">
+                        <div class="popup-content">
+                            <h1 style="color: #333">
+                                ¿Seguro que quiere eliminar permanente este usuario?
+                            </h1>
+                            <button id="Aceptar2" href="#" onclick="aceptar2(a)">Aceptar</button>
+                            <button id="Cancelar2">Cancelar</button>
+                        </div>
+                    </div> 
+                    {% if messages %}
+                        <ul class="messages" id="message18">
+                            {% for message in messages %}
+                                <li{% if messages.tags %} class="{{message.tags}}" {% endif %}>{{message}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %} 
+                </tbody>
+            </table>
+            <!-- Paginación -->
+            <nav aria-label="Page navigation" style="margin-top: 20px;">
+                <ul class="pagination justify-content-center">
+                    {% if user_list.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ user_list.previous_page_number }}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                        </li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                        <li class="page-item {% if user_list.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}{% if search %}&search={{ search }}{% endif %}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if user_list.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ user_list.next_page_number }}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <!-- Paginación -->
+        </div>
+    </div>
+</main>
+
+<script>
+    function mostrar1(id) {
+        Popuprestoreuser.classList.add("show");
+        a = id;
+    };
+    function aceptar1 (id) {
+        window.location.href = "{% url 'user_activate' 0 %}".replace('0', id);
+    };
+Cancelar1.addEventListener(
+    "click",
+    function () {
+            Popuprestoreuser.classList.remove(
+            "show");
+        }
+);
+        function mostrar2(id) {
+            Popuperaseuser.classList.add("show");
+            a = id;
+        };
+        function aceptar2 (id) {
+            window.location.href = "{% url 'user_delete' 0 %}".replace('0', id);
+        };
+    Cancelar2.addEventListener(
+        "click",
+        function () {
+                Popuperaseuser.classList.remove(
+                "show");
+            }
+    );
+</script>
+
+{% endblock %}

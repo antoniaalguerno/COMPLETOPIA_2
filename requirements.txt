@@ -1,0 +1,14 @@
+django==2.0.2
+Pillow 
+pylint
+pylint-django
+django-bower
+xlwt
+xlrd
+pandas
+django-mathfilters
+djangorestframework
+djangorestframework==3.11.2
+xlrd==1.2.0
+openpyxl
+matplotlib

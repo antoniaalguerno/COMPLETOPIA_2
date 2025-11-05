@@ -1,0 +1,920 @@
+/* Import Google font - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+/* Reset styles */
+* {
+  margin: 5px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
+}
+
+/* Define custom properties */
+:root {
+  --green-color: #9EB23B;
+  --light-green-color: #c8d0a2;
+  --grey-color: #ffffff;
+  --grey-color-light: #aaa;
+  --white-color: #ffffff;
+}
+
+/* General body styles */
+body {
+  background-color: #F7F7F7;
+  transition: all 0.5s ease;
+}
+body.dark {
+  background-color: #333;
+}
+body.dark {
+  --green-color: #333;
+  --light-green-color: #fff;
+  --grey-color: #f2f2f2;
+  --grey-color-light: #aaa;
+}
+
+/* Navbar styles */
+.navbar { /*BARRA DE ARRIBA QUE DICE NOMBRE E ICONOS CERRAR SESION CONFIG*/
+  position: fixed;
+  margin: 0px;
+  top: 0;
+  height: 60px; /* Ajusta la altura según tus necesidades */
+  width: 100%;
+  left: 0;
+  background-color: var(--green-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0px;
+  z-index: 10000;
+  box-shadow: 0 0 10px var(--grey-color-light);
+}
+
+.dashboard-container {
+  margin-left: 300px; /* El mismo valor que el ancho del menú lateral */
+  margin-top: 60px; /* Esta altura debe coincidir con la altura de la barra de navegación */
+  padding: 20px;
+  width: calc(100% - 300px); /* Asegúrate de que toma el espacio restante */
+}
+
+.logo_item {
+  display: flex;
+  align-items: center;
+  column-gap: 0px;
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--green-color);
+}
+
+.navbar img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.search_bar {
+  height: 47px;
+  max-width: 430px;
+  width: 100%;
+}
+
+.search_bar input {
+  height: 100%;
+  width: 100%;
+  border-radius: 25px;
+  font-size: 18px;
+  outline: none;
+  background-color: var(--green-color);
+  color: var(--grey-color);
+  border: 1px solid var(--grey-color-light);
+  padding: 0 20px;
+}
+
+.navbar_content {
+  display: flex;
+  column-gap: 25px;
+  align-items: center;
+  
+}
+
+.navbar_content i {
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--grey-color);
+}
+
+/* Sidebar styles */
+.sidebar { /*BARRA MENÚ PRINCIPAL*/
+  background-color: var(--green-color);
+  width: 250px; /* Ajusta el ancho según tus necesidades */
+  height: fit-content; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 60px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 0; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  border-radius: 15px; /* Redondea las esquinas */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.sidebar.close {
+  padding: 60px 0;
+  width: 80px;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.menu_content {
+  position: relative;
+}
+
+.menu_title {
+  margin: 15px 0;
+  padding: 0 20px;
+  font-size: 20px;
+}
+
+.sidebar.close .menu_title {
+  padding: 6px 30px;
+}
+
+.menu_title::before {
+  color: var(--grey-color);
+  white-space: nowrap;
+}
+
+.menu_dahsboard::before {
+  content: "Dashboard";
+}
+
+.menu_editor::before {
+  content: "Editor";
+}
+
+.menu_setting::before {
+  content: "Setting";
+}
+
+.sidebar.close .menu_title::before {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 18px;
+  border-radius: 12px;
+  background: var(--grey-color-light);
+}
+
+.menu_items {
+  padding: 0;
+  list-style: none;
+}
+
+.navlink_icon {
+  position: relative;
+  font-size: 35px;
+  min-width: 40px;
+  line-height: 40px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 6px;
+}
+
+.navlink_icon::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: calc(100% + 100px);
+  left: -20px;
+}
+
+.navlink_icon:hover {
+  background: var(--light-green-color);
+}
+
+.sidebar .nav_link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0px; /* del contenido dentro de la sidebar */
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--grey-color);
+  white-space: nowrap;
+}
+
+.sidebar.close .navlink {
+  display: none;
+}
+
+.nav_link:hover {
+  color: var(--white-color);
+  background: var(--light-green-color);
+}
+
+.sidebar.close .nav_link:hover {
+  background: var(--green-color);
+}
+
+.submenu_item {
+  position: relative; /* Asegúrate de que tenga una posición */
+  left: -10px; /* Ajusta este valor según sea necesario */
+  cursor: pointer;
+}
+
+
+.submenu {
+  display: none;
+}
+
+.submenu_item .arrow-left {
+  position: absolute;
+  right: 5px;
+  display: inline-block;
+  margin-right: auto;
+}
+
+.sidebar.close .submenu {
+  display: none;
+}
+
+.show_submenu ~ .submenu {
+  display: block;
+}
+
+.show_submenu .arrow-left {
+  transform: rotate(90deg);
+}
+
+.submenu .sublink {
+  padding: 15px 15px 15px 52px;
+}
+
+.bottom_content {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 300px; /* Ajusta el ancho según tus necesidades */
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.bottom {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  left: 0;
+  justify-content: space-around;
+  padding: 18px 0;
+  text-align: center;
+  width: 100%;
+  color: var(--grey-color);
+  border-top: 1px solid var(--grey-color-light);
+  background-color: var(--green-color);
+}
+
+.bottom i {
+  font-size: 20px;
+}
+
+.bottom span {
+  font-size: 18px;
+}
+
+.sidebar.close .bottom_content {
+  width: 80px;
+  left: 0;
+}
+
+.sidebar.close .bottom span {
+  display: none;
+}
+
+.sidebar.hoverable .collapse_sidebar {
+  display: none;
+}
+
+
+@media screen and (max-width: 768px) {
+
+  .sidebar.close {
+    left: -100%;
+  }
+
+  .search_bar {
+    display: none;
+  }
+
+  .sidebar.close .bottom_content {
+    left: -100%;
+  }
+}
+
+/* Añadidos */
+
+/* CSS para la barra de usuario y la navegación */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--white-color);
+}
+
+.user-info .profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 5px;
+  left: 5px;
+  width: 90%;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+
+.footer p {
+  margin: 0;
+  color: var(--green-color);
+}
+
+/* Ajustes adicionales */
+body.dark .header,
+body.dark .footer {
+  background-color: #333;
+}
+
+body.dark .header {
+  border-bottom: 1px solid #444;
+}
+
+
+/* useredit styles */
+.profileedit {
+  background-color: white;
+  height: 90%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 120px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 25%; /* Centra el contenedor */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+  border-radius: 15px;
+}
+
+.profileedit::-webkit-scrollbar {
+  display: default;
+}
+
+
+
+/* useredit styles */
+.useredit {
+  background-color: var(--white-color);
+  width: 90%; /* Ajusta el ancho de manera relativa */
+  max-width: 1000px; /* Ancho máximo */
+  height: 80%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 75px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 60%; /* Centra el contenedor */
+  transform: translateX(-50%); /* Centra el contenedor */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+  border-radius: 15px;
+}
+
+.useredit::-webkit-scrollbar {
+  display: default;
+}
+
+.preview-container {
+  width: 30%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  background-color: #EBEBEB; 
+  position: absolute;
+  left: 1030px;
+  top: 108px;
+  height: 485px; 
+  box-shadow: 0 0 20px var(--grey-color-light);
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+}
+
+.preview-container::-webkit-scrollbar {
+  display: default;
+}
+.preview-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.preview-item { font-size: 16px; color: #333; margin-bottom: 10px; }
+
+/* Media Queries para pantallas más pequeñas */
+@media screen and (max-width: 768px) {
+  .profilebar {
+    width: 60%; /* Ajusta el ancho para pantallas más pequeñas */
+    top: 80px; /* Ajusta la distancia desde la parte superior */
+  }
+
+  .useredit {
+    width: 30%; /* Ajusta el ancho para pantallas más pequeñas */
+    top: 110px; /* Ajusta la distancia desde la parte superior */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .profilebar {
+    width: 100%; /* Ajusta el ancho para pantallas muy pequeñas */
+    top: 50px; /* Ajusta la distancia desde la parte superior */
+  }
+
+  .useredit {
+    width: 30%; /* Ajusta el ancho para pantallas muy pequeñas */
+    top: 90px; /* Ajusta la distancia desde la parte superior */
+  }
+}
+/* proveedorbar styles */
+.proveedorbar {
+  background-color: var(--green-color);
+  width: 90%; /* Ajusta el ancho de manera relativa */
+  max-width: 1010px; /* Ancho máximo */
+  height: 6%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 70px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 60%; /* Centra el contenedor */
+  transform: translateX(-50%); /* Centra el contenedor */
+  border-radius: 15px; /* Redondea las esquinas */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+.proveedorbar::-webkit-scrollbar {
+  display: none;
+}
+
+.proveedorbar.close {
+  padding: 60px 0;
+  width: 80px;
+}
+.proveedorbar .nav_link {
+  align-items: center;
+  width: 25%;
+  padding: 4px 0px; /* del contenido dentro de la sidebar */
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--grey-color);
+  white-space: nowrap;
+}
+
+/* proveedordash styles */
+.proveedordash {
+  background-color: var(--white-color);
+  width: 980px; /* Ajusta el ancho según tus necesidades  PENSARLO BIEN SI QUEDA ASÍ O NO */ 
+  height: 78%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 125px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 380px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  border-radius: 15px;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.proveedordash:-webkit-scrollbar {
+  display: default;
+}
+
+/* proveedorver styles */
+.proveedorver {
+  background-color: var(--white-color);
+  width: 1010px; /* Ajusta el ancho según tus necesidades */
+  height: 60%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 100px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 330px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  border-radius: 15px;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.proveedorver:-webkit-scrollbar {
+  display: none;
+}
+
+/* proveedoredit styles */
+.proveedoredit {
+  background-color: var(--white-color);
+  width: 1000px; /* Ajusta el ancho según tus necesidades */
+  height: 75%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 140px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 330px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  border-radius: 15px;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.proveedoredit:-webkit-scrollbar {
+  display: none;
+}
+/* Media Queries para pantallas más pequeñas */
+@media screen and (max-width: 768px) {
+  .proveedorbar {
+    width: 100%; /* Ajusta el ancho para pantallas más pequeñas */
+    top: 80px; /* Ajusta la distancia desde la parte superior */
+  }
+
+  .proveedordash {
+    width: 30%; /* Ajusta el ancho para pantallas más pequeñas */
+    top: 110px; /* Ajusta la distancia desde la parte superior */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .proveedorbar {
+    width: 100%; /* Ajusta el ancho para pantallas muy pequeñas */
+    top: 50px; /* Ajusta la distancia desde la parte superior */
+  }
+
+  .proveedordash {
+    width: 30%; /* Ajusta el ancho para pantallas muy pequeñas */
+    top: 90px; /* Ajusta la distancia desde la parte superior */
+  }
+}
+
+.logoutbutton {
+  background-color: #87963C;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 30%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.logoutbutton:hover {
+  background-color: #65702d;
+  color: white;
+}
+
+/* orderbar styles */
+.orderbar {
+  background-color: var(--green-color);
+  width: 1010px; /* Ajusta el ancho según tus necesidades */
+  height: 6%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 70px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 315px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  border-radius: 15px; /* Redondea las esquinas */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.orderbar:-webkit-scrollbar {
+  display: none;
+}
+.orderbar.close {
+  padding: 60px 0;
+  width: 80px;
+}
+.orderbar .nav_link {
+  align-items: center;
+  width: 25%;
+  padding: 4px 0px; /* del contenido dentro de la sidebar */
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--grey-color);
+  white-space: nowrap;
+}
+
+/* orderdash styles */
+.orderdash {
+  background-color: var(--white-color);
+  width: 1010px; /* Ajusta el ancho según tus necesidades */
+  height: 85%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 130px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 320px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.orderdash:-webkit-scrollbar {
+  display: none;
+}
+
+/* proveedoredit styles */
+.orderedit {
+  background-color: var(--white-color);
+  width: 1000px; /* Ajusta el ancho según tus necesidades */
+  height: 60%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 140px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 60%; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.orderedit:-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ventasbar styles */
+.ventasbar {
+  background-color: var(--green-color);
+  width: 90%; /* Ajusta el ancho de manera relativa */
+  max-width: 1010px; /* Ancho máximo */
+  height: 6%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 70px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 60%; /* Centra el contenedor */
+  transform: translateX(-50%); /* Centra el contenedor*/ 
+  border-radius: 10px; /* Redondea las esquinas */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.ventasbar::-webkit-scrollbar {
+  display: none;
+}
+
+.ventasbar.close {
+  padding: 60px 0;
+  width: 80px;
+}
+.ventasbar .nav_link {
+  align-items: center;
+  width: 25%;
+  padding: 4px 0px; /* del contenido dentro de la sidebar */
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--grey-color);
+  white-space: nowrap;
+}
+
+/* ventasdash styles */
+.ventasdash {
+  background-color: var(--white-color);
+  width: 980px; /* Ajusta el ancho según tus necesidades  PENSARLO BIEN SI QUEDA ASÍ O NO */ 
+  height: 78%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 160px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 24%; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  border-radius: 10px;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.ventasdash:-webkit-scrollbar {
+  display: default;
+}
+
+/* ventasver styles */
+.ventasver {
+  background-color: var(--white-color);
+  width: 1010px; /* Ajusta el ancho según tus necesidades */
+  height: 60%; /* Ajusta la altura según tus necesidades */
+  position: fixed;
+  top: 100px; /* Ajusta la distancia desde la parte superior de la ventana */
+  left: 330px; /* Ajusta la distancia desde el lado izquierdo de la ventana */
+  padding: 5px; /* Ajusta el relleno interior */
+  z-index: 100;
+  border-radius: 15px;
+  overflow-y: auto; /* Ajusta la barra de desplazamiento si es necesario */
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.ventasver:-webkit-scrollbar {
+  display: none;
+}
+.logout-icon {
+ 
+  display: flex;
+  
+  padding: 15px;
+  z-index: 999;
+  color: rgb(33, 33, 33);
+}
+
+.logout-link {
+  text-decoration: none;
+  color: inherit;
+  font-size: 24px; /* Tamaño del icono */
+  transition: color 0.3s;
+}
+
+.logout-link:hover {
+  color: rgb(69, 69, 69); /* Cambia el color del icono cuando se pasa el cursor */
+}
+
+.logout-link:active {
+  color: rgb(34, 34, 34); /* Cambia el color del icono cuando se hace clic */
+}
+
+.logout-link:focus {
+  outline: none;
+}
+
+.top-right-link { /*Ir al listado botón*/
+  position: absolute;
+  top: 100px;
+  background-color:rgb(216, 216, 216); 
+  color: #000;
+  left: 500px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* ventasedit styles 
+.ventasedit {
+  background-color: var(--white-color);
+  width: 1000px; /* Ajusta el ancho según tus necesidades 
+  height: 65%; /* Ajusta la altura según tus necesidades 
+  position: fixed;
+  top: 140px; /* Ajusta la distancia desde la parte superior de la ventana 
+  left: 330px; /* Ajusta la distancia desde el lado izquierdo de la ventana 
+  padding: 5px; /* Ajusta el relleno interior 
+  z-index: 100;
+  border-radius: 15px;/* Ajusta la barra de desplazamiento si es necesario 
+  box-shadow: 0 0 10px var(--grey-color-light);
+  transition: all 0.5s ease;
+}
+
+.ventasedit:-webkit-scrollbar {
+  display: none;
+}
+
+/*RESPONSIVE*/
+
+/* Media Queries para pantallas más pequeñas */
+@media screen and (max-width: 500px) {
+  .profileedit {
+    max-width: 370px; /* Ajusta el ancho para pantallas más pequeñas */
+    top: 110px; /* Ajusta la distancia desde la parte superior*/
+    left: 115px;
+    height: 450px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+
+ 
+  .sidebar {
+    width: fit-content;
+    
+  }
+
+  .ventasdash{
+    width: 75%;
+    left: 110px;
+    box-sizing: border-box;
+  }
+
+  .proveedorver{
+    max-width: 370px;
+    height: 400px;
+    top: 120px;
+    left: 115px;
+  }
+
+
+
+ 
+}
+
+@media (min-width: 501px) and (max-width: 767px) {
+  .profileedit {
+    max-width:485px; /* Ajusta el ancho para pantallas muy pequeñas */
+    top: 110px; /* Ajusta la distancia desde la parte superior */
+    left: 260px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+  
+  .ventasdash{
+    max-width: 480px;
+    left: 260px;
+  }
+
+  .proveedorver{
+    max-width: 490px;
+    height: 400px;
+    top: 120px;
+    left: 260px;
+  }
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .profileedit {
+    max-width: 685px; /* Ajusta el ancho para pantallas más pequeñas */
+    height: 480px;
+    top: 110px; /* Ajusta la distancia desde la parte superior */
+    left: 260px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+
+  .ventasdash{
+    max-width: 750px;
+    left: 260px;
+  }
+
+  .proveedorver{
+    max-width: 700px;
+    height: 400px;
+    top: 120px;
+    left: 260px;
+  }
+}
+
+@media screen and (min-width: 1025px){
+  .profileedit {
+    
+    max-width: 1400px; /* Ajusta el ancho para pantallas más pequeñas */
+    height: 480px;
+    top: 110px; /* Ajusta la distancia desde la parte superior */
+    left: 260px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+
+  .ventasbar{
+    width: 100%;
+    top: 900px;
+  }
+
+  .ventasdash{
+    max-width: 1000px;
+    left: 260px;
+  }
+
+  .proveedorver{
+    max-width: 700px;
+    height: 400px;
+    top: 120px;
+    left: 260px;
+  }
+}
+

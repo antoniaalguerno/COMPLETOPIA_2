@@ -1,0 +1,535 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block content %}
+{% block extrahead %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+    body {
+        background-color: rgb(236, 236, 236);
+    }
+    .errorlist { color: red; }
+    .pagination { 
+        position: absolute; /* Cambiado a absolute para estar dentro del contenedor */
+        bottom: 20px; /* Ajusta esta distancia según tus necesidades */
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex; 
+        justify-content: center; 
+        z-index: 999; /* Asegura que la paginación esté sobre otros elementos */
+        background-color: #9EB23B;
+        border-radius: 12px;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para mejorar la estética */
+        
+    }
+    .pagination .page-item { 
+        margin: 0 5px; 
+        list-style: none; /* Elimina los estilos de lista */
+        height: 30px; /* Altura fija para los elementos <li> */
+        display: flex; /* Para usar flexbox */
+        align-items: center; /* Centrar verticalmente el contenido */
+    } 
+    .pagination .page-link { 
+        text-decoration: none; 
+        color: #000; 
+        font-size: 18px; 
+        padding: 5px 10px; /* Añade un poco de espacio alrededor del número */
+    }
+    .pagination .page-item.active .page-link { 
+        background-color: #505c14; /* Cambia el color de fondo para la página activa */
+        color: #000; /* Cambia el color del texto para la página activa */
+        border-radius: 5px; /* Agrega bordes redondeados */
+    }
+
+    .header-row {
+        background-color: #d3d3d3;
+    }
+    .action-buttons {
+        display: inline-block;
+        align-items: center;
+    }
+    .action-buttons a {
+        margin-right: 10px;
+    }
+    .container {
+        border: 2px solid white;
+        border-radius: 15px;
+        padding: 20px;
+        top: -17px;
+        position: relative;
+        background-color: white;
+    }
+    .search-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .search-form input[type="text"] {
+        border-radius: 15px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        margin-right: 5px;
+    }
+    .search-form button {
+        border-radius: 15px;
+        background-color: #d3d3d3;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+    }
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .nav-tabs {
+        display: flex;
+        gap: 0px;
+        padding-left: 0;
+        list-style: none;
+        margin-top: 53px;
+        margin-left: 250px;
+    }
+    .nav-tabs .nav-item .nav-link {
+        border: 1px #000000;
+        border-radius: 0.25rem 0.25rem 0 0;
+        border-color: #000000 #000000 #000000;
+        padding: 12px 15px;
+        color: #000;
+        margin-right: -15px;
+        background-color: #c8d0a2;
+        text-decoration: none;
+    }
+    .nav-tabs .nav-item .nav-link.active {
+        background-color: #ffffff;
+        border-color: #000000 #000000 #ffffff;
+    }
+    
+
+    @media screen and (max-width: 500px) {
+        .container{
+            position: relative;
+            max-width: 375px;
+            left: 95px;
+            top: -90px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+
+        }
+        .nav-item {
+            position: relative;
+            width: 100px;
+            top: -3px;
+            left: -140px;
+            padding: 1px 2px;
+            margin: 5px;
+            flex: 1 1 auto; /* Permitir que los botones crezcan y se encojan */
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+
+        /* Ocultar columna de correo en pantallas pequeñas */
+        th.phone-column,
+        td.phone-column {
+            align-items: flex-start;
+            display: none;
+        }
+
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            
+            position: relative;
+            top: -20px;
+            left: -300px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            position: static;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+        .icon-upload {
+            position: relative;
+            color: #000000;
+            margin-right: 5px;
+            left: 100px;
+            top:-70px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 100px;
+            padding-left: 0;
+            list-style: none;
+            margin-top: 53px;
+            margin-left: 250px;
+        }
+
+
+    }
+
+    @media (min-width: 501px) and (max-width: 767px) {
+        .custom-container{
+            position: relative;
+            max-width: 490px;
+            left: 248px;
+            top: -85px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            margin-left: 0px;
+        }}
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -72px;
+            left: -10px;
+            
+        }
+
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            
+            position: relative;
+            top: -20px;
+            left: -20px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            position: absolute;
+            left: 300px;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+        .icon-upload {
+            position: relative;
+            color: #000000;
+            margin-right: 5px;
+            left: -280px;
+            top:-70px;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 20px;
+            padding-left: 0;
+            list-style: none;
+            margin-top: 53px;
+            margin-left: 250px;
+        }
+
+    
+
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        .custom-container{
+            position: relative;
+            max-width: 700px;
+            left: 248px;
+            top: -85px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            margin-left: 0px;
+        }
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -72px;
+            left: -10px;
+            
+        }
+             
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            width: fit-content;
+            
+            position: relative;
+            top: -20px;
+            left: -20px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            margin-bottom: 10px;
+            
+        }
+
+        .icon-upload {
+            position: static;
+            color: #000000;
+            margin-right: 5px;
+            left: -280px;
+            top:-70px;
+        }
+
+    }
+
+    @media screen and (min-width: 1025px){
+        .custom-container{
+            position: relative;
+            max-width: 700px;
+            left: 248px;
+            top: -85px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            margin-left: 0px;
+        }
+        .nav-link {
+            position: relative;
+            width: 100px;
+            top: -72px;
+            left: -10px;
+            
+        }        
+        td{
+            margin: 0%;
+            
+        }
+
+        h2{
+            position: relative;
+            top: -20px;
+            left: -20px;
+            justify-content: center;
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+        }
+        .search-form{
+            white-space: nowrap; /* Evitar que el texto dentro del botón se corte */
+            word-wrap: break-word;
+            
+        }
+
+        .icon-upload {
+            position: relative;
+            color: #000000;
+            margin-right: 5px;
+            left: -280px;
+            top:-70px;
+        }
+    }
+    .messages {
+        color: rgb(23, 23, 23);
+        background-color: #ededed;
+        box-shadow: #333;
+        list-style: none;
+        text-align: center;
+    }
+    .popup {
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(
+            0,
+            0,
+            0,
+            0.4
+        );
+        display: none;
+    }
+    .popup-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888888;
+        width: 30%;
+        font-weight: bolder;
+        border-radius: 15px ;
+        color: #333;
+        text-align: center;
+        font-size: 10px;
+        width: 300px;
+    }
+    .popup-content button {
+        background-color: #87963C;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 45%;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+    .show {
+        display: block;
+    }
+</style>
+{% endblock %}
+<header class="mb-4" style="margin-top: 90px;margin-left: 270px;">
+    <div class="container-fluid">
+        <div class="row align-items-center justify-content-between">
+            <h2 style="margin-left: 0px; margin-top: 10px;">Proveedores Eliminados</h2>
+        </div>
+    </div>
+</header>
+<main role="main">
+    <header class='mb-5'>
+        <div class="header-container">
+            <div class="tabs-and-button-container">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'proveedores_activos' %}">Activos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Eliminados</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container custom-container" style="min-height: 600px;">
+        <a href="{% url 'proveedores_main' %}" class="btn btn-danger btn-volver">
+            <i class="fas fa-arrow-left" style="color: #000000;"></i>
+        </a>
+        <div class="search-form">
+            <form method="get" action="" class='input-container-search'>
+                <input name="search" id="search" type="text" placeholder='Buscar por Nombre' />
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+
+        {% if messages %}
+            <ul class="messages" id="message16">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <table class="table mt-5 table-hover table-sm table-bordered" style="margin-top: 40px;">
+            <thead class="table-danger">
+                <tr>
+                    <th width="10%" scope="col" style="padding: 15px;">Nombre</th>
+                    <th width="10%" scope="col">Apellido</th>
+                    <th width="10%" scope="col" class="phone-column">Teléfono de contacto</th>
+                    <th width="10%" scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in proveedores_eliminados %}
+                <tr>
+                    <th scope="row" style="font-weight: 400; padding: 15px;">{{ p.proveedor_name }}</th>
+                    <th scope="row" style="font-weight: 400; padding: 15px;">{{ p.proveedor_last_name }}</th>
+                    <th scope="row" style="font-weight: 400; padding: 15px;" class="phone-column">{{ p.proveedor_phone }}</th>
+                    <th scope="row">
+                        <a onclick="mostrarRestaurar('{{ p.id }}')">
+                            <i class="fa-solid fa-arrow-rotate-left" style="color: #000000;"></i>
+                        </a>
+                        <a id="Buttoneraseprovider" onclick="mostrarEliminar('{{ p.id }}')">
+                            <i class="fa-solid fa-trash-can" style="color: #000000;"></i>
+                        </a>
+                    </th>
+                </tr>
+                {% endfor %}
+                <div id="popupRestaurar" class="popup">
+                    <div class="popup-content">
+                        <h1 style="color: #333">¿Seguro que quiere restaurar este proveedor?</h1>
+                        <button id="AceptarRestaurar" href="#" onclick="aceptarRestaurar(a)">Aceptar</button>
+                        <button id="CancelarRestaurar">Cancelar</button>
+                    </div>
+                </div>
+                <div id="popupEliminar" class="popup">
+                    <div class="popup-content">
+                        <h1 style="color: #333">¿Seguro que quiere eliminar permanentemente este proveedor?</h1>
+                        <button id="AceptarEliminar" href="#" onclick="aceptarEliminar(a)">Aceptar</button>
+                        <button id="CancelarEliminar">Cancelar</button>
+                    </div>
+                </div>
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <ul class="pagination">
+                {% if p_list_paginate.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ p_list_paginate.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                </li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                <li class="page-item {% if p_list_paginate.number == i %}active{% endif %}">
+                    <a class="page-link" href="?page={{ i }}{% if search %}&search={{ search }}{% endif %}">{{ i }}</a>
+                </li>
+                {% endfor %}
+                {% if p_list_paginate.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ p_list_paginate.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- Fin de Paginación -->
+    </div>
+</main>
+
+<script>
+    var a;
+
+    function mostrarRestaurar(id) {
+        document.getElementById('popupRestaurar').classList.add("show");
+        a = id;
+    }
+
+    function aceptarRestaurar(id) {
+        window.location.href = "{% url 'restaurar_proveedor' 0 %}".replace('0', id);
+    }
+
+    document.getElementById('CancelarRestaurar').addEventListener("click", function () {
+        document.getElementById('popupRestaurar').classList.remove("show");
+    });
+
+    function mostrarEliminar(id) {
+        document.getElementById('popupEliminar').classList.add("show");
+        a = id;
+    }
+
+    function aceptarEliminar(id) {
+        window.location.href = "{% url 'proveedor_delete' 0 %}".replace('0', id);
+    }
+
+    document.getElementById('CancelarEliminar').addEventListener("click", function () {
+        document.getElementById('popupEliminar').classList.remove("show");
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,491 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+{% block title %}{% endblock %}
+{% block content %}
+    {% block extra_css %}    
+    {% endblock extra_css %}    
+    <style>
+        .errorlist {
+            color: red;
+        }
+    
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+        }
+    
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    
+        .titulo {
+            font-family: 'Sigmar', sans-serif;
+            color: #333;
+            font-size: 36px;
+            margin: 0;
+        }
+    
+        .form-label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    
+        .form-control {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+    
+        .button {
+            background-color: #87963C;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 13%;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+    
+        .button:hover {
+            background-color: #65702d;
+            color: white;
+        }
+    
+        .messages {
+        color: rgb(23, 23, 23);
+        background-color: #ededed;
+        box-shadow: #333;
+        list-style: none;
+        text-align: center;
+    }
+    
+        .error-message {
+            color: red;
+            text-align: center;
+        }
+
+        .product-item, .product-nuevo-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            display: block;
+            font-size: 1.5em;
+            margin-block-start: 80px;
+            margin-block-end: 0px;
+            margin-inline-start: 250px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+            unicode-bidi: isolate;
+            }
+
+        @media screen and (max-width: 500px) {
+            h2{
+                margin-block-start: 70px;
+                margin-inline-start: 115px;
+            }
+
+            .form-control{
+                display: block;
+                width: 100%;
+                word-wrap: break-word;
+            }
+
+            .button{
+                width: 90px;
+                height: 44px;
+            }
+        }
+
+        @media (min-width: 501px) and (max-width: 767px) {
+            h2{
+                margin-block-start: 70px;
+                margin-inline-start: 255px;
+            }
+    
+            .form-control{
+                display: block;
+                width: 90%;
+                word-wrap: break-word;
+            }
+
+            .button{
+                width: 90px;
+                height: 47px;
+            }
+        }
+
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            h2{
+                margin-block-start: 70px;
+                margin-inline-start: 255px;
+            }
+        }
+
+        @media screen and (min-width: 1025px){
+            h2{
+                margin-block-start: 70px;
+                margin-inline-start: 255px;
+            }
+
+        }
+
+
+      
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <header class='mb-4'>
+        <h2 class='h2'>Editar Proveedor</h2>
+    </header>
+    <nav id="profileedit" class="profileedit">
+    <div class="col-md-11">
+        <div class="mb-3">
+            <div class="d-flex flex-column align-items-center align-items-lg-start">
+                <form method="post" action="{% url 'proveedor_edit' proveedor_id=proveedor_data.id %}">
+                    {% csrf_token %}
+                    <div id ="container">
+                        <div class="col-12 col-lg-12 row row-cols-1 row-cols-md-1 g-2 p-lg-0-5">
+                            <div class="mb-0 col-md-6">
+                                <label for="proveedor_name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" name="proveedor_name" pattern="[A-Za-zÑñáéíóúÁÉÍÓÚ\s]+" id="proveedor_name" placeholder="Nombre" value="{{ proveedor_data.proveedor_name }}" style="text-transform: capitalize;" required>
+                            </div>
+                            <div class="mb-0 col-md-6">
+                                <label for="proveedor_last_name" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" name="proveedor_last_name" pattern="[A-Za-zÑñáéíóúÁÉÍÓÚ\s]+" id="proveedor_last_name" placeholder="Apellido" value="{{ proveedor_data.proveedor_last_name }}" style="text-transform: capitalize;" required>
+                            </div>
+                            <div class="mb-0 col-md-6">
+                                <label for="proveedor_mail" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" name="proveedor_mail" id="proveedor_mail" placeholder="nombre@gmail.com" value="{{ proveedor_data.proveedor_mail }}" required>
+                            </div>
+                            <div class="mb-0 col-md-6">
+                                <label for="proveedor_phone" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" name="proveedor_phone" id="proveedor_phone" pattern="[0-9]{9}" placeholder="Teléfono" value="{{ proveedor_data.proveedor_phone }}" required>
+                            </div>
+                            <div class="mb-0 col-md-12">
+                                <label for="proveedor_address" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" name="proveedor_address" id="proveedor_address" placeholder="Dirección" value="{{ proveedor_data.proveedor_address }}" required>
+                            </div>
+                            <div class="col-12 col-sm-4 mb-3">
+                                <label for="region">Región‎ ‎ ‎ ‎ ‎ ‎   </label>
+                                <select name="region" id="region" class="form-control border border-danger" required>
+                                    <option value="">Seleccione una región</option>
+                                    {% for region in RegionesYcomunas.regiones %}
+                                        <option value="{{ region.NombreRegion }}" {% if proveedor_data.proveedor_region == region.NombreRegion %}selected{% endif %}>{{ region.NombreRegion }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="comuna">Comuna</label>
+                                <select name="comuna" id="comuna" class="form-control border border-danger" required>
+                                    <option value="">Seleccione una comuna</option>
+                                    {% if proveedor_data.proveedor_region %}
+                                        {% for region in RegionesYcomunas.regiones %}
+                                            {% if proveedor_data.proveedor_region == region.NombreRegion %}
+                                                {% for comuna in region.comunas %}
+                                                    <option value="{{ comuna }}" {% if proveedor_data.proveedor_comuna == comuna %}selected{% endif %}>{{ comuna }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div id="productos-container" class="col-12 col-lg-12 row row-cols-1 row-cols-md-1 g-2 p-lg-0-5">
+                                <h3>Productos Existentes</h3>
+                                {% for producto in proveedor_data.prov_prod_set.all %}
+                                <div class="product-item mb-3 col-12">
+                                    <div class="row">
+                                        <div class="mb-0 col-md-11">
+                                            <label for="producto_orden_{{ forloop.counter0 }}" class="form-label">Producto</label>
+                                            <select class="form-control" name="producto_orden[]" id="producto_orden_{{ forloop.counter0 }}" required>
+                                                <option value="" selected disabled>Selecciona un Producto</option>
+                                                {% for prod in productos %}
+                                                    <option value="{{ prod.id }}" {% if producto.producto.id == prod.id %}selected{% endif %}>{{ prod.get_nombre_producto }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="mb-0 col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-delete-producto">Borrar Producto</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <div class="mb-3">
+                                    <button type="button" id="add-producto" class="btn btn-secondary">Agregar Producto</button>
+                                </div>
+                            </div>
+                            <div id="productos_nuevos-container" class="col-12 col-lg-12 row row-cols-1 row-cols-md-1 g-2 p-lg-0-5">
+                                <h3>Crear Productos Nuevos</h3>
+                                <div class="product-nuevo-item mb-3 col-12">
+                                    <div class="row">
+                                        <div class="mb-0 col-md-11">
+                                            <label for="producto_nuevo_0" class="form-label">Producto</label>
+                                            <input type="text" class="form-control" name="producto_nuevo[]" pattern="[A-Za-zÑñ]+" id="producto_nuevo_0" placeholder="Producto" style="text-transform: capitalize;">
+                                            <input type="text" class="form-control" name="codigo_nuevo[]" id="codigo_nuevo_0" placeholder="Código en formato XXXX" style="text-transform: capitalize;">
+                                            <select name="unidad_nuevo[]" id="unidad_nuevo_0" class="form-control border border-danger">
+                                                <option value="">Seleccione la unidad</option>
+                                                {% for supply_unit in supply_unit %}
+                                                    <option value="{{ supply_unit }}">{{ supply_unit }}</option>
+                                                {% endfor %}
+                                                <option value="kg">kg</option>
+                                                <option value="LATA (330 ml)">LATA (330 ml)</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-0 col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-delete-producto_nuevo">Borrar Producto</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <button type="button" id="add-producto_nuevo" class="btn btn-secondary">Agregar Producto Nuevo</button>
+                                </div>
+                            </div>
+                            {% if messages %}
+                                <ul class="messages" id="message7">
+                                    {% for message in messages %}
+                                    <li{% if messages.tags %} class="{{message.tags}}" {% endif %}>{{message}}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <div class="mb-0 col-md-4">
+                                <div class="d-flex justify-content-center mb-2">
+                                    <div class="d-flex justify-content-center mx-0-5--custom">
+                                        <button type="submit" class="button">Editar</button>
+                                        <a href="{% url 'proveedores_activos' %}" class="button">Volver</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+<script>
+    {% block extrajs %}    
+    //PRODUCTOS EXISTENTES
+    document.getElementById('add-producto').addEventListener('click', function() {
+        var container = document.getElementById('productos-container');
+        var item = container.querySelector('.product-item');
+        var clone = item.cloneNode(true);
+        var index = container.querySelectorAll('.product-item').length;
+
+        clone.querySelectorAll('input').forEach(input => {
+            input.value = '';
+            input.id = input.id.replace(/\d+$/, index);
+        });
+        clone.querySelectorAll('select').forEach(select => {
+            select.id = select.id.replace(/\d+$/, index);
+        });
+        container.appendChild(clone);
+        updateDeleteButtons();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('btn-delete-producto')) {
+            if (document.querySelectorAll('.product-item').length > 1) {
+                event.target.closest('.product-item').remove();
+                updateDeleteButtons();
+            } else {
+                alert("No puedes eliminar el único producto.");
+            }
+        }
+    });
+
+    function updateDeleteButtons() {
+        var deleteButtons = document.querySelectorAll('.btn-delete-producto');
+        if (deleteButtons.length === 1) {
+            deleteButtons[0].setAttribute('disabled', true);
+        } else {
+            deleteButtons.forEach(function(button) {
+                button.removeAttribute('disabled');
+            });
+        }
+    }
+
+    //PRODUCTOS NUEVOS
+    document.getElementById('add-producto_nuevo').addEventListener('click', function() {
+        var container = document.getElementById('productos_nuevos-container');
+        var item = container.querySelector('.product-nuevo-item');
+        var clone = item.cloneNode(true);
+        var index = container.querySelectorAll('.product-nuevo-item').length;
+
+        clone.querySelectorAll('input').forEach(input => {
+            input.value = '';
+            input.id = input.id.replace(/\d+$/, index);
+        });
+        clone.querySelectorAll('select').forEach(select => {
+            select.id = select.id.replace(/\d+$/, index);
+        });
+        container.appendChild(clone);
+        updateDeleteButtons();
+    });
+
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('btn-delete-producto_nuevo')) {
+            if (document.querySelectorAll('.product-nuevo-item').length > 1) {
+                event.target.closest('.product-nuevo-item').remove();
+                updateDeleteButtons();
+            } else {
+                alert("No puedes eliminar el único producto.");
+            }
+        }
+    });
+
+    function updateDeleteButtons() {
+        var deleteButtons = document.querySelectorAll('.btn-delete-producto_nuevo');
+        if (deleteButtons.length === 1) {
+            deleteButtons[0].setAttribute('disabled', true);
+        } else {
+            deleteButtons.forEach(function(button) {
+                button.removeAttribute('disabled');
+            });
+        }
+    }
+
+    document.getElementById('supply_code').addEventListener('input', function(event) {
+        var value = event.target.value;
+        var newValue = value.replace(/\D/g, '');
+        newValue = newValue.slice(0, 4);
+        event.target.value = newValue;
+    });
+
+    {% endblock extrajs %}    
+</script>
+<script>
+    var RegionesYcomunas = {
+        "regiones": [
+            {
+                "NombreRegion": "Arica y Parinacota",
+                "comunas": ["Arica", "Camarones", "Putre", "General Lagos"]
+            },
+            {
+                "NombreRegion": "Tarapacá",
+                "comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"]
+            },
+            {
+                "NombreRegion": "Antofagasta",
+                "comunas": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"]
+            },
+            {
+                "NombreRegion": "Atacama",
+                "comunas": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"]
+            },
+            {
+                "NombreRegion": "Coquimbo",
+                "comunas": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"]
+            },
+            {
+                "NombreRegion": "REGIÓN DE VALPARAÍSO",
+                "comunas": ["ALGARROBO", "CABILDO", "CALERA", "CALLE LARGA", "CARTAGENA", "CASABLANCA", "CATEMU", "CONCÓN", "CURACAVÍ", "EL QUISCO", "EL TABO", "HIJUELAS", "ISLA DE PASCUA", "JUAN FERNÁNDEZ", "LA CRUZ", "LA LIGUA", "LIMACHE", "LLAILLAY", "LOS ANDES", "NOGALES", "OLMUÉ", "PANQUEHUE", "PAPUDO", "PETORCA", "PUCHUNCAVÍ", "PUTAENDO", "QUILLOTA", "QUILPUÉ", "QUINTERO", "RINCONADA", "SAN ANTONIO", "SAN ESTEBAN", "SAN FELIPE", "SANTA MARÍA", "SANTO DOMINGO", "VALPARAÍSO", "VILLA ALEMANA", "VIÑA DEL MAR", "ZAPALLAR"]
+            },
+            {
+                "NombreRegion": "Región del Libertador Gral. Bernardo O'Higgins",
+                "comunas": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"]
+            },
+            {
+                "NombreRegion": "Región del Maule",
+                "comunas": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"]
+            },
+            {
+                "NombreRegion": "Región de Ñuble",
+                "comunas": ["Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"]
+            },
+            {
+                "NombreRegion": "Región del Biobío",
+                "comunas": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"]
+            },
+            {
+                "NombreRegion": "Región de La Araucanía",
+                "comunas": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"]
+            },
+            {
+                "NombreRegion": "Región de Los Ríos",
+                "comunas": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"]
+            },
+            {
+                "NombreRegion": "Región de Los Lagos",
+                "comunas": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"]
+            },
+            {
+                "NombreRegion": "Región Aysén del Gral. Carlos Ibáñez del Campo",
+                "comunas": ["Coihaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"]
+            },
+            {
+                "NombreRegion": "Región de Magallanes y de la Antártica Chilena",
+                "comunas": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
+            },
+            {
+                "NombreRegion": "Región Metropolitana de Santiago",
+                "comunas": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Santiago", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+            }
+        ]
+    };
+    jQuery(document).ready(function () {
+
+        // Variables para almacenar las opciones iniciales de región y comuna
+        var htmlRegion = '<option value="">{{proveedor_data.proveedor_region}}</option>';
+        var htmlComunas = '<option value="">{{proveedor_data.proveedor_comuna}}</option>';
+
+        // Recorre cada región en el objeto RegionesYcomunas.regiones para construir las opciones del select de regiones
+        jQuery.each(RegionesYcomunas.regiones, function (index, region) {
+            htmlRegion += '<option value="' + region.NombreRegion + '">' + region.NombreRegion + '</option>';
+        });
+
+        // Inserta las opciones de región construidas en el select con id "region"
+        jQuery('#region').html(htmlRegion);
+
+        // Inserta las opciones iniciales de comuna en el select con id "comuna"
+        jQuery('#comuna').html(htmlComunas);
+
+        // Define un evento de cambio para el select de regiones ("#region")
+        jQuery('#region').change(function () {
+            // Obtiene el valor seleccionado de la región
+            var selectedRegion = jQuery(this).val();
+            // Variable para almacenar las opciones de comuna, inicialmente con una opción predeterminada
+            var htmlComuna = '<option value="">Seleccione una comuna</option>';
+
+            // Recorre cada región nuevamente para encontrar la región seleccionada
+            jQuery.each(RegionesYcomunas.regiones, function (index, region) {
+                // Si la región actual coincide con la seleccionada
+                if (region.NombreRegion == selectedRegion) {
+                    // Recorre cada comuna de la región y construye las opciones del select de comunas
+                    jQuery.each(region.comunas, function (index, comuna) {
+                        htmlComuna += '<option value="' + comuna + '">' + comuna + '</option>';
+                    });
+                }
+            });
+
+            // Inserta las opciones de comuna construidas en el select con id "comuna"
+            jQuery('#comuna').html(htmlComuna);
+        });
+
+        // Preseleccionar la región y comuna si están disponibles en profile_data
+        var selectedRegion = '{{ proveedor_data.proveedor_region }}';
+        if (selectedRegion) {
+            // Establece la región seleccionada en el select y dispara el evento de cambio
+                jQuery('#region').val(selectedRegion).change();
+
+            // Espera 500 milisegundos y luego establece la comuna seleccionada
+            setTimeout(function() {
+                var selectedComuna = '{{proveedor_data.proveedor_comuna}}';
+                jQuery('#comuna').val(selectedComuna);
+            }, 500);
+        }
+        });
+</script>
+{% endblock %}

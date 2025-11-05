@@ -1,0 +1,407 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>COMPLETOPIA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'assets/img/logo.png' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Two+Tone" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/admin_main_styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+    .popup {
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        display: none;
+    }
+    .popup-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888888;
+        width: 30%;
+        font-weight: bolder;
+        border-radius: 15px ;
+        color: #333;
+        text-align: center;
+        font-size: 10px;
+        width: 300px;
+    }
+    .popup-content button {
+        background-color: #87963C;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 45%;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+    .show {
+        display: block;
+    }
+    
+
+    .settingsbar.open {
+        position: end;
+        display: flex;
+        right: 0;
+        width: 215px;
+        box-shadow: 0 0 10px var(--grey-color-light);
+        transition: left 0.3s ease;
+    }
+
+    .settingsbar-content {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .settingsbar.open{
+        position: relative;
+        position: fixed;
+        
+        z-index: 999;
+    }
+    .submenu_item .arrow-left {
+                    position: absolute;
+                    right: -15px;
+                    display: inline-block;
+                    margin-right: auto;
+    }
+        /* Estilos generales para el menú */
+    .settingsbar.custom-side-bar {
+        display: none;
+        background-color: #9eb23b;
+        width: fit-content; /* Ajusta el ancho según tus necesidades */
+        height: fit-content; /* Ajusta la altura según tus necesidades */
+        position: fixed;
+        left: auto;
+        top: 60px; /* Ajusta la distancia desde la parte superior de la ventana */
+            /* Ajusta la distancia desde el lado izquierdo de la ventana */
+        border-radius: 15px; /* Redondea las esquinas */
+        padding: 5px; /* Ajusta el relleno interior */
+        z-index: 100;
+        
+        box-shadow: 0 0 10px var(--grey-color-light);
+        transition: left 0.3s ease;
+    }
+
+    /* Estilos para los enlaces del menú */
+    .settingsbar .custom-nav-link {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 4px 0px; /* del contenido dentro de la sidebar */
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--grey-color);
+        white-space: nowrap;
+    }
+
+    /* Estilos para los iconos de los enlaces del menú */
+    .settingsbar .custom-navlink-icon {
+    margin-right: 10px;
+    font-size: 20px; /* Tamaño del icono */
+    color: white; /* Cambia el color del icono según sea necesario */
+    }
+
+    /* Efecto al pasar el ratón sobre los enlaces del menú */
+    .settingsbar .custom-nav-link:hover {
+    background-color: var(--light-green-color);
+    color: white; /* Cambia el color del texto al pasar el ratón */
+    }
+
+    /* Estilos para las flechas de los submenús */
+    .settingsbar .custom-arrow-left {
+    margin-left: auto;
+    color: white; /* Cambia el color de la flecha según sea necesario */
+    }
+
+
+    
+    @media screen and (max-width: 500px) {
+
+        .settingsbar.open {
+        
+        position: fixed;
+        right: 0;
+        left:270px;
+        box-shadow: 0 0 10px var(--grey-color-light);
+        transition: left 0.3s ease;
+    }
+
+    }
+
+    @media (min-width: 501px) and (max-width: 767px) {
+        .settingsbar.open {
+        
+        position: fixed;
+        
+        box-shadow: 0 0 10px var(--grey-color-light);
+        transition: left 0.3s ease;
+    }
+
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        .settingsbar.open {
+        
+        position: fixed;
+       
+        box-shadow: 0 0 10px var(--grey-color-light);
+        transition: left 0.3s ease;
+    }
+    }
+
+    @media screen and (min-width: 1025px){
+   
+    .settingsbar.open {
+        
+        position: fixed;
+        
+        box-shadow: 0 0 10px var(--grey-color-light);
+        transition: left 0.3s ease;
+    }
+    }
+
+
+    
+</style>
+<body>
+    <nav id="sidebar" class="side-bar to-left">
+        <div class="menu">
+            <nav class="navbar">
+                <div class="user-info">
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'user_detail' user_id=request.user.id %}">
+                            {% if user_profile.profile_image %}
+                                <img src="{{ user_profile.profile_image.url }}" alt="User Image" class="profile">
+                            {% else %}
+                                <img src="{% static 'assets/img/no-avatar.jpg' %}" alt="User Image" class="profile">
+                            {% endif %}
+                        </a>
+                        <span class="username">{{ request.user.first_name }}</span>
+                    {% else %}
+                        <a href="{% url 'login' %}">
+                            <img src="{% static 'assets/img/no-avatar.jpg' %}" alt="User Image" class="profile">
+                            <span class="username">Usuario</span>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="navbar_content">
+                    <div class="logout-icon">
+                        <a onclick="toggleSettingsPanel()" class="logout-link">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </a>
+                    <a id="Buttonlogout2" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                        <div id="Popuplogout2" class="popup">
+                            <div class="popup-content" style="font-size:15px;">
+                                <h1 style="color: #333">
+                                    ¿Seguro que quiere cerrar su sesion?
+                                </h1>
+                                <button id="Aceptar">Aceptar</button>
+                                <button id="Cancelar">Cancelar</button>
+                            </div>
+                        </div>                    
+                    </a>
+                    </div>
+                </div>
+            </nav>
+            <nav class="sidebar">
+                <div class="menu_content">
+                    <ul class="menu_items">
+                        <li class="item">
+                            <a href="{% url 'admin_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-home"></i>
+                                </span>
+                                <span class="navlink">Inicio</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'admin_main' %}" class="nav_link sublink">Inicio</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'list_user_active' group_id=1 %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-user"></i>
+                                </span>
+                                <span class="navlink">Usuarios</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'proveedores_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-id-card"></i>
+                                </span>
+                                <span class="navlink">Proveedores</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'proveedores_main' %}" class="nav_link sublink">Proveedores Main</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'inventario_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-archive"></i>
+                                </span>
+                                <span class="navlink">Inventario</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'inventario_main' %}" class="nav_link sublink">Inventario Main</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'orden_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-cart"></i>
+                                </span>
+                                <span class="navlink">Compras</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'orden_main' %}" class="nav_link sublink">Órden Main</a></li>
+                            </ul>
+                        </li>
+                        <li class="item">
+                            <a href="{% url 'ventas_main' %}" class="nav_link submenu_item">
+                                <span class="navlink_icon">
+                                    <i class="bx bx-bar-chart-alt-2"></i>
+                                </span>
+                                <span class="navlink">Ventas</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </a>
+                            <ul class="menu_items submenu">
+                                <li><a href="{% url 'ventas_main' %}" class="nav_link sublink">Ventas Main</a></li>
+                            </ul>
+                        </li>
+                        
+                        <!-- Más ítems del menú -->
+                        <footer class="footer ">
+                            <div class="logo_item">
+                                <i class="#" id="sidebarOpen"></i>
+                                <img src="{% static 'assets/img/completopia.png' %}" alt="Logo" style="width: 90px; height: auto; opacity: 70%;">
+                            </div>
+                        </footer>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </nav>
+<!-- Menu de la tuerca -->
+<nav class="custom-side-bar">
+    <div class="menu">
+        <!--=== Menu Inicio ===-->
+        <nav class="custom-sidebar">
+            <div class="settingsbar" id="SettingsPanel">
+                <ul class="menu_items">
+                    <li class="item">
+                        <a href="{% url 'password_reset' %}" class="custom-nav-link submenu_item">
+                            <span class="custom-navlink-icon">
+                                <i class="bx bx-lock"></i>
+                            </span>
+                            <span class="custom-navlink">Contraseña</span>
+                            <i class="bx bx-chevron-right custom-arrow-left"></i>
+                        </a>
+                        <ul class="menu_items submenu">
+                            <li><a href="{% url 'password_reset' %}" class="custom-nav-link sublink">Contraseña</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="item">
+                        <a href="{% url 'edit_perfil' %}" class="custom-nav-link submenu_item">
+                            <span class="custom-navlink-icon">
+                                <i class="bx bx-edit"></i>
+                            </span>
+                            <span class="custom-navlink">Editar Perfil</span>
+                            <i class="bx bx-chevron-right custom-arrow-left"></i>
+                        </a>
+                    </li>
+                    
+                    <li class="item">
+                        <a href="{% url 'user_detail' user_id=request.user.id %}" class="custom-nav-link submenu_item">
+                            <span class="custom-navlink-icon">
+                                <i class="bx bx-user-circle"></i>
+                            </span>
+                            <span class="custom-navlink">Ver perfil</span>
+                            <i class="bx bx-chevron-right custom-arrow-left"></i>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </nav>
+    </div>
+</nav>
+
+
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/admin_main_script.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+
+        
+        function toggleSettingsPanel() {
+            var navPanel = document.getElementById('navPanel');
+            var settingsPanel = document.getElementById('SettingsPanel');
+
+
+            // Alterna el panel de configuración
+            settingsPanel.classList.toggle('open');
+        }
+
+        function confirmLogout() {
+            if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                window.location.href = '{% url "logout" %}';
+            }
+        }
+        Buttonlogout2.addEventListener(
+                    "click",
+                    function () {
+                        Popuplogout2.classList.add("show");
+                    }
+                );
+                Aceptar.addEventListener(
+                    "click",
+                    function () {
+                        window.location.href = "{% url 'logout' %}";
+                    }
+                );
+                Cancelar.addEventListener(
+                    "click",
+                    function () {
+                            Popuplogout2.classList.remove(
+                            "show");
+                        }
+                );
+    </script>
+</body>
+</html>
+

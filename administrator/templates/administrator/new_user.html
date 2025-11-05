@@ -1,0 +1,451 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block extrahead %}
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/admin_main_styles.css' %}" />
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos generales para el cuerpo y fuentes */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+    }
+
+    /* Estilo para los mensajes de error */
+    .errorlist {
+        color: red;
+    }
+
+    /* Estilos para el título principal */
+    .titulo {
+        font-family: 'Sigmar', sans-serif;
+        color: #333;
+        font-size: 36px;
+        margin: 0;
+    }
+
+    /* Estilos para los formularios de entrada de texto y selectores */
+    .form-label {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .form-control,
+    .address-form,
+    .photo-form {
+        width: 30%; /* Ancho por defecto para los formularios en pantallas grandes */
+        height: 40px;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    /* Estilos para los botones */
+    .button {
+        background-color: #87963C;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        background-color: #65702d;
+        color: white;
+    }
+
+    /* Estilos para los mensajes */
+    .messages {
+        color: rgb(23, 23, 23);
+        background-color: #ededed;
+        box-shadow: #333;
+        list-style: none;
+        text-align: center;
+    }
+
+    /* Estilos para los títulos en diferentes tamaños de pantalla */
+    h2 {
+        display: block;
+        font-size: 1.5em;
+        margin-block-start: 80px; /* Margen superior grande en pantallas pequeñas */
+        margin-block-end: 0px;
+        margin-inline-start: 250px; /* Margen izquierdo en pantallas medianas y grandes */
+        margin-inline-end: 0px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+    }
+
+    /* Media queries para ajustar estilos en pantallas de diferentes tamaños */
+
+    @media (max-width: 500px) {
+        /* Estilos para pantallas pequeñas (máximo 500px de ancho) */
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 115px; /* Ajuste de margen izquierdo para centrar */
+        }
+
+        /* Ajuste de ancho para formularios en pantallas pequeñas */
+        .form-control,
+        .address-form,
+        .photo-form {
+            display: block;
+            width: 100%; /* Ancho completo */
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para botones en pantallas pequeñas */
+        .button {
+            width: 90px;
+            height: 44px;
+        }
+    }
+
+    @media (min-width: 501px) and (max-width: 767px) {
+        /* Estilos para pantallas medianas (entre 501px y 767px de ancho) */
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 250px; /* Ajuste de margen izquierdo para centrar */
+        }
+
+        /* Ajuste de ancho para formularios en pantallas medianas */
+        .form-control {
+            width: 90%; /* Ancho del 90% del contenedor */
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para botones en pantallas medianas */
+        .button {
+            width: 90px;
+            height: 47px;
+        }
+
+        /* Ajuste de ancho para formularios específicos en pantallas medianas */
+        .address-form,
+        .photo-form {
+            display: block;
+            width: 100%; /* Ancho completo */
+            word-wrap: break-word;
+        }
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        /* Estilos para pantallas grandes (entre 768px y 1024px de ancho) */
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 250px; /* Ajuste de margen izquierdo para centrar */
+        }
+
+        /* Ajuste de ancho para formularios en pantallas grandes */
+        .form-control {
+            width: 90%; /* Ancho del 90% del contenedor */
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para botones en pantallas grandes */
+        .button {
+            width: 90px;
+            height: 47px;
+        }
+
+        /* Ajuste de ancho para formularios específicos en pantallas grandes */
+        .address-form,
+        .photo-form {
+            display: block;
+            width: 100%; /* Ancho completo */
+            word-wrap: break-word;
+        }
+    }
+
+    @media screen and (min-width: 1025px) {
+        /* Estilos para pantallas extra grandes (más de 1025px de ancho) */
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 250px; /* Ajuste de margen izquierdo para centrar */
+        }
+
+        /* Ajuste de ancho para formularios en pantallas extra grandes */
+        .profileedit {
+            width: 900px; /* Ancho específico para un contenedor */
+        }
+
+        /* Ajuste de ancho para formularios específicos en pantallas extra grandes */
+        .form-control {
+            display: flexbox; /* Corrección de error de sintaxis 'flexbox' */
+            width: 250px; /* Ancho específico para formularios */
+            word-wrap: break-word;
+            margin: 10px; /* Margen en todos los lados */
+        }
+
+        .address-form {
+            display: flexblock; /* Corrección de error de sintaxis 'flexblock' */
+            width: 700px; /* Ancho específico para formularios */
+            word-wrap: break-word;
+            margin: 10px; /* Margen en todos los lados */
+        }
+
+        .photo-form {
+            display: flexblock; /* Corrección de error de sintaxis 'flexblock' */
+            width: 580px; /* Ancho específico para formularios */
+            word-wrap: break-word;
+            margin: 10px; /* Margen en todos los lados */
+        }
+
+        /* Ajuste de tamaño para botones en pantallas extra grandes */
+        .button {
+            width: 90px;
+            height: 47px;
+        }
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<main role="main">
+    <!-- Contenedor principal -->
+    <div class="container col-12 mt-3">
+        <div class="col-12 mt-3 border">
+            <!-- Encabezado principal -->
+            <h2 class="h2">Nuevo usuario</h2>
+            <nav id="profileedit" class="profileedit">
+                <!-- Formulario de creación de usuario -->
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Token de seguridad CSRF -->
+                    <div class="row">
+                        <!-- Fila 1 -->
+                        <div class="col-10 col-sm-4 mb-3">
+                            <!-- Columnas para campos de nombre y apellido -->
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" name="name" value="{{user_data.first_name}}" pattern="[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+" class="form-control border border-danger" required />
+                            <!-- Campo de nombre con validación -->
+                            <label for="last_name">Apellido</label>
+                            <input type="text" id="last_name1" name="last_name1" value="{{user_data.last_name}}" pattern="[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+" class="form-control border border-danger" required />
+                            <!-- Campo de apellido con validación -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Fila 2 -->
+                        <div class="col-12 col-sm-8 mb-3">
+                            <!-- Columnas para campos de RUN, correo electrónico y selección -->
+                            <label for="rut">RUN</label>
+                            <input type="text" name="rut" required oninput="checkRut(this)" autofocus maxlength="254" required id="id_rut" class="form-control border border-danger" placeholder="Rut (Ej: 17605812-2)" />
+                            <!-- Campo de RUN con validación -->
+                            <label for="email">Correo electrónico</label>
+                            <input type="email" class="form-control border border-danger" placeholder="nombre@unab.cl" name="email" />
+                            <!-- Campo de correo electrónico -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Fila 3 -->
+                        <div class="col-12 col-sm-4 mb-3">
+                            <!-- Columnas para campos de cargo y número de contacto -->
+                            <label for="grupo">Cargo</label>
+                            <select name="grupo" id="grupo" class="form-control border" required>
+                                <!-- Selección de cargo -->
+                                <option value="">----------</option>
+                                {% for g in groups %}
+                                <option value="{{ g.id }}">{{ g.name }}</option>
+                                {% endfor %}
+                                <!-- Opciones de cargo cargadas dinámicamente -->
+                            </select>
+                            <label for="mobile">Número de contacto</label>
+                            <input type="text" class="form-control border border-danger" id="mobile" pattern="[0-9]{9}" name="mobile" pattern="\d*" />
+                            <!-- Campo de número de contacto -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Fila 4 -->
+                        <div class="col-12 col-sm-8 mb-3">
+                            <!-- Columnas para campos de dirección, región y comuna -->
+                            <label for="address">Dirección</label>
+                            <input type="text" class="address-form" name="address" required />
+                            <!-- Campo de dirección -->
+                        </div>
+                        <div class="col-12 col-sm-4 mb-3">
+                            <label for="region">Región</label>
+                            <select name="region" id="region" class="form-control border border-danger" required>
+                                <!-- Selección de región -->
+                                <option value="">Seleccione una región</option>
+                                <!-- Opciones de región cargadas dinámicamente -->
+                            </select>
+                            <label for="comuna">Comuna</label>
+                            <select name="comuna" id="comuna" class="form-control border border-danger" required>
+                                <!-- Selección de comuna -->
+                                <option value="">Seleccione una comuna</option>
+                                <!-- Opciones de comuna cargadas dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Fila 5 -->
+                        <div class="col-12 col-sm-4 mb-3">
+                            <!-- Columnas para campo de foto de perfil -->
+                            <label for="profile_image">Foto de perfil</label>
+                            <input type="file" class="photo-form" name="profile_image" />
+                            <!-- Carga de archivo de imagen -->
+                        </div>
+                    </div>
+                    {% if messages %}
+                        <!-- Manejo de mensajes de error o éxito -->
+                        <ul class="messages" id="message3">
+                            {% for message in messages %}
+                            <li{% if messages.tags %} class="{{message.tags}}" {% endif %}>{{message}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <div class="row">
+                        <!-- Fila 6 -->
+                        <div class="col-12 col-sm-6 mb-3">
+                            <!-- Botones de submit y volver -->
+                            <button type="submit" class="button">Crear</button>
+                            <a href="{% url 'list_user_active' group_id=1 %}" class="button">Volver</a>
+                            <!-- Botón para crear usuario y enlace para volver -->
+                        </div>
+                    </div>
+                </form>
+            </nav>
+        </div>
+    </div>
+</main>
+
+
+
+<script>
+    var RegionesYcomunas = {
+        "regiones": [
+            {
+                "NombreRegion": "Arica y Parinacota",
+                "comunas": ["Arica", "Camarones", "Putre", "General Lagos"]
+            },
+            {
+                "NombreRegion": "Tarapacá",
+                "comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"]
+            },
+            {
+                "NombreRegion": "Antofagasta",
+                "comunas": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"]
+            },
+            {
+                "NombreRegion": "Atacama",
+                "comunas": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"]
+            },
+            {
+                "NombreRegion": "Coquimbo",
+                "comunas": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"]
+            },
+            {
+                "NombreRegion": "REGIÓN DE VALPARAÍSO",
+                "comunas": ["ALGARROBO", "CABILDO", "CALERA", "CALLE LARGA", "CARTAGENA", "CASABLANCA", "CATEMU", "CONCÓN", "CURACAVÍ", "EL QUISCO", "EL TABO", "HIJUELAS", "ISLA DE PASCUA", "JUAN FERNÁNDEZ", "LA CRUZ", "LA LIGUA", "LIMACHE", "LLAILLAY", "LOS ANDES", "NOGALES", "OLMUÉ", "PANQUEHUE", "PAPUDO", "PETORCA", "PUCHUNCAVÍ", "PUTAENDO", "QUILLOTA", "QUILPUÉ", "QUINTERO", "RINCONADA", "SAN ANTONIO", "SAN ESTEBAN", "SAN FELIPE", "SANTA MARÍA", "SANTO DOMINGO", "VALPARAÍSO", "VILLA ALEMANA", "VIÑA DEL MAR", "ZAPALLAR"]
+            },
+            {
+                "NombreRegion": "Región del Libertador Gral. Bernardo O'Higgins",
+                "comunas": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"]
+            },
+            {
+                "NombreRegion": "Región del Maule",
+                "comunas": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"]
+            },
+            {
+                "NombreRegion": "Región de Ñuble",
+                "comunas": ["Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"]
+            },
+            {
+                "NombreRegion": "Región del Biobío",
+                "comunas": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"]
+            },
+            {
+                "NombreRegion": "Región de La Araucanía",
+                "comunas": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"]
+            },
+            {
+                "NombreRegion": "Región de Los Ríos",
+                "comunas": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"]
+            },
+            {
+                "NombreRegion": "Región de Los Lagos",
+                "comunas": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"]
+            },
+            {
+                "NombreRegion": "Región Aysén del Gral. Carlos Ibáñez del Campo",
+                "comunas": ["Coihaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"]
+            },
+            {
+                "NombreRegion": "Región de Magallanes y de la Antártica Chilena",
+                "comunas": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
+            },
+            {
+                "NombreRegion": "Región Metropolitana de Santiago",
+                "comunas": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Santiago", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+            }
+        ]
+    };
+
+    jQuery(document).ready(function () {
+        // HTML inicial para las opciones de región y comuna
+        var htmlRegion = '<option value="">Seleccione una región</option>';
+        var htmlComunas = '<option value="">Seleccione una comuna</option>';
+        
+        // Itera sobre cada región en el objeto RegionesYcomunas.regiones
+        jQuery.each(RegionesYcomunas.regiones, function (index, region) {
+            // Construye las opciones para el select de regiones
+            htmlRegion += '<option value="' + region.NombreRegion + '">' + region.NombreRegion + '</option>';
+        });
+
+        // Llena el select de regiones con las opciones construidas
+        jQuery('#region').html(htmlRegion);
+        // Llena el select de comunas con las opciones iniciales
+        jQuery('#comuna').html(htmlComunas);
+
+        // Función que se ejecuta cuando cambia la selección de la región
+        jQuery('#region').change(function () {
+            // Obtiene el valor seleccionado de la región
+            var selectedRegion = jQuery(this).val();
+            // HTML inicial para las opciones de comuna
+            var htmlComuna = '<option value="">Seleccione una comuna</option>';
+
+            // Itera sobre cada región para encontrar la seleccionada
+            jQuery.each(RegionesYcomunas.regiones, function (index, region) {
+                // Si encuentra la región seleccionada en el objeto
+                if (region.NombreRegion == selectedRegion) {
+                    // Itera sobre cada comuna en la región seleccionada
+                    jQuery.each(region.comunas, function (index, comuna) {
+                        // Construye las opciones para el select de comunas
+                        htmlComuna += '<option value="' + comuna + '">' + comuna + '</option>';
+                    });
+                }
+            });
+
+            // Llena el select de comunas con las opciones construidas
+            jQuery('#comuna').html(htmlComuna);
+        });
+    });
+
+    // Función para mostrar el popup de eliminación
+    function mostrar() {
+        popupdeleteitem.classList.add("show");
+    }
+
+    // Evento click para el botón de cancelar en el popup de eliminación
+    Cancelar1.addEventListener(
+        "click",
+        function () {
+            // Remueve la clase "show" para ocultar el popup de eliminación
+            popupdeleteitem.classList.remove("show");
+        }
+    );
+</script>
+
+</body>
+</html>
+{% endblock %}
+
+

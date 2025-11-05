@@ -1,0 +1,286 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    {% block extrahead %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <style>
+            .errorlist { color: red; }
+            .pagination {
+                position: fixed;
+                bottom: 20px; /* Ajusta esta distancia según tus necesidades */
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                justify-content: center;
+                z-index: 999; /* Asegura que la paginación esté sobre otros elementos */
+                background-color: #9EB23B;
+                border-radius: 12px;
+                font-weight: bold;
+            }
+            .pagination .page-item {
+                margin: 0 5px;
+                list-style: none; /* Elimina los estilos de lista */
+                height: 30px; /* Altura fija para los elementos <li> */
+                display: flex; /* Para usar flexbox */
+                align-items: center; /* Centrar verticalmente el contenido */
+            }
+            .pagination .page-link {
+                text-decoration: none;
+                color: #000;
+                font-size: 18px;
+                padding: 5px 10px; /* Añade un poco de espacio alrededor del número */
+            }
+            .pagination .page-item.active .page-link {
+                background-color: #505c14; /* Cambia el color de fondo para la página activa */
+                color: #000; /* Cambia el color del texto para la página activa */
+                border-radius: 5px; /* Agrega bordes redondeados */
+            }
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f7f7f7;
+            }
+            section { /*Dashboard alerta*/ 
+                max-width: 1000px;
+                margin: 90px auto;
+                padding: 40px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                top: 100px; /* Ajusta esta propiedad según lo que necesites */
+                left: 150; /* Asegura que esté pegado al borde izquierdo */
+                right: 50; /* Asegura que esté pegado al borde derecho */
+                margin-left: 260px;/* Centra horizontalmente */
+                margin-right: auto; /* Centra horizontalmente */
+                position: fixed;
+                text-align: center; /* Centra horizontalmente el contenido del section */
+                background-color: white;
+                overflow-y: auto;
+            }
+            section::-webkit-scrollbar{
+                display: default;
+            }
+            .alert-icon {
+                font-size: 50px;
+            }
+            .low-stock {
+                color: red;
+            }
+            .near-low-stock {
+                color: yellow;
+            }
+            .low-stock-alert {
+                color: red;
+                font-weight: bold;
+            }
+            
+            .top-right-link:hover {
+                background-color: #d3d3d3; /* Color de fondo al pasar el ratón */
+            }
+            .alert-text {
+            position: absolute;
+            top: 0;
+            left: 100;
+            margin: 20px; /* Ajusta el margen para separarlo del borde superior e izquierdo */
+            font-weight: bold;
+            font-size: 18px;
+            }
+
+            h2 {
+                display: block;
+                font-size: 1.5em;
+                margin-block-start: 70px;
+                margin-inline-start: 250px;
+                font-weight: bold;
+                unicode-bidi: isolate;
+            }         
+
+            @media screen and (max-width: 500px) {
+                section{
+                    left: -140px;
+                    margin-top: 60px;
+                    max-width: 75%;
+                    height: 70%;              
+                }
+
+                .top-right-link { /*Ir al listado botón*/
+                    position: relative;
+                    top:15px;
+                    left: 115px;
+                }
+
+                h2{
+                margin-block-start: 70px;
+                margin-inline-start: 120px;
+            }
+
+                .alert-text{
+                    left: 10px;
+                }
+
+                th.hidden-content-column,
+                td.hidden-content-column {
+                    align-items: flex-start;
+                    display: none;
+                }
+                
+            }
+
+            @media (min-width: 501px) and (max-width: 767px) {
+                .top-right-link { /*Ir al listado botón*/
+                    position: relative;
+                    top:18px;
+                    left: 265px;
+                }
+
+                section{
+                    left: 5px;
+                    margin-top: 65px;
+                    max-width: 70%;
+                    height: 70%;              
+                }
+                th.hidden-content-column,
+                td.hidden-content-column {
+                    align-items: flex-start;
+                    display: none;
+                }
+                h2{
+                margin-block-start: 70px;
+                margin-inline-start: 260px;
+            }
+
+            }
+
+            @media screen and (min-width: 768px) and (max-width: 1024px) {
+                .top-right-link { /*Ir al listado botón*/
+                    position: relative;
+                    top:18px;
+                    left: 265px;
+                }
+
+                section{
+                    left: 5px;
+                    margin-top: 65px;
+                    max-width: 70%;
+                    height: 70%;              
+                }
+                h2{
+                margin-block-start: 70px;
+                margin-inline-start: 260px;
+            }
+            }
+
+            @media screen and (min-width: 1025px){
+                .top-right-link { /*Ir al listado botón*/
+                    position: relative;
+                    top:18px;
+                    left: 265px;
+                }
+
+                section{
+                    left: 5px;
+                    margin-top: 65px;
+                    max-width: 70%;
+                    height: 70%;              
+                    
+                }
+
+                h2{
+                margin-block-start: 70px;
+                margin-inline-start: 260px;
+            }
+
+            }
+
+    
+        
+        </style>
+    
+    </head>
+    
+    {% endblock %}
+    {% block extra_css %}
+    {% endblock extra_css %}
+    <body>
+        <h2 class="h2">Inventario</h2>
+        <a href="{% url 'producto_list' %}" class="top-right-link">Listado de inventario</a>
+        <section>
+            
+            <div class="alert-text">Alerta Inventario</div>
+            <div class="table-container mt-5">
+                <table class="table table-user">
+                    <thead>
+                        <tr>
+                            <th width="10%" scope="col">Producto</th>
+                            <th width="12%" scope="col" class="hidden-content-column">Codigo</th>
+                            <th width="10%" scope="col" class="hidden-content-column">Unidad</th>
+                            <th width="10%" scope="col" class="hidden-content-column">Stock Actual</th>
+                            <th width="10%" scope="col">Alarma Establecida (>5 KG o Packs de latas)</th>
+                            <th width="10%" scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in p_list_paginate %}
+                            <tr>
+                                <td style="padding: 15px;">{{ p.supply_name }}</td>
+                                <td class="hidden-content-column">{{ p.supply_code }}</td>
+                                <td class="hidden-content-column">{{ p.supply_unit }}</td>
+                                <td class="hidden-content-column">{{ p.supply_total }}</td>
+                                <td><span class="low-stock-alert">⚠️ ¡Stock bajo!</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Paginación -->
+                {% if paginator.num_pages > 1 %}
+                    <div class="d-flex">
+                        <nav aria-label="Page navigation example" class="ms-auto">
+                            <ul class="pagination pagination-table">
+                                {% if p_list_paginate.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ p_list_paginate.previous_page_number }}&search={{ search }}" aria-label="Previous">
+                                            <i class="fas fa-chevron-left"></i> <!-- Icono de flecha hacia la izquierda -->
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% for i in paginator.page_range %}
+                                    <li class="page-item {% if p_list_paginate.number == i %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ i }}&search={{ search }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+                                {% if p_list_paginate.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ p_list_paginate.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                                            <i class="fas fa-chevron-right"></i> <!-- Icono de flecha hacia la derecha -->
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </body>
+    </html>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+{% block content %}
+{% block extrahead %}
+<style>
+#ventasdash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    top: 160px;
+}
+
+.piechart {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0; /* Reducir el margen alrededor del gráfico */
+}
+
+canvas {
+    
+    width: 100%; /* Asegura que el canvas se ajuste al max-width */
+    height: auto; /* Mantiene la proporción del gráfico */
+}
+
+/* Ajuste adicional para reducir el espacio vertical */
+.card-body .card-title,
+.card-body .card-subtitle,
+.card-body .card-text {
+    margin: 0;
+    padding: 2px 0;
+}
+
+.card-body {
+    padding-bottom: 10px; /* Reducir el padding inferior */
+}
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 70px;
+    margin-inline-start: 245px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    }
+
+ 
+ /*RESPONSIVE*/
+
+/* Media Queries para pantallas más pequeñas */
+@media screen and (max-width: 500px) {
+    
+    #ventasdash{
+        top: 150px;
+        max-height: 500px;
+        text-align: center; /* Centra el texto de las etiquetas */
+    }
+
+    canvas {
+        max-width: 280px; /* Reduce el ancho máximo del gráfico */
+    
+    }
+    h2 {
+        margin-block-start: 65px;
+        margin-inline-start: 105px;
+    }
+    .top-right-link { /*Ir al listado botón*/
+    position: relative;
+    top:12px;
+    left: 100px;
+  }
+
+}
+
+@media (min-width: 501px) and (max-width: 767px) {
+    .ventasdash{
+        max-height: 500px;
+        text-align: center; /* Centra el texto de las etiquetas */
+    }
+
+    canvas {
+    max-width: 280px; /* Reduce el ancho máximo del gráfico */
+    
+    }
+    .top-right-link { /*Ir al listado botón*/
+    position: relative;
+    top:15px;
+    left: 250px;
+  }
+
+    
+
+    
+  
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .ventasdash{
+        
+        max-height: 500px;
+        text-align: center; /* Centra el texto de las etiquetas */
+    }
+    .top-right-link { /*Ir al listado botón*/
+    position: relative;
+    top:15px;
+    left: 250px;
+  }
+    
+  
+}
+
+@media screen and (min-width: 1025px){
+    .ventasdash{
+        max-height: 500px;
+        text-align: center; /* Centra el texto de las etiquetas */
+    }
+
+    .top-right-link { /*Ir al listado botón*/
+    position: relative;
+    top:15px;
+    left: 250px;
+  }
+    
+  
+}
+    
+</style>
+
+
+{% endblock %}
+<main role="main">
+    <div class="container mt-3">
+        <div class="border px-3 py-4">
+            <h2 class="h2">Proveedores</h2>
+            <a href="{% url 'proveedores_activos' %}" class="top-right-link">Listado de proveedores</a>
+        </div>
+    </div>
+    <tr>
+        <th width="80%" scope="col"></th>
+        <th width="20%" scope="col"></th>
+    </tr>
+    <!-- Dashboard -->
+    <td>
+    <div class="container mt-4">
+        <div class="row">
+            <nav id="ventasdash" class="ventasdash">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Contadores</h5>
+                        <div class="text-right text-white bg-info mb-3">
+                            <h6 class="card-subtitle mb-2">Proveedores Activos</h6>
+                            <p class="card-text">{{ proveedores_activos_count }}</p>
+                        </div>
+                        <div class="text-right text-white bg-danger">
+                            <h6 class="card-subtitle mb-2">Proveedores Eliminados</h6>
+                            <p class="card-text">{{ proveedores_eliminados_count }}</p>
+                        </div>
+                        <div class="piechart">
+                            <canvas id="proveedoresPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            </div>
+
+        </td>
+</main>
+
+<!-- Código JavaScript para renderizar el gráfico de pastel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+    var ctx = document.getElementById('proveedoresPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Activos', 'Eliminados'],
+            datasets: [{
+                label: 'Distribución de Proveedores',
+                data: [{{ proveedores_activos_count }}, {{ proveedores_eliminados_count }}],
+                backgroundColor: ['#85E0A3', '#99BEBE']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true, // Si deseas mostrar la leyenda
+                    position: 'bottom' // Cambia esto a 'top', 'left' o 'right' si prefieres otra posición
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}
+

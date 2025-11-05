@@ -1,0 +1,431 @@
+{% extends 'core/base_admin.html' %}
+{% load static %}
+{% block content %}
+{% block extrahead %}
+{% endblock %}
+<style>
+    /* Estilos para la lista de errores */
+    .errorlist {
+        color: red;
+    }
+
+    /* Estilos generales para el cuerpo del documento */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+    }
+
+    /* Estilos para la imagen de perfil */
+    .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    /* Estilos para el título */
+    .titulo {
+        font-family: 'Sigmar', sans-serif;
+        color: #333;
+        font-size: 36px;
+        margin: 0;
+    }
+
+    /* Estilos para etiquetas de formulario */
+    .form-label {
+        font-size: 16px;
+        color: #333;
+    }
+
+    /* Estilos para los campos de entrada */
+    .form-control {
+        width: 100%;
+        height: 40px;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    /* Estilos para los botones */
+    .button {
+        background-color: #6B7E0E;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 9.5%; /* Ancho del botón */
+        margin-top: 10px;
+        font-size: 16px;
+    }
+
+    /* Estilos al pasar el ratón sobre el botón */
+    .button:hover {
+        background-color: #65702d;
+        color: white;
+    }
+
+    /* Estilos para la lista de mensajes */
+    .messages {
+        color: rgb(23, 23, 23);
+        background-color: #ededed;
+        box-shadow: #333;
+        list-style: none;
+        text-align: center;
+    }
+
+    /* Estilos para mensajes de error */
+    .error-message {
+        color: red;
+        text-align: center;
+    }
+
+    /* Estilos específicos para h2 */
+    h2 {
+        display: block;
+        font-size: 1.5em;
+        margin-block-start: 80px;
+        margin-block-end: 0px;
+        margin-inline-start: 250px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+    }
+
+    /* Media query para pantallas pequeñas (max-width: 500px) */
+    @media (max-width: 500px) {
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 115px;
+        }
+
+        /* Ajuste de estilos para la sección en pantallas pequeñas */
+        section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ajuste de ancho para los campos de entrada en pantallas pequeñas */
+        .form-control {
+            width: 60%;
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para los botones en pantallas pequeñas */
+        .button {
+            width: 90px;
+            height: 44px;
+        }
+    }
+
+    /* Media query para pantallas medianas (min-width: 501px) and (max-width: 767px) */
+    @media (min-width: 501px) and (max-width: 767px) {
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 250px;
+        }
+
+        /* Ajuste de estilos para la sección en pantallas medianas */
+        section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ajuste de ancho para los campos de entrada en pantallas medianas */
+        .form-control {
+            width: 90%;
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para los botones en pantallas medianas */
+        .button {
+            width: 90px;
+            height: 47px;
+        }
+    }
+
+    /* Media query para pantallas grandes (min-width: 768px) and (max-width: 1024px) */
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 250px;
+        }
+
+        /* Ajuste de estilos para la sección en pantallas grandes */
+        section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ajuste de ancho para los campos de entrada en pantallas grandes */
+        .form-control {
+            width: 90%;
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para los botones en pantallas grandes */
+        .button {
+            width: 90px;
+            height: 47px;
+        }
+    }
+
+    /* Media query para pantallas extra grandes (min-width: 1025px) */
+    @media screen and (min-width: 1025px) {
+        h2 {
+            margin-block-start: 70px;
+            margin-inline-start: 250px;
+        }
+
+        /* Ajuste de estilos para la sección en pantallas extra grandes */
+        section {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ajuste de ancho para los campos de entrada en pantallas extra grandes */
+        .form-control {
+            width: 90%;
+            word-wrap: break-word;
+        }
+
+        /* Ajuste de tamaño para los botones en pantallas extra grandes */
+        .button {
+            width: 90px;
+            height: 47px;
+        }
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<main role="main">
+    <div class="container col-12 mt-3">
+        <!-- Título de la página -->
+        <h2 class="h2">Editar usuario</h2>
+        
+        <!-- Formulario de edición de perfil -->
+        <nav id="profileedit" class="profileedit">
+            <div class="container col-12 mt-3">
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %} <!-- Token CSRF para protección contra ataques CSRF -->
+                    
+                    <!-- Campos ocultos para el ID de usuario y grupo -->
+                    <input type="hidden" value="{{ user_data.id }}" name="user_id" id="user_id">
+                    <input type="hidden" value="{{ groups.id }}" name="grupo" id="grupo">
+                    
+                    <div class="row">
+                        <!-- Columna para campos de nombre y apellido -->
+                        <div class="col-12 col-sm-8 mb-3">
+                            <label for="name">Nombre (*)</label>
+                            <input type="text" id="name" name="name" value="{{ user_data.first_name }}" pattern="[A-Za-zÑñÁÉÍÓÚáéíóú\s]+" class="form-control border border-danger" required />
+                            
+                            <label for="last_name">Apellido (*)</label>
+                            <input type="text" id="last_name1" name="last_name1" value="{{ user_data.last_name }}" pattern="[A-Za-zÑñÁÉÍÓÚáéíóú\s]+" class="form-control border border-danger" required />
+                        </div>
+                        
+                        <!-- Columna para el número de contacto -->
+                        <div class="col-12 col-sm-4 mb-3">
+                            <label for="mobile">Número de contacto (*)</label>
+                            <input type="text" class="form-control border border-danger" value="{{ profile_data.mobile }}" pattern="[0-9]{9}" id="mobile" name="mobile" pattern="\d*">
+                        </div>
+                        
+                        <!-- Información no editable: Rut y Email -->
+                        <div class="mb-0 col-md-12">
+                            <label for="rut" class="form-label">Rut (Campo no editable): </label>
+                            <span class="form-label" id="rut">{{ profile_data.rut }}</span>
+                        </div>
+                        
+                        <div class="mb-0 col-md-12">
+                            <label for="email" class="form-label">Email (Campo no editable): </label>
+                            <span class="form-label" id="email">{{ profile_data.email }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Columna para dirección, región y comuna -->
+                        <div class="col-12 col-sm-4 mb-3">
+                            <div class="col-12 col-sm-8 mb-3">
+                                <label for="addres">Dirección</label>
+                                <input type="text" class="form-control border border-danger" value="{{ profile_data.address }}" name="address" required />
+                            </div>
+                            
+                            <div class="col-12 col-sm-4 mb-3">
+                                <label for="region">Región‎</label>
+                                <select name="region" id="region" class="form-control border border-danger" required>
+                                    <option value="">Seleccione una región</option>
+                                    <!-- Opciones de región serán agregadas dinámicamente por JavaScript -->
+                                </select>
+                                
+                                <label for="comuna">Comuna</label>
+                                <select name="comuna" id="comuna" class="form-control border border-danger" required>
+                                    <option value="">Seleccione una comuna</option>
+                                    <!-- Opciones de comuna serán agregadas dinámicamente por JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Columna para carga de imagen de perfil -->
+                        <div class="col-12 col-sm-4 mb-3">
+                            <label for="profile_image">Foto de perfil</label>
+                            <input type="file" class="form-control border border-danger" id="profile_image" name="profile_image">
+                            
+                            <!-- Si hay una URL de imagen de perfil, se muestra -->
+                            {% if profile_image_url %}
+                                <img src="{{ profile_image_url }}" alt="Foto de perfil" class="avatar">
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Mostrar mensajes de validación o confirmación -->
+                    {% if messages %}
+                        <ul class="messages" id="message2">
+                            {% for message in messages %}
+                            <li{% if messages.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    
+                    <div class="row">
+                        <!-- Botones para editar y volver -->
+                        <div class="col-12 col-sm-6 mb-4">
+                            <input type="submit" value="Editar" class="button">
+                            <a href="{% url 'list_user_active' groups.id %}" class="button">Volver</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </nav>
+    </div>
+</main>
+
+<script>
+    var RegionesYcomunas = {
+        "regiones": [
+            {
+                "NombreRegion": "Arica y Parinacota",
+                "comunas": ["Arica", "Camarones", "Putre", "General Lagos"]
+            },
+            {
+                "NombreRegion": "Tarapacá",
+                "comunas": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"]
+            },
+            {
+                "NombreRegion": "Antofagasta",
+                "comunas": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"]
+            },
+            {
+                "NombreRegion": "Atacama",
+                "comunas": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"]
+            },
+            {
+                "NombreRegion": "Coquimbo",
+                "comunas": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"]
+            },
+            {
+                "NombreRegion": "REGIÓN DE VALPARAÍSO",
+                "comunas": ["ALGARROBO", "CABILDO", "CALERA", "CALLE LARGA", "CARTAGENA", "CASABLANCA", "CATEMU", "CONCÓN", "CURACAVÍ", "EL QUISCO", "EL TABO", "HIJUELAS", "ISLA DE PASCUA", "JUAN FERNÁNDEZ", "LA CRUZ", "LA LIGUA", "LIMACHE", "LLAILLAY", "LOS ANDES", "NOGALES", "OLMUÉ", "PANQUEHUE", "PAPUDO", "PETORCA", "PUCHUNCAVÍ", "PUTAENDO", "QUILLOTA", "QUILPUÉ", "QUINTERO", "RINCONADA", "SAN ANTONIO", "SAN ESTEBAN", "SAN FELIPE", "SANTA MARÍA", "SANTO DOMINGO", "VALPARAÍSO", "VILLA ALEMANA", "VIÑA DEL MAR", "ZAPALLAR"]
+            },
+            {
+                "NombreRegion": "Región del Libertador Gral. Bernardo O'Higgins",
+                "comunas": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"]
+            },
+            {
+                "NombreRegion": "Región del Maule",
+                "comunas": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"]
+            },
+            {
+                "NombreRegion": "Región de Ñuble",
+                "comunas": ["Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"]
+            },
+            {
+                "NombreRegion": "Región del Biobío",
+                "comunas": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"]
+            },
+            {
+                "NombreRegion": "Región de La Araucanía",
+                "comunas": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"]
+            },
+            {
+                "NombreRegion": "Región de Los Ríos",
+                "comunas": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"]
+            },
+            {
+                "NombreRegion": "Región de Los Lagos",
+                "comunas": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"]
+            },
+            {
+                "NombreRegion": "Región Aysén del Gral. Carlos Ibáñez del Campo",
+                "comunas": ["Coihaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"]
+            },
+            {
+                "NombreRegion": "Región de Magallanes y de la Antártica Chilena",
+                "comunas": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
+            },
+            {
+                "NombreRegion": "Región Metropolitana de Santiago",
+                "comunas": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Santiago", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+            }
+        ]
+    };
+        // Espera a que el documento HTML esté completamente cargado y listo
+    jQuery(document).ready(function () {
+
+        // Variables para almacenar las opciones iniciales de región y comuna
+        var htmlRegion = '<option value="">Seleccione una región</option>';
+        var htmlComunas = '<option value="">Seleccione una comuna</option>';
+
+        // Recorre cada región en el objeto RegionesYcomunas.regiones para construir las opciones del select de regiones
+        jQuery.each(RegionesYcomunas.regiones, function (index, region) {
+            htmlRegion += '<option value="' + region.NombreRegion + '">' + region.NombreRegion + '</option>';
+        });
+
+        // Inserta las opciones de región construidas en el select con id "region"
+        jQuery('#region').html(htmlRegion);
+
+        // Inserta las opciones iniciales de comuna en el select con id "comuna"
+        jQuery('#comuna').html(htmlComunas);
+
+        // Define un evento de cambio para el select de regiones ("#region")
+        jQuery('#region').change(function () {
+            // Obtiene el valor seleccionado de la región
+            var selectedRegion = jQuery(this).val();
+            // Variable para almacenar las opciones de comuna, inicialmente con una opción predeterminada
+            var htmlComuna = '<option value="">Seleccione una comuna</option>';
+
+            // Recorre cada región nuevamente para encontrar la región seleccionada
+            jQuery.each(RegionesYcomunas.regiones, function (index, region) {
+                // Si la región actual coincide con la seleccionada
+                if (region.NombreRegion == selectedRegion) {
+                    // Recorre cada comuna de la región y construye las opciones del select de comunas
+                    jQuery.each(region.comunas, function (index, comuna) {
+                        htmlComuna += '<option value="' + comuna + '">' + comuna + '</option>';
+                    });
+                }
+            });
+
+            // Inserta las opciones de comuna construidas en el select con id "comuna"
+            jQuery('#comuna').html(htmlComuna);
+        });
+
+        // Preseleccionar la región y comuna si están disponibles en profile_data
+        var selectedRegion = '{{ profile_data.region }}';
+        if (selectedRegion) {
+            // Establece la región seleccionada en el select y dispara el evento de cambio
+            jQuery('#region').val(selectedRegion).change();
+
+            // Espera 500 milisegundos y luego establece la comuna seleccionada
+            setTimeout(function() {
+                var selectedComuna = '{{ profile_data.comuna }}';
+                jQuery('#comuna').val(selectedComuna);
+            }, 500);
+        }
+        });
+
+</script>
+{% endblock %}
+
