@@ -956,12 +956,6 @@
     <div class="main-content">
         <div class="container">
             <div class="main">
-                <div class="sidebutton">
-                    <h3>Atajos Rápidos</h3>
-                    <a class="button" href="{% url 'venta_crear' %}">Nueva venta</a>
-                    <a class="button" href="{% url 'orden_crear' %}">Nueva compra</a>
-                    <a class="button" href="{% url 'proveedores_crear' %}">Nuevo proveedor</a>
-                </div>
                 <h3>Dashboard</h3>
                 <div class="dashboard">
                     <div>
@@ -1042,18 +1036,6 @@
                             </a>
                         </li>
                         <li class="item">
-                            <a href="{% url 'proveedores_main' %}" class="nav_link submenu_item">
-                                <span class="navlink_icon">
-                                    <i class="bx bx-id-card"></i>
-                                </span>
-                                <span class="navlink">Proveedores</span>
-                                <i class="bx bx-chevron-right arrow-left"></i>
-                            </a>
-                            <ul class="menu_items submenu">
-                                <li><a href="{% url 'proveedores_main' %}" class="nav_link sublink">Proveedores Main</a></li>
-                            </ul>
-                        </li>
-                        <li class="item">
                             <a href="{% url 'inventario_main' %}" class="nav_link submenu_item">
                                 <span class="navlink_icon">
                                     <i class="bx bx-archive"></i>
@@ -1065,31 +1047,6 @@
                                 <li><a href="{% url 'inventario_main' %}" class="nav_link sublink">Inventario Main</a></li>
                             </ul>
                         </li>
-                        <li class="item">
-                            <a href="{% url 'orden_main' %}" class="nav_link submenu_item">
-                                <span class="navlink_icon">
-                                    <i class="bx bx-cart"></i>
-                                </span>
-                                <span class="navlink">Compras</span>
-                                <i class="bx bx-chevron-right arrow-left"></i>
-                            </a>
-                            <ul class="menu_items submenu">
-                                <li><a href="{% url 'orden_main' %}" class="nav_link sublink">Órden Main</a></li>
-                            </ul>
-                        </li>
-                        <li class="item">
-                            <a href="{% url 'ventas_main' %}" class="nav_link submenu_item">
-                                <span class="navlink_icon">
-                                    <i class="bx bx-bar-chart-alt-2"></i>
-                                </span>
-                                <span class="navlink">Ventas</span>
-                                <i class="bx bx-chevron-right arrow-left"></i>
-                            </a>
-                            <ul class="menu_items submenu">
-                                <li><a href="{% url 'ventas_main' %}" class="nav_link sublink">Ventas Main</a></li>
-                            </ul>
-                        </li>
-                        
                         <!-- Más ítems del menú -->
                         
                     </ul>
