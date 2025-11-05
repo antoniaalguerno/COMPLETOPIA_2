@@ -1,0 +1,94 @@
+.edit-product-page h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+  }
+  
+  .product-form-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    max-width: 900px; /* Ancho máximo del formulario */
+  }
+  
+  .form-grid-product {
+    display: grid;
+    /* Creamos un grid de 6 columnas flexibles */
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem; /* Espacio entre campos */
+  }
+  
+  /* Clases de utilidad para ocupar columnas */
+  .form-group.span-1 { grid-column: span 1; }
+  .form-group.span-2 { grid-column: span 2; }
+  .form-group.span-3 { grid-column: span 3; }
+  /* ... (puedes añadir span-4, 5, 6 si los necesitas) */
+  
+  
+  /* --- Estilos genéricos (reutilizados de NewUser.css) --- */
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="tel"],
+  .form-group input[type="number"],
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  /* Estilo para campos de solo lectura */
+  .form-group input[readOnly] {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+  }
+  
+  
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+  }
+  
+  .form-actions button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .button-edit {
+    background-color: #8f9a5d; /* Verde principal */
+    color: white;
+  }
+  .button-edit:hover {
+    background-color: #7d884e;
+  }
+  
+  .button-back {
+    /* Verde-grisáceo como en la imagen */
+    background-color: #aab57c; 
+    color: #333;
+  }
+  .button-back:hover {
+    background-color: #9aa46b;
+  }
