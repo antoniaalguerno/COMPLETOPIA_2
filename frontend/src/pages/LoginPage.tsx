@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './style.css'; // Importamos los estilos
+import '../css/login.css'; // Importamos los estilos
 import { MdOutlineEmail, MdLockOutline, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 // Asumimos que tienes el logo en la carpeta 'src/assets'

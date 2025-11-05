@@ -1,0 +1,146 @@
+.users-page {
+    width: 100%;
+  }
+  
+  .users-page-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .users-page-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .add-user-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2.2rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* --- Toolbar y Tabs --- */
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+  }
+  
+  .tabs button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    background-color: #e9ecef;
+    color: #555;
+    cursor: pointer;
+  }
+  
+  .tabs button:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  .tabs button:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+  
+  .tabs button.active {
+    background-color: #b5c184; /* Verde tab activa */
+    color: black;
+    font-weight: 500;
+  }
+  
+  .icon-button-large {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: #555;
+  }
+  
+  /* --- Tarjeta de Contenido (Blanca) --- */
+  .content-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+  }
+  
+  .search-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .search-bar input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+  }
+  
+  .search-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #d8d8d8;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  /* --- Lista de Usuarios --- */
+  .user-list-header,
+  .user-list-row {
+    display: grid;
+    grid-template-columns: 2fr 3fr 1fr; /* Proporciones para las columnas */
+    align-items: center;
+    padding: 1rem 0.5rem;
+  }
+  
+  .user-list-header {
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #eee;
+  }
+  
+  .user-list-row {
+    border-bottom: 1px solid #f1f1f1;
+  }
+  
+  .user-list-row:last-child {
+    border-bottom: none;
+  }
+  
+  .col-email {
+    color: #555;
+  }
+  
+  .col-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .action-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #777;
+  }
+  
+  .action-icon.delete {
+    color: #e15252;
+  }
