@@ -4,30 +4,42 @@ import { AddProduct } from './pages/AddProduct';
 import { NewUser } from './pages/NewUser';
 import { UserDetails } from './pages/UserDetails';
 import { Users } from './pages/Users';
-// 1. IMPORTA LA NUEVA PÁGINA
+import { Login } from './pages/LoginPage';
 import { DeletedUsers } from './pages/Users_eliminar';
 
 function App() {
   return (
-    <Layout>
-      <Routes>
+    <Routes>
+      {/* Ruta pública (sin Layout) */}
+      <Route path="/" element={<Login />} />
 
-        {/* Rutas de Usuarios */}
-        <Route path="/usuarios" element={<Users />} />
-        <Route path="/usuarios/nuevo" element={<NewUser />} />
-        <Route path="/usuarios/:userId" element={<UserDetails />} />
+      {/* Rutas privadas (con Layout) */}
+      <Route
+        path="/usuarios/*"
+        element={
+          <Layout>
+            <Routes>
+              <Route path="" element={<Users />} />
+              <Route path="nuevo" element={<NewUser />} />
+              <Route path=":userId" element={<UserDetails />} />
+              <Route path="eliminados" element={<DeletedUsers />} />
+            </Routes>
+          </Layout>
+        }
+      />
 
-        {/* 2. AÑADE LA NUEVA RUTA */}
-        <Route path="/usuarios/eliminados" element={<DeletedUsers />} />
+      <Route
+        path="/inventario/agregar"
+        element={
+          <Layout>
+            <AddProduct />
+          </Layout>
+        }
+      />
 
-        {/* Rutas de Inventario */}
-        <Route path="/inventario/agregar" element={<AddProduct />} />
-
-        {/* Redirige la raíz "/" a "/usuarios" */}
-        <Route path="/" element={<Navigate to="/usuarios" replace />} />
-
-      </Routes>
-    </Layout>
+      {/* Redirección por defecto */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

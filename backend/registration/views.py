@@ -1,95 +1,84 @@
-from .forms import UserCreationFormWithEmail, EmailForm
-from django.views.generic import CreateView
-from django.views.generic.edit import UpdateView
-from django.contrib.auth.models import User, Group
-from django.utils.decorators import method_decorator
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
-from django.shortcuts import render,redirect,get_object_or_404
-from django import forms
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Profile
 
-#correo
-from django.core.mail import send_mail,EmailMultiAlternatives
-from main_app import settings
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
 
-# Create your views here.
-class SignUpView(CreateView):
-    form_class = UserCreationFormWithEmail
-    template_name = 'registration/signup.html'
+    try:
+        user_obj = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-    def get_success_url(self):
-        return reverse_lazy('login') + '?register'
-    
-    def get_form(self, form_class=None):
-        form = super(SignUpView,self).get_form()
-        #modificamos en tiempo real
-        form.fields['username'].widget = forms.TextInput(attrs={'class':'form-control mb-2','placeholder':'Nombre de usuario'})
-        form.fields['email'].widget = forms.EmailInput(attrs={'class':'form-control mb-2','placeholder':'Dirección de correo'})
-        form.fields['password1'].widget = forms.PasswordInput(attrs={'class':'form-control mb-2','placeholder':'Ingrese su contraseña'})
-        form.fields['password2'].widget = forms.PasswordInput(attrs={'class':'form-control mb-2','placeholder':'Re ingrese su contraseña'})    
-        return form
+    user = authenticate(username=user_obj.username, password=password)
 
-@method_decorator(login_required, name='dispatch')
-class ProfileUpdate(UpdateView):
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email
+            }
+        })
+    else:
+        return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    success_url = reverse_lazy('profile')
-    template_name = 'registration/profiles_form.html'
+# 🔹 Registro de usuarios
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_view(request):
+    username = request.data.get('username')
+    email = request.data.get('email')
+    password = request.data.get('password')
 
-    def get_object(self):
-        #recuperasmo el objeto a editar
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        return profile
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'El usuario ya existe'}, status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(login_required, name='dispatch')
-class EmailUpdate(UpdateView):
-    form_class = EmailForm
-    success_url = reverse_lazy('check_group_main')
-    template_name = 'registration/profile_email_form.html'
+    user = User.objects.create_user(username=username, email=email, password=password)
+    Profile.objects.create(user=user)
+    return Response({'message': 'Usuario creado con éxito'}, status=status.HTTP_201_CREATED)
 
-    def get_object(self):
-        #recuperasmo el objeto a editar
-        return self.request.user
-    
-    def get_form(self, form_class=None):
-        form = super(EmailUpdate,self).get_form()
-        #modificamos en tiempo real
-        form.fields['email'].widget = forms.EmailInput(attrs={'class':'form-control mb-2','placeholder':'Dirección de correo'})
-        return form
-@login_required
-def profile_edit(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        mobile = request.POST.get('mobile')
-        phone = request.POST.get('phone')
-        User.objects.filter(pk=request.user.id).update(first_name=first_name)
-        User.objects.filter(pk=request.user.id).update(last_name=last_name)
-        Profile.objects.filter(user_id=request.user.id).update(phone=phone)
-        Profile.objects.filter(user_id=request.user.id).update(mobile=mobile)
-        messages.add_message(request, messages.INFO, 'Perfil Editado con éxito') 
-    profile = Profile.objects.get(user_id = request.user.id)
-    template_name = 'registration/profile_edit.html'
-    return render(request,template_name,{'profile':profile})
+# 🔹 Perfil del usuario autenticado
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_view(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return Response({
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'mobile': profile.mobile,
+        'phone': profile.phone,
+    })
 
-"""
-@login_required
-def ejemplos_correo1(request):
-    #llamos al metodo que envia el correo
-    send_mail_ejemplo1(request,'innovatech.envios@gmail.com','dato por parametro ejemplo')
-    messages.add_message(request, messages.INFO, 'correo enviado')
-    return redirect('profile_edit')
+# 🔹 Actualizar perfil
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    data = request.data
 
-@login_required
-def send_mail_ejemplo1(request,mail_to,data_1):
-    #Ejemplo que permite enviar un correo solo con texto, el metodo, recibe por parametro la información para su ejecución
-    from_email = settings.DEFAULT_FROM_EMAIL #exporta desde el settings.py, el correo de envio por defecto
-    subject = "Asunto del correo"
-    html_content =
-    msg = EmailMultiAlternatives(subject, html_content, from_email, [mail_to])
-    msg.content_subtype = "html"
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
+    user.first_name = data.get('first_name', user.first_name)
+    user.last_name = data.get('last_name', user.last_name)
+    user.email = data.get('email', user.email)
+    user.save()
 
-"""
+    profile = Profile.objects.get(user=user)
+    profile.mobile = data.get('mobile', profile.mobile)
+    profile.phone = data.get('phone', profile.phone)
+    profile.save()
+
+    return Response({'message': 'Perfil actualizado con éxito'})

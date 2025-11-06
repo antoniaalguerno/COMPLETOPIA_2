@@ -1,25 +1,57 @@
 import React, { useState } from 'react';
-import '../css/login.css'; // Importamos los estilos
+import '../css/login.css';
 import { MdOutlineEmail, MdLockOutline, MdVisibility, MdVisibilityOff } from 'react-icons/md';
-
-// Asumimos que tienes el logo en la carpeta 'src/assets'
-// ¡Debes descargar o crear este logo tú mismo!
 import logoCompletetopia from './logo1.png';
+import { useNavigate } from 'react-router-dom';
 
 export const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Aquí iría tu lógica de autenticación
-        console.log({ email, password });
-    };
+    const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Error desconocido');
+        }
+
+        console.log('✅ Login exitoso:', data);
+
+        // Guardamos tokens
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+
+        // 🔹 Redirige a /usuarios (Users.tsx)
+        navigate('/usuarios');
+
+    } catch (error: any) {
+        console.error('❌ Error al iniciar sesión:', error);
+        setError(error.message);
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     return (
         <div className="login-container">
-
             {/* Panel Izquierdo: Formulario */}
             <div className="form-panel">
                 <form className="login-form" onSubmit={handleSubmit}>
@@ -57,9 +89,11 @@ export const Login: React.FC = () => {
                         ¿Olvidaste tu contraseña?
                     </a>
 
-                    <button type="submit" className="login-button">
-                        Iniciar sesión
+                    <button type="submit" className="login-button" disabled={loading}>
+                        {loading ? 'Iniciando...' : 'Iniciar sesión'}
                     </button>
+
+                    {error && <p className="error-message">{error}</p>}
                 </form>
             </div>
 
@@ -67,7 +101,6 @@ export const Login: React.FC = () => {
             <div className="logo-panel">
                 <img src={logoCompletetopia} alt="Logo Completetopia" className="logo-image" />
             </div>
-
         </div>
     );
 };
