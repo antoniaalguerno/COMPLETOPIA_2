@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// 1. Importa Link y useLocation
+import { Link, useLocation } from 'react-router-dom';
 import {
     MdPersonAdd,
     MdFileUpload,
@@ -7,56 +9,56 @@ import {
     MdEdit,
     MdDelete
 } from 'react-icons/md';
-import '../css/users.css';
+import '../css/users.css'; // Asegúrate que la ruta del CSS sea correcta
 
-// TypeScript: Definimos el tipo para un usuario
 type User = {
     id: number;
     name: string;
     email: string;
 };
 
-// DATOS ESTÁTICOS: Como solicitaste, los usuarios están hardcodeados
+// DATOS ESTÁTICOS: (Solo usuarios activos)
 const staticUsers: User[] = [
     { id: 1, name: 'Karen Cordova', email: 'karen.cordova@cloud.uautonoma.cl' },
     { id: 2, name: 'Usuario Ejemplo', email: 'kdczzz@outlook.com' },
 ];
 
 export const Users: React.FC = () => {
-    const [activeTab, setActiveTab] = useState('activos');
+    // 2. 'activeTab' ahora se basa en la URL
+    const location = useLocation();
 
     return (
         <div className="users-page">
-            {/* Cabecera de la página de usuarios */}
             <header className="users-page-header">
                 <h2>Usuarios</h2>
-                <button className="add-user-button">
+                {/* 3. Botón de Añadir (ya es un Link, ¡bien!) */}
+                <Link to="/usuarios/nuevo" className="add-user-button">
                     <MdPersonAdd />
-                </button>
+                </Link>
             </header>
 
-            {/* Barra de herramientas con tabs y botón de exportar */}
+            {/* 4. Barra de herramientas con ENLACES */}
             <div className="toolbar">
                 <div className="tabs">
-                    <button
-                        className={activeTab === 'activos' ? 'active' : ''}
-                        onClick={() => setActiveTab('activos')}
+                    {/* Enlace a Activos */}
+                    <Link
+                        to="/usuarios"
+                        // Usamos 'pathname' para saber si es la ruta exacta
+                        className={location.pathname === '/usuarios' ? 'active' : ''}
                     >
                         Activos
-                    </button>
-                    <button
-                        className={activeTab === 'eliminados' ? 'active' : ''}
-                        onClick={() => setActiveTab('eliminados')}
+                    </Link>
+                    {/* Enlace a Eliminados */}
+                    <Link
+                        to="/usuarios/eliminados"
+                        className={location.pathname === '/usuarios/eliminados' ? 'active' : ''}
                     >
                         Eliminados
-                    </button>
+                    </Link>
                 </div>
-
             </div>
 
-            {/* Contenedor principal de la lista */}
             <div className="content-card">
-                {/* Barra de búsqueda */}
                 <div className="search-bar">
                     <input type="text" placeholder="Buscar por Nombre" />
                     <button className="search-button">
@@ -65,23 +67,22 @@ export const Users: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Lista de Usuarios (Estática) */}
                 <div className="user-list">
-                    {/* Cabecera de la lista */}
                     <div className="user-list-header">
                         <div className="col-name">Nombre</div>
                         <div className="col-email">Correo</div>
                         <div className="col-actions">Acciones</div>
                     </div>
 
-                    {/* Filas de datos (generadas desde el array estático) */}
                     {staticUsers.map((user) => (
                         <div className="user-list-row" key={user.id}>
                             <div className="col-name">{user.name}</div>
                             <div className="col-email">{user.email}</div>
                             <div className="col-actions">
-                                <button className="action-icon"><MdRemoveRedEye /></button>
-                                <button className="action-icon"><MdEdit /></button>
+                                {/* 5. Arreglamos el botón del OJO */}
+                                <Link to={`/usuarios/${user.id}`} className="action-icon">
+                                    <MdRemoveRedEye />
+                                </Link>
                                 <button className="action-icon delete"><MdDelete /></button>
                             </div>
                         </div>

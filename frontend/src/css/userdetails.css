@@ -1,0 +1,77 @@
+.user-details-page h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+}
+
+.details-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  max-width: 750px; /* Limitamos el ancho para que se vea bien */
+}
+
+.profile-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.profile-picture-placeholder {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #aaa;
+  font-size: 1.2rem;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.details-info-box {
+  border: 1px solid #000; /* Borde negro como en la imagen */
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-item strong {
+  margin-right: 0.5rem;
+  color: #000;
+  font-weight: 600;
+}
+
+.details-actions {
+  display: flex;
+}
+
+/* Reutilizamos el estilo del botón 'Volver' que ya teníamos */
+.button-back {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #d8d8d8;
+  color: #333;
+}
+.button-back:hover {
+  background-color: #c0c0c0;
+}

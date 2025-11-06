@@ -1,0 +1,85 @@
+}/* --- Estilos para la página "Agregar Producto" --- */
+
+.add-product-page h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+}
+
+/* --- Tarjeta Contenedora --- */
+.product-form-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  max-width: 800px; /* Ancho máximo del formulario */
+}
+
+/* --- Grid del Formulario --- */
+.form-grid-product-add {
+  display: grid;
+  /* 2 columnas de igual tamaño */
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; /* Espacio entre campos */
+}
+
+/* --- Estilos Genéricos de Campos --- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.form-group input::placeholder {
+  color: #aaa;
+}
+
+/* --- Botones de Acción --- */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  border-top: 1px solid #eee; /* Línea divisoria */
+  padding-top: 1.5rem;
+}
+
+.form-actions button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.button-create {
+  background-color: #8f9a5d; /* Verde principal */
+  color: white;
+}
+.button-create:hover {
+  background-color: #7d884e;
+}
+
+.button-back {
+  background-color: #aab57c; /* Verde-grisáceo */
+  color: #333;
+}
+.button-back:hover {
+  background-color: #9aa46b;
+}
