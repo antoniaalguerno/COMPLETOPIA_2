@@ -155,8 +155,6 @@ export const EditUser: React.FC = () => {
                         <label htmlFor="group">Cargo</label>
                         <select id="group" value={userData.group} onChange={handleInputChange}>
                             <option value="1">Administrador</option>
-                            <option value="2">Vendedor</option>
-                            <option value="3">Bodeguero</option>
                         </select>
                     </div>
                     <div className="form-group">
