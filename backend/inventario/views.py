@@ -14,7 +14,7 @@ import pandas as pd
 from openpyxl import Workbook
 from registration.models import Profile
 from inventario.models import Product
-from administrator.views import validar_string, validar_nombre
+#from administrator.views import validar_string, validar_nombre
 import xlwt
 import traceback
 import os

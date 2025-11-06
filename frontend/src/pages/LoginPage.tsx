@@ -11,12 +11,37 @@ export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Iniciando sesión...", { email, password });
-    // REDIRECCIÓN: Al hacer submit, vamos a la pantalla principal
-    navigate('/inicio');
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Guarda los tokens en localStorage
+      localStorage.setItem('access', data.access);
+      localStorage.setItem('refresh', data.refresh);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      console.log('✅ Login exitoso', data);
+      navigate('/inicio'); // redirige al inicio
+    } else {
+      alert(data.error || 'Error al iniciar sesión');
+    }
+  } catch (error) {
+    console.error('Error en login:', error);
+    alert('Ocurrió un error al intentar iniciar sesión');
+  }
+};
+
 
   return (
     <div className="login-container">
