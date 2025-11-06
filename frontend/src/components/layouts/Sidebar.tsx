@@ -1,40 +1,62 @@
 import React from 'react';
-import { MdHome, MdGroup, MdInventory } from 'react-icons/md';
-import logo from '../../pages/logo1.png'; // Re-usa tu logo
-import '../../css/layout.css';
+import { Link, useLocation } from 'react-router-dom';
+import { MdHome, MdGroup, MdInventory, MdChevronLeft } from 'react-icons/md';
+import logo from '../../pages/logo1.png'; 
+import '../../css/Layout.css';
 
-type NavLink = 'Inicio' | 'Usuarios' | 'Inventario';
-export const Sidebar: React.FC = () => {
-    // Define el tipo de activeLink como un tipo literal
-    const activeLink: NavLink = 'Usuarios'; // Cambia esto para probar diferentes enlaces activos
+// Añadimos 'canClose' a la interfaz
+interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+    canClose: boolean; // Nueva prop
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, canClose }) => {
+    const location = useLocation();
+    const currentPath = location.pathname;
+
+    const isActive = (path: string) => {
+        if (path === '/' && currentPath === '/') return true;
+        if (path !== '/' && currentPath.startsWith(path)) return true;
+        return false;
+    };
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${isOpen ? '' : 'closed'}`}>
+            
+            {/* SOLO mostramos el botón de cerrar si 'canClose' es true */}
+            {canClose && (
+                <button className="close-sidebar-button" onClick={onClose}>
+                    <MdChevronLeft />
+                </button>
+            )}
+
             <nav className="sidebar-nav">
                 <ul>
-                    <li className={activeLink === 'Inicio' ? 'active' : ''}>
-                        <a href="#">
+                    <li className={isActive('/inicio') ? 'active' : ''}>
+                        <Link to="/inicio">
                             <MdHome />
                             <span>Inicio</span>
-                        </a>
+                        </Link>
                     </li>
-                    <li className={activeLink === 'Usuarios' ? 'active' : ''}>
-                        <a href="#">
+                    <li className={isActive('/usuarios') ? 'active' : ''}>
+                        <Link to="/usuarios">
                             <MdGroup />
                             <span>Usuarios</span>
-                        </a>
+                        </Link>
                     </li>
-                    <li className={activeLink === 'Inventario' ? 'active' : ''}>
-                        <a href="#">
+                    <li className={isActive('/inventario') ? 'active' : ''}>
+                        <Link to="/inventario">
                             <MdInventory />
                             <span>Inventario</span>
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </nav>
 
-
+            <div className="floating-logo">
+                 <img src={logo} alt="Completetopia Logo" />
+            </div>
         </aside>
-
     );
 };

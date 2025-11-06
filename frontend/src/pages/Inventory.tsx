@@ -1,17 +1,16 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
     MdAdd,
-    MdFileUpload,
-    MdCloudDownload,
     MdSearch,
     MdEdit,
     MdDelete,
-    MdArrowBack // Icono de "atrás"
+    MdArrowBack
 } from 'react-icons/md';
-import '../css/inventory.css'; // Crearemos este archivo
+import '../css/Inventory.css';
+// Importamos también el CSS del dashboard para reutilizar los estilos de las pestañas
+import '../css/InventoryDashboard.css'; 
 
-// 1. Definimos el tipo para un item del inventario
 type InventoryItem = {
     id: number;
     producto: string;
@@ -23,7 +22,6 @@ type InventoryItem = {
     total: number;
 };
 
-// 2. Datos estáticos (como solicitaste)
 const staticInventory: InventoryItem[] = [
     {
         id: 1,
@@ -39,6 +37,7 @@ const staticInventory: InventoryItem[] = [
 
 export const Inventory: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // Necesario para saber qué pestaña está activa
 
     return (
         <div className="inventory-page">
@@ -50,19 +49,22 @@ export const Inventory: React.FC = () => {
                 </Link>
             </header>
 
-            {/* Barra de herramientas (Upload/Download) */}
-            <div className="toolbar">
-                {/* Este div vacío ayuda a empujar los iconos a la derecha */}
-                <div className="tabs-placeholder"></div>
-                <div className="toolbar-actions">
-                    <button className="icon-button-large">
-                        <MdFileUpload />
-                    </button>
-                    <button className="icon-button-large">
-                        <MdCloudDownload />
-                    </button>
-                </div>
-            </div>
+            {/* --- NAVEGACIÓN DE PESTAÑAS (Añadido) --- */}
+            <nav className="inventory-tabs" style={{ marginBottom: '1.5rem' }}>
+                <Link 
+                    to="/inventario" 
+                    className={`tab-item ${location.pathname === '/inventario' ? 'active' : ''}`}
+                >
+                    Dashboard
+                </Link>
+                <Link 
+                    to="/inventario/listado" 
+                    className={`tab-item ${location.pathname === '/inventario/listado' ? 'active' : ''}`}
+                >
+                    Listado de inventario
+                </Link>
+            </nav>
+            {/* ------------------------------------ */}
 
             {/* Tarjeta de contenido principal */}
             <div className="content-card">
@@ -98,7 +100,7 @@ export const Inventory: React.FC = () => {
                         <div className="text-center">Acciones</div>
                     </div>
 
-                    {/* Filas de datos (generadas desde el array estático) */}
+                    {/* Filas de datos */}
                     {staticInventory.map((item) => (
                         <div className="inventory-list-row" key={item.id}>
                             <div>{item.producto}</div>
@@ -109,7 +111,6 @@ export const Inventory: React.FC = () => {
                             <div className="text-right">{item.salidas}</div>
                             <div className="text-right">{item.total}</div>
                             <div className="col-actions text-center">
-                                {/* Enlazamos a una futura pág. de edición */}
                                 <Link to={`/inventario/editar/${item.id}`} className="action-icon">
                                     <MdEdit />
                                 </Link>

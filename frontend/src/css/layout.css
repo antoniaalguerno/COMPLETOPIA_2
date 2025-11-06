@@ -1,35 +1,83 @@
+/* --- Botón Hamburguesa Flotante (NUEVO) --- */
+.hamburger-button {
+    position: fixed;
+    top: 15px;
+    left: 20px;
+    z-index: 1100; /* Por encima del header y sidebar */
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+.hamburger-button:hover {
+    background-color: #555;
+}
+
 /* Contenedor Principal */
 .app-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    position: relative; /* Necesario para posicionar el logo */
+    position: relative;
 }
 
 .body-wrapper {
     display: flex;
     flex: 1;
+    overflow-x: hidden; /* (NUEVO) Evita scroll horizontal al animar la sidebar */
 }
 
 .content-area {
     flex: 1;
     padding: 2rem;
-    background-color: #f8f9fa; /* Fondo grisáceo claro del contenido */
+    background-color: #f8f9fa;
 }
 
 /* --- Sidebar --- */
 .sidebar {
     width: 250px;
-    background-color: #9EB23B; /* Verde principal */
+    background-color: #9EB23B;
     color: white;
     display: flex;
     flex-direction: column;
     height: fit-content;
+    min-height: auto; /* Asegura que tenga altura suficiente */
     position: relative;
     top: 10px;
     border-radius: 15px;
     padding: 5px;
     margin-left: 5px;
+    /* (NUEVO) Transición suave para abrir/cerrar */
+    transition: margin-left 0.3s ease-in-out, opacity 0.3s; 
+    z-index: 1000;
+}
+
+/* (NUEVO) Estado cerrado de la sidebar */
+.sidebar.closed {
+    margin-left: -280px; /* La mueve fuera de la pantalla hacia la izquierda */
+    opacity: 0; /* Opcional: la hace transparente mientras se va */
+}
+
+/* (NUEVO) Botón para cerrar dentro de la sidebar */
+.close-sidebar-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    align-self: flex-end;
+    margin-right: 0.5rem;
+    padding: 5px;
 }
 
 .sidebar-nav {
@@ -48,6 +96,8 @@
     padding: 1rem 1.5rem;
     font-size: 1.1rem;
     transition: background-color 0.2s;
+    color: white;
+    text-decoration: none;
 }
 
 .sidebar-nav li a svg {
@@ -60,31 +110,25 @@
     border-radius: 10px;
 }
 
-.sidebar-nav li:hover a {
-  color: white; /* <-- Un color oscuro para el texto */
-}
-
 .sidebar-nav li.active {
-    background-color: #ffffff49; /* Color activo */
+    background-color: #ffffff49;
     font-weight: 600;
     border-radius: 10px;
 }
 
-
-
 /* --- Logo flotante --- */
 .floating-logo {
-    position: fixed; /* Fija el logo en la pantalla */
-    bottom: 20px; /* Separación desde la parte inferior */
-    left: 20px; /* Separación desde la parte izquierda */
-    z-index: 1000; /* Asegura que esté encima de otros elementos */
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    width: 100px; /* (IMPORTANTE) Limita el ancho para que no sea gigante */
 }
 
 .floating-logo img {
-    max-width: 100px; /* Ajusta el tamaño del logo */
+    width: 100%;
     height: auto;
-    
-    
+    display: block;
 }
 
 /* --- Header --- */
@@ -106,6 +150,17 @@
     font-size: 1.1rem;
 }
 
+.user-info-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.user-info-link:hover .user-info {
+    opacity: 0.8;
+}
+
 .user-avatar {
     font-size: 2rem;
     margin-right: 0.5rem;
@@ -116,6 +171,7 @@
 }
 
 .header-actions {
+    position: relative;
     display: flex;
     gap: 1rem;
 }
@@ -128,66 +184,53 @@
     color: #ffffff;
 }
 
-/* --- Estilos para el Menú Desplegable de Configuración --- */
-
-/* 1. Hacemos 'relativo' el contenedor para que el 
-      menú 'absoluto' se posicione correctamente */
-.header-actions {
-  position: relative;
-  display: flex;
-  gap: 1rem;
-}
-
-/* 2. El contenedor del menú */
+/* --- Menú Desplegable de Configuración --- */
 .settings-menu {
-  position: absolute;
-  top: 60px; /* Ajusta esto para que quede debajo del botón (alto del header - padding) */
-  right: 0;
-  width: 280px; /* Ancho del menú */
-  background-color: #f8f9fa; /* Color de fondo del menú (un gris muy claro) */
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid #eee;
-  padding: 0.5rem;
-  z-index: 100; /* Asegura que esté por encima de otro contenido */
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 280px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    padding: 0.5rem;
+    z-index: 1100; /* Aseguramos que quede por encima de todo */
 }
 
 .settings-menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .settings-menu li {
-  margin: 0;
+    margin: 0;
 }
 
-/* 3. Estilos de cada enlace del menú */
 .settings-menu li a {
-  display: flex;
-  align-items: center;
-  padding: 0.85rem 1rem;
-  text-decoration: none;
-  color: #333;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    text-decoration: none;
+    color: #333;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 .settings-menu li a:hover {
-  background-color: #e9ecef; /* Un gris más oscuro al pasar el mouse */
+    background-color: #e9ecef;
 }
 
-/* 4. Estilos para los íconos dentro del menú */
 .settings-menu li a svg {
-  font-size: 1.3rem;
-  margin-right: 0.75rem;
-  color: #555;
+    font-size: 1.3rem;
+    margin-right: 0.75rem;
+    color: #555;
 }
 
-/* 5. Estilo para la flecha derecha (>) */
 .settings-menu li a svg:last-child {
-  margin-left: auto; /* Empuja la flecha a la derecha */
-  margin-right: 0;
-  color: #999;
+    margin-left: auto;
+    margin-right: 0;
+    color: #999;
 }

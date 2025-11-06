@@ -30,11 +30,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1rem; /* Espacio importante debajo de las pestañas */
 }
 
-/* --- MODIFICADO --- */
-/* Ahora se aplica a <button> Y <a> */
 .tabs button,
 .tabs a {
   padding: 0.75rem 1.5rem;
@@ -43,32 +41,27 @@
   background-color: #e9ecef;
   color: #555;
   cursor: pointer;
-  text-decoration: none; /* Añadido para quitar subrayado de enlaces */
+  text-decoration: none;
   font-weight: 500;
+  display: inline-block; /* Asegura que el padding funcione bien en enlaces */
 }
 
-/* --- MODIFICADO --- */
-/* Se aplica a <button> Y <a> */
 .tabs button:first-child,
 .tabs a:first-child {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
 
-/* --- MODIFICADO --- */
-/* Se aplica a <button> Y <a> */
 .tabs button:last-child,
 .tabs a:last-child {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
-/* --- MODIFICADO --- */
-/* Se aplica a <button> Y <a>, y usa tu color verde principal */
 .tabs button.active,
 .tabs a.active {
-  background-color: #9EB23B; /* Tu Verde principal */
-  color: white; /* Texto blanco para mejor contraste */
+  background-color: #9EB23B; /* Tu verde principal */
+  color: white;
   font-weight: 600;
 }
 
@@ -80,7 +73,7 @@
   color: #555;
 }
 
-/* --- Tarjeta de Contenido (Blanca) --- */
+/* --- Tarjeta de Contenido --- */
 .content-card {
   background-color: #ffffff;
   border-radius: 8px;
@@ -119,7 +112,7 @@
 .user-list-header,
 .user-list-row {
   display: grid;
-  grid-template-columns: 2fr 3fr 1fr; /* Proporciones para las columnas */
+  grid-template-columns: 2fr 3fr 1fr;
   align-items: center;
   padding: 1rem 0.5rem;
 }
@@ -147,17 +140,15 @@
   gap: 0.5rem;
 }
 
-/* --- MODIFICADO --- */
-/* Añadido 'display' y 'align-items' para que los <Link> 
-   se vean igual que los <button> */
 .action-icon {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.3rem;
   color: #777;
-  display: inline-flex; /* Añadido */
-  align-items: center; /* Añadido */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-icon.delete {
