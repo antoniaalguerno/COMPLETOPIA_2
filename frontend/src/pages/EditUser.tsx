@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
-import '../css/edituser.css'; // Cambiamos el archivo de estilos a edituser.css
+import { useNavigate, useParams } from 'react-router-dom';
+import '../css/EditUser.css'; // Asegúrate de que el nombre del archivo coincida (mayúsculas/minúsculas)
+
+// 1. Define la interfaz para el estado del usuario
+interface UserData {
+    nombre: string;
+    apellido: string;
+    run: string;
+    correo: string;
+    cargo: string;
+    contacto: string;
+    direccion: string;
+    region: string;
+    comuna: string;
+    foto: File | null; // Permite que sea File o null
+}
 
 export const EditUser: React.FC = () => {
-    // Hook para manejar la navegación
     const navigate = useNavigate();
+    // Aunque obtenemos el userId, por ahora usamos datos estáticos.
+    // En el futuro, usarías este ID para cargar los datos reales.
+    const { userId } = useParams<{ userId: string }>(); 
 
-    // Estado inicial con los datos del usuario (simulados)
-    const [userData, setUserData] = useState({
+    // 2. Usa la interfaz UserData en el hook useState
+    const [userData, setUserData] = useState<UserData>({
         nombre: 'Karen',
         apellido: 'Cordova',
         run: '17805812-2',
@@ -17,32 +33,23 @@ export const EditUser: React.FC = () => {
         direccion: 'Calle Falsa 123',
         region: 'Metropolitana',
         comuna: 'Santiago',
-        foto: null,
+        foto: null, // Ahora esto es válido gracias a la interfaz
     });
 
-    // Manejo del envío del formulario
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Validación básica
         if (!userData.nombre || !userData.apellido || !userData.cargo) {
             alert('Por favor, completa todos los campos obligatorios.');
             return;
         }
-
-        // Aquí iría la lógica para guardar los cambios del usuario
-        console.log('Datos actualizados:', userData);
-
-        // Redirigir de vuelta a la lista de usuarios
+        console.log('Datos actualizados para el usuario ' + userId + ':', userData);
         navigate('/usuarios');
     };
 
-    // Manejo del botón "Volver"
     const handleBack = () => {
-        navigate(-1); // Esto es como 'clic en botón atrás' del navegador
+        navigate(-1);
     };
 
-    // Manejo de cambios en los campos del formulario
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setUserData((prevData) => ({
@@ -51,19 +58,18 @@ export const EditUser: React.FC = () => {
         }));
     };
 
-    // Manejo de la selección de una nueva foto
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
         setUserData((prevData) => ({
             ...prevData,
-            foto: file || prevData.foto, // Mantén la foto existente si no se selecciona una nueva
+            foto: file || prevData.foto,
         }));
     };
 
     return (
         <div className="edit-user-page">
             <h2>Editar Usuario</h2>
-
+            {/* El resto de tu JSX sigue igual... */}
             <form className="user-form-card" onSubmit={handleSubmit}>
                 <div className="form-grid">
                     {/* Nombre */}
@@ -158,7 +164,6 @@ export const EditUser: React.FC = () => {
                             <option value="" disabled>Seleccione una región</option>
                             <option value="Metropolitana">Metropolitana</option>
                             <option value="Valparaíso">Valparaíso</option>
-                            {/* Agrega más regiones aquí */}
                         </select>
                     </div>
 
@@ -173,7 +178,6 @@ export const EditUser: React.FC = () => {
                             <option value="" disabled>Seleccione una comuna</option>
                             <option value="Santiago">Santiago</option>
                             <option value="Providencia">Providencia</option>
-                            {/* Agrega más comunas aquí */}
                         </select>
                     </div>
 

@@ -1,0 +1,40 @@
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Ocupa toda la altura disponible del área de contenido */
+  width: 100%;
+}
+
+.welcome-card {
+  background-color: #a3b157; /* Un tono verde similar al de la imagen */
+  color: white;
+  text-align: center;
+  padding: 5rem 2rem;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 800px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.welcome-card h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.welcome-card p {
+  font-size: 1.5rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* Ajuste para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .welcome-card h1 {
+    font-size: 2.5rem;
+  }
+  .welcome-card p {
+    font-size: 1.2rem;
+  }
+}

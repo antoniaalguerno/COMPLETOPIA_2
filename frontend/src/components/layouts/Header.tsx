@@ -1,93 +1,97 @@
 import React, { useState, useEffect, useRef } from 'react';
+// 1. Importamos useNavigate además de Link
+import { Link, useNavigate } from 'react-router-dom'; 
 import { 
   MdPerson, 
   MdSettings, 
   MdLogout,
-  // --- Iconos para el nuevo menú ---
   MdLockOutline,
   MdEdit,
   MdVisibility,
   MdChevronRight
 } from 'react-icons/md';
-// Asegúrate de que la ruta del CSS sea la correcta
 import '../../css/Layout.css'; 
 
 export const Header: React.FC = () => {
-  // 1. Hook de Estado para saber si el menú está abierto
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // 2. Hooks de Referencia para cerrar el menú al hacer clic afuera
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  
+  // 2. Inicializamos el hook de navegación
+  const navigate = useNavigate();
 
-  // 3. Hook de Efecto para manejar el "clic afuera"
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // Si el menú está cerrado, no hagas nada
-      if (!isMenuOpen) return;
+      const handleClickOutside = (event: MouseEvent) => {
+          if (!isMenuOpen) return;
+          if (
+              menuRef.current && !menuRef.current.contains(event.target as Node) &&
+              triggerRef.current && !triggerRef.current.contains(event.target as Node)
+          ) {
+              setIsMenuOpen(false);
+          }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+      };
+  }, [isMenuOpen]);
 
-      // Si el clic fue FUERA del menú Y FUERA del botón de tuerca
-      if (
-        menuRef.current && !menuRef.current.contains(event.target as Node) &&
-        triggerRef.current && !triggerRef.current.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false); // Cierra el menú
-      }
-    };
+  const currentUserId = 1; 
 
-    // Agrega el listener
-    document.addEventListener('mousedown', handleClickOutside);
-    // Limpia el listener cuando el componente se desmonte
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isMenuOpen]); // Este efecto depende de 'isMenuOpen'
+  // 3. Función para manejar el cierre de sesión
+  const handleLogout = () => {
+    // Aquí podrías limpiar el almacenamiento local (ej. localStorage.removeItem('token'))
+    console.log("Cerrando sesión...");
+    navigate('/login'); // Redirige al login
+  };
 
   return (
     <header className="header">
-      <div className="user-info">
-        <MdPerson className="user-avatar" />
-        <span>Karen</span>
-      </div>
+      
+      <Link to={`/usuarios/${currentUserId}`} className="user-info-link">
+        <div className="user-info">
+          <MdPerson className="user-avatar" />
+          <span>Karen</span>
+        </div>
+      </Link>
 
       <div className="header-actions">
-        {/* 4. Botón de Configuración (tuerca) */}
         <button
           className="icon-button"
-          ref={triggerRef} // <-- Asigna la referencia al botón
-          onClick={() => setIsMenuOpen(!isMenuOpen)} // <-- Cambia el estado
+          ref={triggerRef}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <MdSettings />
         </button>
 
-        <button className="icon-button">
+        {/* 4. Añadimos el evento onClick al botón de logout */}
+        <button className="icon-button" onClick={handleLogout}>
           <MdLogout />
         </button>
 
-        {/* 5. El Menú Desplegable (Renderizado condicional) */}
         {isMenuOpen && (
-          <div className="settings-menu" ref={menuRef}> {/* <-- Asigna la ref al menú */}
+          <div className="settings-menu" ref={menuRef}>
             <ul>
               <li>
-                <a href="#">
+                <Link to="/cambiar-contrasena">
                   <MdLockOutline />
                   <span>Contraseña</span>
                   <MdChevronRight />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#">
+                <Link to={`/usuarios/editar/${currentUserId}`}>
                   <MdEdit />
                   <span>Editar Perfil</span>
                   <MdChevronRight />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#">
+                <Link to={`/usuarios/${currentUserId}`}>
                   <MdVisibility />
                   <span>Ver perfil</span>
                   <MdChevronRight />
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
