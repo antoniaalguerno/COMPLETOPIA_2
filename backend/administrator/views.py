@@ -7,11 +7,24 @@ from registration.models import Profile  # Ajusta si tu modelo Profile está en 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 from administrator.models import Usuario
 from registration.serializers import ProfileSerializer
 from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.urls import reverse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import JsonResponse
+from django.contrib.auth.hashers import make_password
 
-
+import json
 
 # 🔹 LISTAR TODOS LOS USUARIOS ACTIVOS
 @api_view(['GET'])
@@ -163,7 +176,7 @@ def activate_user(request, user_id):
     except User.DoesNotExist:
         return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-# 🔹 CAMBIAR CONTRASEÑA
+# 🔹 CAMBIAR CONTRASEÑA CON VERIFICACIÓN DE LA ACTUAL
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def change_password(request, user_id):
@@ -172,14 +185,23 @@ def change_password(request, user_id):
     except User.DoesNotExist:
         return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
+    current_password = request.data.get('current_password')
     new_password = request.data.get('new_password')
-    if not new_password:
-        return Response({'error': 'Debe ingresar una nueva contraseña'}, status=status.HTTP_400_BAD_REQUEST)
 
-    user.password = make_password(new_password)
+    if not current_password or not new_password:
+        return Response({'error': 'Debe ingresar la contraseña actual y la nueva'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Verificar que la contraseña actual es correcta
+    if not user.check_password(current_password):
+        return Response({'error': 'La contraseña actual es incorrecta'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Cambiar la contraseña
+    user.set_password(new_password)
     user.save()
     update_session_auth_hash(request, user)
+
     return Response({'message': 'Contraseña cambiada correctamente'})
+
 
 # 🔹 BUSCAR USUARIOS
 # ACTIVOS
@@ -208,3 +230,66 @@ def search_users_blocked(request):
         is_active=False
     ).values('id', 'first_name', 'last_name', 'email', 'is_active')
     return Response(list(users))
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def send_reset_password_email(request):
+    email = request.data.get('email')
+    if not email:
+        return Response({'error': 'Debe proporcionar un correo'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+
+    # Construir link que será enviado por email
+    reset_link = f"http://localhost:5173/reset-password/{uid}/{token}"
+
+    # Enviar correo
+    send_mail(
+        subject='Restablecer contraseña',
+        message=f'Hola {user.first_name},\n\nUse este enlace para restablecer su contraseña:\n{reset_link}',
+        from_email=None,  # Django tomará DEFAULT_FROM_EMAIL
+        recipient_list=[email],
+        fail_silently=False,
+    )
+
+    return Response({'message': 'Correo enviado con instrucciones para restablecer la contraseña'})
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+@csrf_exempt
+def reset_password_confirm(request, uid, token):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        new_password = data.get('new_password')
+        if not new_password:
+            return JsonResponse({'error': 'Debe proporcionar una nueva contraseña'}, status=400)
+
+        # Decodificar UID
+        uid = force_str(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=uid)
+
+        # Verificar token
+        if not default_token_generator.check_token(user, token):
+            return JsonResponse({'error': 'Token inválido o expirado'}, status=400)
+
+        # Actualizar contraseña
+        user.set_password(new_password)
+        user.save()
+
+
+        return JsonResponse({'message': 'Contraseña restablecida correctamente'}, status=200)
+
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

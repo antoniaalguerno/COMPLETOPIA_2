@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-// 1. Importamos useNavigate además de Link
 import { Link, useNavigate } from 'react-router-dom'; 
 import { 
   MdPerson, 
@@ -14,10 +13,9 @@ import '../../css/Layout.css';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ id: number; first_name: string; last_name: string } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  
-  // 2. Inicializamos el hook de navegación
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,22 +34,30 @@ export const Header: React.FC = () => {
       };
   }, [isMenuOpen]);
 
-  const currentUserId = 1; 
+  // 🔹 Cargar usuario logueado desde localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setCurrentUser(JSON.parse(userData));
+    }
+  }, []);
 
-  // 3. Función para manejar el cierre de sesión
   const handleLogout = () => {
-    // Aquí podrías limpiar el almacenamiento local (ej. localStorage.removeItem('token'))
-    console.log("Cerrando sesión...");
-    navigate('/login'); // Redirige al login
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
+    localStorage.removeItem('user');
+    navigate('/login');
   };
+
+  if (!currentUser) return null; // opcional: mostrar nada mientras cargamos
 
   return (
     <header className="header">
       
-      <Link to={`/usuarios/${currentUserId}`} className="user-info-link">
+      <Link to={`/usuarios/${currentUser.id}`} className="user-info-link">
         <div className="user-info">
           <MdPerson className="user-avatar" />
-          <span>Karen</span>
+          <span>{currentUser.first_name} {currentUser.last_name}</span>
         </div>
       </Link>
 
@@ -64,7 +70,6 @@ export const Header: React.FC = () => {
           <MdSettings />
         </button>
 
-        {/* 4. Añadimos el evento onClick al botón de logout */}
         <button className="icon-button" onClick={handleLogout}>
           <MdLogout />
         </button>
@@ -80,14 +85,14 @@ export const Header: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to={`/usuarios/editar/${currentUserId}`}>
+                <Link to={`/usuarios/editar/${currentUser.id}`}>
                   <MdEdit />
                   <span>Editar Perfil</span>
                   <MdChevronRight />
                 </Link>
               </li>
               <li>
-                <Link to={`/usuarios/${currentUserId}`}>
+                <Link to={`/usuarios/${currentUser.id}`}>
                   <MdVisibility />
                   <span>Ver perfil</span>
                   <MdChevronRight />

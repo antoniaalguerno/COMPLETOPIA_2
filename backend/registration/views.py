@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Profile
 
+from django.contrib.auth.hashers import check_password
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
@@ -14,13 +16,11 @@ def login_view(request):
     password = request.data.get('password')
 
     try:
-        user_obj = User.objects.get(email=email)
+        user = User.objects.get(email=email)
     except User.DoesNotExist:
         return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-    user = authenticate(username=user_obj.username, password=password)
-
-    if user is not None:
+    if check_password(password, user.password):
         refresh = RefreshToken.for_user(user)
         return Response({
             'access': str(refresh.access_token),
@@ -33,6 +33,7 @@ def login_view(request):
         })
     else:
         return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 # 🔹 Registro de usuarios
 @api_view(['POST'])

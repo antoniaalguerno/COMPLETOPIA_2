@@ -25,7 +25,9 @@ function App() {
 
       {/* Nueva ruta para el enlace del correo */}
       {/* En producción, probablemente usarías algo como "/restablecer-contrasena/:token" */}
-      <Route path="/restablecer-contrasena" element={<ResetPassword />} />
+      <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+
+
 
       <Route path="/contrasena-actualizada" element={<PasswordChanged />} />
 

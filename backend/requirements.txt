@@ -21,6 +21,10 @@ openpyxl==3.1.5
 packaging==25.0
 pandas==2.3.3
 Pillow==12.0.0
+<<<<<<< HEAD
+=======
+pip==25.3
+>>>>>>> tilines_backend
 platformdirs==4.5.0
 psycopg2-binary==2.9.11
 PyJWT==2.10.1

@@ -21,4 +21,7 @@ urlpatterns = [
 
     # Contraseña
     path('users/<int:user_id>/password/', views.change_password, name='change_password'),
+    path('users/reset-password/', views.send_reset_password_email, name='send_reset_password_email'),
+    path('users/reset-password-confirm/<str:uid>/<str:token>/', views.reset_password_confirm, name='reset_password_confirm'),
+
 ]
