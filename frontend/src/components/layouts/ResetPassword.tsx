@@ -1,24 +1,57 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MdSecurity } from 'react-icons/md';
 import '../../css/resetpassword.css';
 
 export const ResetPassword: React.FC = () => {
+  const { uid, token } = useParams(); // capturamos parámetros desde la URL
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
+    const trimmedPassword = password.trim();
+    const trimmedConfirm = confirmPassword.trim();
+
+    if (trimmedPassword !== trimmedConfirm) {
       alert("Las contraseñas no coinciden.");
       return;
     }
 
-    console.log("Contraseña cambiada exitosamente");
-    setIsSuccess(true);
+    if (trimmedPassword.length < 6) {
+      alert("La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+
+    console.log("Contraseña a enviar:", trimmedPassword);
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/administrator/users/reset-password-confirm/${uid}/${token}/`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ new_password: trimmedPassword }),
+        }
+      );
+
+      const data = await response.json();
+      console.log("Respuesta del servidor:", data);
+
+      if (!response.ok) {
+        alert(data.error || 'Error al restablecer la contraseña');
+        return;
+      }
+
+      setIsSuccess(true);
+
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", error);
+      alert("Hubo un problema con la conexión al servidor.");
+    }
   };
 
   if (isSuccess) {
@@ -29,7 +62,6 @@ export const ResetPassword: React.FC = () => {
           <p className="success-text">
             Su contraseña ha sido establecida. Ahora puede seguir adelante e iniciar sesión.
           </p>
-          {/* Botón para ir al login */}
           <button className="login-link-button" onClick={() => navigate('/login')}>
             Iniciar Sesión
           </button>

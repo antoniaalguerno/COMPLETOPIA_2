@@ -9,10 +9,28 @@ export const ForgotPassword: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Solicitud de recuperación para:", email);
-    setIsSubmitted(true);
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/administrator/users/reset-password/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Error al enviar el correo de restablecimiento');
+      }
+    } catch (error) {
+      alert('No se pudo conectar con el servidor');
+      console.error(error);
+    }
   };
 
   if (isSubmitted) {
@@ -26,7 +44,6 @@ export const ForgotPassword: React.FC = () => {
           <p className="sent-text">
             Revise su bandeja de entrada, incluida la carpeta de spam, si no recibe el correo en breve.
           </p>
-          {/* Botón para volver al login */}
           <button className="return-button" onClick={() => navigate('/login')}>
             Volver
           </button>
@@ -38,7 +55,6 @@ export const ForgotPassword: React.FC = () => {
   return (
     <div className="forgot-container">
       <div className="forgot-card">
-        
         {/* Lado Izquierdo: Formulario */}
         <div className="forgot-form-section">
           <h2>Restablecer Contraseña</h2>
@@ -68,8 +84,7 @@ export const ForgotPassword: React.FC = () => {
         <div className="forgot-logo-section">
           <img src={logo} alt="Logo Completetopia" />
         </div>
-
       </div>
     </div>
   );
-}
+};
