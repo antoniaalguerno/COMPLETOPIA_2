@@ -28,7 +28,7 @@ export const Users: React.FC = () => {
     setLoading(true);
     try {
       const endpoint = searchQuery
-        ? `http://127.0.0.1:8000/api/administrator/users/search/?q=${searchQuery}`
+        ? `http://127.0.0.1:8000/api/administrator/users/search/active/?q=${searchQuery}`
         : `http://127.0.0.1:8000/api/administrator/users/active/`;
 
       const response = await axios.get(endpoint, {

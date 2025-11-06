@@ -131,23 +131,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-
-# Base directory of the project
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Static files (CSS, JavaScript, Images)
+# Archivos estáticos (CSS, JS)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-#media files
-STATIC_ROOT = 'core/static/'
-#media files
+STATIC_ROOT = BASE_DIR / "staticfiles"  # para collectstatic
+
+# Archivos subidos por usuarios (media)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'core','static','core')
+MEDIA_ROOT = BASE_DIR / "media"
 
 LOGIN_REDIRECT_URL = 'check_profile'
 LOGOUT_REDIRECT_URL = 'login'

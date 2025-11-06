@@ -1,98 +1,137 @@
-import React, { useState } from 'react';
-// 1. Importa Link y useLocation
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-    MdSearch,
-    MdDelete,
-    MdRestore 
-} from 'react-icons/md';
-import '../css/users.css'; // Asegúrate que la ruta del CSS sea correcta
+import { MdSearch, MdRestore,} from 'react-icons/md';
+import axios from 'axios';
+import '../css/users.css';
 
 type User = {
-    id: number;
-    name: string;
-    email: string;
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
 };
 
-// DATOS ESTÁTICOS: Usuarios eliminados (hardcodeados)
-const deletedUsers: User[] = [
-    { id: 3, name: 'Usuario Eliminado 1', email: 'eliminado1@example.com' },
-    { id: 4, name: 'Usuario Eliminado 2', email: 'eliminado2@example.com' },
-];
-
 export const DeletedUsers: React.FC = () => {
-    // 2. 'activeTab' ahora se basa en la URL
-    const location = useLocation();
-    const [searchTerm, setSearchTerm] = useState('');
+  const location = useLocation();
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    return (
-        <div className="users-page">
-            <header className="users-page-header">
-                <h2>Usuarios Eliminados</h2>
-            </header>
+  const token = localStorage.getItem('access');
 
-            {/* 3. Barra de herramientas con ENLACES */}
-            <div className="toolbar">
-                <div className="tabs">
-                    {/* Enlace a Activos */}
-                    <Link 
-                        to="/usuarios"
-                        className={location.pathname === '/usuarios' ? 'active' : ''}
-                    >
-                        Activos
-                    </Link>
-                    {/* Enlace a Eliminados */}
-                    <Link
-                        to="/usuarios/eliminados"
-                        className={location.pathname === '/usuarios/eliminados' ? 'active' : ''}
-                    >
-                        Eliminados
-                    </Link>
-                </div>
-            </div>
+  // 🔹 Cargar usuarios eliminados al inicio
+  useEffect(() => {
+    fetchDeletedUsers();
+  }, []);
 
-            {/* Contenedor principal de la lista */}
-            <div className="content-card">
-                <div className="search-bar">
-                    <input
-                        type="text"
-                        placeholder="Buscar por Nombre"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <button className="search-button">
-                        <MdSearch />
-                        Buscar
-                    </button>
-                </div>
+  const fetchDeletedUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        'http://127.0.0.1:8000/api/administrator/users/blocked/',
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error al cargar usuarios eliminados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                <div className="user-list">
-                    <div className="user-list-header">
-                        <div className="col-name">Nombre</div>
-                        <div className="col-email">Correo</div>
-                        <div className="col-actions">Acciones</div>
-                    </div>
+  const handleRestore = async (id: number) => {
+    if (window.confirm('¿Restaurar este usuario?')) {
+      try {
+        await axios.post(
+          `http://127.0.0.1:8000/api/administrator/users/${id}/activate/`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        alert('Usuario restaurado correctamente ✅');
+        fetchDeletedUsers(); // recarga la lista
+      } catch (error) {
+        console.error('Error al restaurar usuario:', error);
+        alert('Error al restaurar el usuario ❌');
+      }
+    }
+  };
 
-                    {deletedUsers
-                        .filter((user) =>
-                            user.name.toLowerCase().includes(searchTerm.toLowerCase())
-                        )
-                        .map((user) => (
-                            <div className="user-list-row" key={user.id}>
-                                <div className="col-name">{user.name}</div>
-                                <div className="col-email">{user.email}</div>
-                                <div className="col-actions">
-                                    <button className="action-icon">
-                                        <MdRestore />
-                                    </button>
-                                    <button className="action-icon delete">
-                                        <MdDelete />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                </div>
-            </div>
+  // 🔹 Filtrado por búsqueda
+  const filteredUsers = users.filter(
+    (user) =>
+      `${user.first_name} ${user.last_name}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="users-page">
+      <header className="users-page-header">
+        <h2>Usuarios Eliminados</h2>
+      </header>
+
+      <div className="toolbar">
+        <div className="tabs">
+          <Link to="/usuarios" className={location.pathname === '/usuarios' ? 'active' : ''}>
+            Activos
+          </Link>
+          <Link
+            to="/usuarios/eliminados"
+            className={location.pathname === '/usuarios/eliminados' ? 'active' : ''}
+          >
+            Eliminados
+          </Link>
         </div>
-    );
+      </div>
+
+      <div className="content-card">
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o correo"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            className="search-button"
+            onClick={(e) => e.preventDefault()} // evita recargar la página
+          >
+            <MdSearch /> Buscar
+          </button>
+        </div>
+
+        <div className="user-list">
+          <div className="user-list-header">
+            <div className="col-name">Nombre</div>
+            <div className="col-email">Correo</div>
+            <div className="col-actions">Acciones</div>
+          </div>
+
+          {loading ? (
+            <p>Cargando...</p>
+          ) : filteredUsers.length === 0 ? (
+            <p>No hay usuarios eliminados</p>
+          ) : (
+            filteredUsers.map((user) => (
+              <div className="user-list-row" key={user.id}>
+                <div className="col-name">
+                  {user.first_name} {user.last_name}
+                </div>
+                <div className="col-email">{user.email}</div>
+                <div className="col-actions">
+                  <button className="action-icon" onClick={() => handleRestore(user.id)}>
+                    <MdRestore />
+                  </button>
+                  {/* Aquí podrías agregar eliminar permanentemente si quieres */}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
