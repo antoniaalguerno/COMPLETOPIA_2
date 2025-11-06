@@ -1,50 +1,75 @@
+.user-details-page {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 70px);
+}
+
 .user-details-page h2 {
   font-size: 2rem;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
+  color: #333;
+  margin-bottom: 1.5rem;
 }
 
 .details-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
-  max-width: 750px; /* Limitamos el ancho para que se vea bien */
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  max-width: 600px; /* Limita el ancho de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra los elementos horizontalmente */
+}
+
+.profile-name {
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 700;
+  margin: 0; /* Elimina margen superior/inferior por defecto */
 }
 
 .profile-header {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column; /* Apila elementos verticalmente */
+  align-items: center;   /* Centra la imagen y el nombre */
   margin-bottom: 2rem;
-  padding: 1rem;
+  text-align: center;
 }
 
+.profile-picture,
 .profile-picture-placeholder {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background-color: #f0f0f0;
+  width: 200px;       /* Tamaño de la imagen */
+  height: 200px;      /* Asegura que sea cuadrada */
+  border-radius: 50%; /* ¡Esto la hace circular! */
+  object-fit: cover;  /* Recorta la imagen para que quepa sin distorsionarse */
+  margin-bottom: 1rem;
+  background-color: #e0e0e0; /* Fondo para el placeholder */
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #aaa;
-  font-size: 1.2rem;
-  text-align: center;
-  border: 1px solid #ddd;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.profile-picture-placeholder span {
+    display: block;
+    padding: 0 10px; /* Evita que el texto toque el borde */
+    word-break: break-word; /* Para nombres largos */
 }
 
 .details-info-box {
-  border: 1px solid #000; /* Borde negro como en la imagen */
-  border-radius: 6px;
-  padding: 1.5rem;
+  width: 100%; /* Ocupa todo el ancho de la tarjeta */
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Espacio entre los items de información */
   margin-bottom: 2rem;
 }
 
 .info-item {
   font-size: 1.1rem;
-  margin-bottom: 1rem;
-  color: #333;
+  color: #555;
 }
 
 .info-item:last-child {
@@ -52,26 +77,29 @@
 }
 
 .info-item strong {
-  margin-right: 0.5rem;
-  color: #000;
-  font-weight: 600;
+  color: #333;
+  min-width: 80px; /* Alinea los dos puntos */
+  display: inline-block;
 }
 
 .details-actions {
+  width: 100%;
   display: flex;
+  justify-content: flex-end; /* Alinea el botón a la derecha */
 }
 
-/* Reutilizamos el estilo del botón 'Volver' que ya teníamos */
 .button-back {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
+  background-color: #8f9a5d; /* Un verde más suave para el botón */
+  color: white;
+  padding: 0.8rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  background-color: #d8d8d8;
-  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
+
 .button-back:hover {
-  background-color: #c0c0c0;
+  background-color: #7a854d;
 }

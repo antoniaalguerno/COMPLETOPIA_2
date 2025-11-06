@@ -67,16 +67,14 @@ export const UserDetails: React.FC = () => {
   const handleBack = () => navigate(-1);
 
   if (loading) return <p>Cargando usuario...</p>;
-
-  const profileImgUrl = userData.profile_image
-    ? `http://127.0.0.1:8000/media/${userData.profile_image}`
-    : null;
+  const profileImgUrl = userData.profile_image;
 
   return (
     <div className="user-details-page">
       <h2>Detalles del usuario</h2>
 
       <div className="details-card">
+        <h3 className="profile-name">{userData.first_name} {userData.last_name}</h3>
         <div className="profile-header">
           {profileImgUrl ? (
             <img
@@ -89,7 +87,6 @@ export const UserDetails: React.FC = () => {
               <span>Foto de Perfil</span>
             </div>
           )}
-          <h3 className="profile-name">{userData.first_name} {userData.last_name}</h3>
         </div>
 
         <div className="details-info-box">
