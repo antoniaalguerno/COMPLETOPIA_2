@@ -1,25 +1,18 @@
 import React, { useState } from 'react';
+// 1. Importa Link y useLocation
+import { Link, useLocation } from 'react-router-dom';
 import {
-    MdPersonAdd,
     MdSearch,
-    MdRemoveRedEye,
     MdDelete,
-    MdRestore // Icono para "recuperar usuario"
+    MdRestore 
 } from 'react-icons/md';
-import '../css/users.css';
+import '../css/users.css'; // Asegúrate que la ruta del CSS sea correcta
 
-// TypeScript: Definimos el tipo para un usuario
 type User = {
     id: number;
     name: string;
     email: string;
 };
-
-// DATOS ESTÁTICOS: Como solicitaste, los usuarios están hardcodeados
-const staticUsers: User[] = [
-    { id: 1, name: 'Karen Cordova', email: 'karen.cordova@cloud.uautonoma.cl' },
-    { id: 2, name: 'Usuario Ejemplo', email: 'kdczzz@outlook.com' },
-];
 
 // DATOS ESTÁTICOS: Usuarios eliminados (hardcodeados)
 const deletedUsers: User[] = [
@@ -27,107 +20,39 @@ const deletedUsers: User[] = [
     { id: 4, name: 'Usuario Eliminado 2', email: 'eliminado2@example.com' },
 ];
 
-export const Users: React.FC = () => {
-    const [activeTab, setActiveTab] = useState('activos');
-
-    return (
-        <div className="users-page">
-            {/* Cabecera de la página de usuarios */}
-            <header className="users-page-header">
-                <h2>Usuarios</h2>
-                <button className="add-user-button">
-                    <MdPersonAdd />
-                </button>
-            </header>
-
-            {/* Barra de herramientas con tabs y botón de exportar */}
-            <div className="toolbar">
-                <div className="tabs">
-                    <button
-                        className={activeTab === 'activos' ? 'active' : ''}
-                        onClick={() => setActiveTab('activos')}
-                    >
-                        Activos
-                    </button>
-                    <button
-                        className={activeTab === 'eliminados' ? 'active' : ''}
-                        onClick={() => setActiveTab('eliminados')}
-                    >
-                        Eliminados
-                    </button>
-                </div>
-            </div>
-
-            {/* Contenedor principal de la lista */}
-            <div className="content-card">
-                {/* Barra de búsqueda */}
-                <div className="search-bar">
-                    <input type="text" placeholder="Buscar por Nombre" />
-                    <button className="search-button">
-                        <MdSearch />
-                        Buscar
-                    </button>
-                </div>
-
-                {/* Lista de Usuarios (Estática) */}
-                <div className="user-list">
-                    {/* Cabecera de la lista */}
-                    <div className="user-list-header">
-                        <div className="col-name">Nombre</div>
-                        <div className="col-email">Correo</div>
-                        <div className="col-actions">Acciones</div>
-                    </div>
-
-                    {/* Filas de datos (generadas desde el array estático) */}
-                    {staticUsers.map((user) => (
-                        <div className="user-list-row" key={user.id}>
-                            <div className="col-name">{user.name}</div>
-                            <div className="col-email">{user.email}</div>
-                            <div className="col-actions">
-                                <button className="action-icon"><MdRemoveRedEye /></button>
-
-                                <button className="action-icon delete"><MdDelete /></button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-};
-
 export const DeletedUsers: React.FC = () => {
-    const [activeTab, setActiveTab] = useState('eliminados');
+    // 2. 'activeTab' ahora se basa en la URL
+    const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
 
     return (
         <div className="users-page">
-            {/* Cabecera de la página de usuarios */}
             <header className="users-page-header">
                 <h2>Usuarios Eliminados</h2>
             </header>
 
-            {/* Barra de herramientas con tabs */}
+            {/* 3. Barra de herramientas con ENLACES */}
             <div className="toolbar">
                 <div className="tabs">
-                    <button
-                        className={activeTab === 'activos' ? 'active' : ''}
-                        onClick={() => setActiveTab('activos')}
+                    {/* Enlace a Activos */}
+                    <Link 
+                        to="/usuarios"
+                        className={location.pathname === '/usuarios' ? 'active' : ''}
                     >
                         Activos
-                    </button>
-                    <button
-                        className={activeTab === 'eliminados' ? 'active' : ''}
-                        onClick={() => setActiveTab('eliminados')}
+                    </Link>
+                    {/* Enlace a Eliminados */}
+                    <Link
+                        to="/usuarios/eliminados"
+                        className={location.pathname === '/usuarios/eliminados' ? 'active' : ''}
                     >
                         Eliminados
-                    </button>
+                    </Link>
                 </div>
             </div>
 
             {/* Contenedor principal de la lista */}
             <div className="content-card">
-                {/* Barra de búsqueda */}
                 <div className="search-bar">
                     <input
                         type="text"
@@ -141,16 +66,13 @@ export const DeletedUsers: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Lista de Usuarios Eliminados */}
                 <div className="user-list">
-                    {/* Cabecera de la lista */}
                     <div className="user-list-header">
                         <div className="col-name">Nombre</div>
                         <div className="col-email">Correo</div>
                         <div className="col-actions">Acciones</div>
                     </div>
 
-                    {/* Filas de datos (filtradas por el término de búsqueda) */}
                     {deletedUsers
                         .filter((user) =>
                             user.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -161,7 +83,7 @@ export const DeletedUsers: React.FC = () => {
                                 <div className="col-email">{user.email}</div>
                                 <div className="col-actions">
                                     <button className="action-icon">
-                                        <MdRestore /> {/* Icono de restaurar */}
+                                        <MdRestore />
                                     </button>
                                     <button className="action-icon delete">
                                         <MdDelete />
