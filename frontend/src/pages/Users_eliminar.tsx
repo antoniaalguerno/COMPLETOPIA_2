@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MdSearch, MdRestore,} from 'react-icons/md';
+// Agregamos el icono de borrado permanente
+import { MdSearch, MdRestore, MdDeleteForever } from 'react-icons/md';
 import axios from 'axios';
 import '../css/users.css';
 
@@ -54,6 +55,25 @@ export const DeletedUsers: React.FC = () => {
       } catch (error) {
         console.error('Error al restaurar usuario:', error);
         alert('Error al restaurar el usuario ❌');
+      }
+    }
+  };
+
+  // 🔹 NUEVA FUNCIÓN: Eliminar permanentemente
+  const handleDeletePermanent = async (id: number) => {
+    // Confirmación doble para mayor seguridad
+    if (window.confirm('⚠️ ¿Estás completamente seguro? Esta acción NO se puede deshacer y el usuario será eliminado de la base de datos para siempre.')) {
+      try {
+        await axios.delete(
+          // Asegúrate de que esta URL coincida con la que configuraste en Django
+          `http://127.0.0.1:8000/api/administrator/users/${id}/delete/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        alert('Usuario eliminado permanentemente 🗑️');
+        fetchDeletedUsers(); // recarga la lista para quitar al usuario borrado
+      } catch (error) {
+        console.error('Error al eliminar permanentemente:', error);
+        alert('Hubo un error al intentar eliminar el usuario permanentemente.');
       }
     }
   };
@@ -122,10 +142,23 @@ export const DeletedUsers: React.FC = () => {
                 </div>
                 <div className="col-email">{user.email}</div>
                 <div className="col-actions">
-                  <button className="action-icon" onClick={() => handleRestore(user.id)}>
+                  {/* Botón Restaurar */}
+                  <button 
+                    className="action-icon" 
+                    onClick={() => handleRestore(user.id)}
+                    title="Restaurar usuario"
+                  >
                     <MdRestore />
                   </button>
-                  {/* Aquí podrías agregar eliminar permanentemente si quieres */}
+                  
+                  {/* NUEVO BOTÓN: Eliminar permanentemente */}
+                  <button 
+                    className="action-icon delete" 
+                    onClick={() => handleDeletePermanent(user.id)}
+                    title="Eliminar permanentemente"
+                  >
+                    <MdDeleteForever />
+                  </button>
                 </div>
               </div>
             ))
