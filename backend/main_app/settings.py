@@ -12,23 +12,38 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Load environment variables from a local .env file (if present)
+# Minimal parser to avoid extra dependencies
+_ENV_PATH = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(_ENV_PATH):
+    with open(_ENV_PATH, "r", encoding="utf-8") as _env_file:
+        for _raw in _env_file:
+            _line = _raw.strip()
+            if not _line or _line.startswith("#") or "=" not in _line:
+                continue
+            _key, _val = _line.split("=", 1)
+            _key = _key.strip()
+            _val = _val.strip().strip('"').strip("'")
+            os.environ.setdefault(_key, _val)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*x@(j@3=_b*s*^n60q#xp@^o&8l=#fwjndpfm@ozotx0hnq@x3'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+# Read DEBUG from environment (defaults to False if absent)
+DEBUG = os.environ.get('DEBUG', 'False').strip().lower() in ('1', 'true', 'yes', 'y')
+# Permitidos desde variable de entorno (por defecto localhost)
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get('ALLOWED_HOSTS').split(',') if h.strip()
+]
 
 
 # Application definition
@@ -61,10 +76,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'main_app.urls'
-# Configuración de CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # URL de tu frontend
-]
+# Configuración de CORS (solo desde .env, separado por comas)
+_CORS_ORIGINS_RAW = os.environ['CORS_ALLOWED_ORIGINS']
+CORS_ALLOWED_ORIGINS = [o.strip() for o in _CORS_ORIGINS_RAW.split(',') if o.strip()]
+
+# CSRF trusted origins (comma-separated in env)
+_CSRF_TRUSTED_RAW = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _CSRF_TRUSTED_RAW.split(',') if o.strip()]
 
 TEMPLATES = [
     {
@@ -92,11 +110,11 @@ WSGI_APPLICATION = 'main_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT', 5432),
+        'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB_NAME')),
+        'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER')),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASSWORD')),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -125,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'Chile/Continental'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -150,13 +168,13 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_REDIRECT_URL = 'check_profile'
 LOGOUT_REDIRECT_URL = 'login'
 
-#Emails
-DEFAULT_FROM_EMAIL = "smtp@gmail.com"#agregue un correo que aparecerá en el correo enviado, este no necesariamente debe ser una casilla que exista
-EMAIL_HOST = 'smtp.gmail.com'#servidor de salida del proveedor de correo, por lo general se usa smtp.dominio
-EMAIL_PORT = 587 #Puerto del servidor de salida, el proveedor de correo debe indicar el puerto que usará
-EMAIL_HOST_USER = 'innovatech.envios@gmail.com'#correo que se usará para el envio, esta casilla debe existir en el servidor
-EMAIL_HOST_PASSWORD = 'qwiahsjcvmgrzmew'#contraseña de acceso del correo usado en el paso anterior
-EMAIL_USE_TLS = True #habilita el protocolo de seguridad que cifra los correos
+# Emails (solo desde .env)
+DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_PORT = int(os.environ['EMAIL_PORT'])
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS'].strip().lower() in ('1', 'true', 'yes', 'y')
 
 MANIFEST_LOADER = {
     'output_dir': 'core/static/dist/',  # where webpack outputs to, if not 
@@ -173,4 +191,3 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
