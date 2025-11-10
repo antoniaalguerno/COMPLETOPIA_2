@@ -26,10 +26,14 @@ class Product(models.Model):
     supply_name = models.CharField(max_length=100, null=True, blank=True)
     supply_code = models.CharField(max_length=240, null=True, blank=True)
     supply_unit = models.CharField(max_length=240, null=True, blank=True)
-    supply_initial_stock = models.CharField(max_length=100, null=True, blank=True, default='No')
-    supply_input = models.CharField(max_length=240, null=True, blank=True)
-    supply_output = models.CharField(max_length=240, null=True, blank=True)
-    supply_total =  models.CharField(max_length=240, null=True, blank=True)
+    supply_initial_stock = models.IntegerField(default=0)
+    supply_input = models.IntegerField(default=0)
+    supply_output = models.IntegerField(default=0)
+
+
+    @property
+    def supply_total(self):
+        return self.supply_initial_stock + self.supply_input - self.supply_output
 
     def get_nombre_producto(self):
         return f'{self.supply_name} ({self.supply_unit})'
