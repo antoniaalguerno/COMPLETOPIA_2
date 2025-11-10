@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -88,13 +91,12 @@ WSGI_APPLICATION = 'main_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST' : 'localhost',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        'NAME': 'completopia_2',
-        'USER' : 'postgres',
-        'PASSWORD': 'postgres',
-
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', 5432),
     }
 }
 
