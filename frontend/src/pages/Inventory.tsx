@@ -1,4 +1,6 @@
-import React from 'react';
+// Inventory.tsx (Modificado)
+
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
     MdAdd,
@@ -8,40 +10,107 @@ import {
     MdArrowBack
 } from 'react-icons/md';
 import '../css/Inventory.css';
-// Importamos también el CSS del dashboard para reutilizar los estilos de las pestañas
-import '../css/InventoryDashboard.css'; 
+import '../css/InventoryDashboard.css';
 
 type InventoryItem = {
     id: number;
-    producto: string;
-    codigo: string;
-    unidad: string;
-    stockInicial: number;
-    entradas: number;
-    salidas: number;
-    total: number;
+    supply_name: string;
+    supply_code: string;
+    supply_unit: string;
+    supply_initial_stock: number;
+    supply_input: number;
+    supply_output: number;
+    supply_total: number;
 };
-
-const staticInventory: InventoryItem[] = [
-    {
-        id: 1,
-        producto: 'pan',
-        codigo: 'SKU1234',
-        unidad: 'kg',
-        stockInicial: 20,
-        entradas: 0,
-        salidas: 19,
-        total: 1
-    },
-];
 
 export const Inventory: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation(); // Necesario para saber qué pestaña está activa
+    const location = useLocation();
+
+    const [inventory, setInventory] = useState<InventoryItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const fetchData = async (query: string = '') => {
+        setLoading(true);
+        setError(null);
+
+        const token = localStorage.getItem('access');
+        if (!token) {
+            setError('No estás autenticado.');
+            setLoading(false);
+            return;
+        }
+
+        const url = query
+            ? `http://localhost:8000/api/inventario/products/?q=${query}`
+            : 'http://localhost:8000/api/inventario/products/';
+
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.detail || 'Error al cargar el inventario');
+            }
+
+            const data: InventoryItem[] = await response.json();
+            setInventory(data);
+
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const handleSearch = () => {
+        fetchData(searchQuery);
+    };
+
+    const handleDelete = async (productId: number) => {
+        if (!window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+            return;
+        }
+
+        const token = localStorage.getItem('access');
+        if (!token) {
+            setError('No estás autenticado.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/inventario/products/${productId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok && response.status !== 204) {
+                const errData = await response.json();
+                throw new Error(errData.detail || 'Error al eliminar el producto');
+            }
+
+            setInventory(prev => prev.filter(item => item.id !== productId));
+
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
 
     return (
         <div className="inventory-page">
-            {/* Cabecera de la página */}
+
             <header className="inventory-page-header">
                 <h2>Inventario</h2>
                 <Link to="/inventario/nuevo" className="add-item-button">
@@ -49,27 +118,23 @@ export const Inventory: React.FC = () => {
                 </Link>
             </header>
 
-            {/* --- NAVEGACIÓN DE PESTAÑAS (Añadido) --- */}
             <nav className="inventory-tabs" style={{ marginBottom: '1.5rem' }}>
-                <Link 
-                    to="/inventario" 
+                <Link
+                    to="/inventario"
                     className={`tab-item ${location.pathname === '/inventario' ? 'active' : ''}`}
                 >
                     Dashboard
                 </Link>
-                <Link 
-                    to="/inventario/listado" 
+                <Link
+                    to="/inventario/listado"
                     className={`tab-item ${location.pathname === '/inventario/listado' ? 'active' : ''}`}
                 >
                     Listado de inventario
                 </Link>
             </nav>
-            {/* ------------------------------------ */}
 
-            {/* Tarjeta de contenido principal */}
             <div className="content-card">
 
-                {/* Barra de herramientas dentro de la tarjeta (Flecha y Búsqueda) */}
                 <div className="card-toolbar">
                     <button
                         className="back-button icon-button-large"
@@ -77,50 +142,67 @@ export const Inventory: React.FC = () => {
                     >
                         <MdArrowBack />
                     </button>
+
                     <div className="search-bar">
-                        <input type="text" placeholder="Buscar por Nombre" />
-                        <button className="search-button">
+                        <input
+                            type="text"
+                            placeholder="Buscar por Nombre"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button className="search-button" onClick={handleSearch}>
                             <MdSearch />
                             Buscar
                         </button>
                     </div>
                 </div>
 
-                {/* Lista de Inventario (Tabla) */}
-                <div className="inventory-list">
-                    {/* Cabecera de la lista */}
-                    <div className="inventory-list-header">
-                        <div>Producto</div>
-                        <div>Codigo</div>
-                        <div>Unidad</div>
-                        <div className="text-right">Stock Inicial</div>
-                        <div className="text-right">Entradas</div>
-                        <div className="text-right">Salidas</div>
-                        <div className="text-right">Total</div>
-                        <div className="text-center">Acciones</div>
-                    </div>
+                {loading && <div className="text-center">Cargando productos...</div>}
+                {error && <div className="text-center" style={{ color: 'red' }}>{error}</div>}
 
-                    {/* Filas de datos */}
-                    {staticInventory.map((item) => (
-                        <div className="inventory-list-row" key={item.id}>
-                            <div>{item.producto}</div>
-                            <div>{item.codigo}</div>
-                            <div>{item.unidad}</div>
-                            <div className="text-right">{item.stockInicial}</div>
-                            <div className="text-right">{item.entradas}</div>
-                            <div className="text-right">{item.salidas}</div>
-                            <div className="text-right">{item.total}</div>
-                            <div className="col-actions text-center">
-                                <Link to={`/inventario/editar/${item.id}`} className="action-icon">
-                                    <MdEdit />
-                                </Link>
-                                <button className="action-icon delete">
-                                    <MdDelete />
-                                </button>
-                            </div>
+                {!loading && !error && (
+                    <div className="inventory-list">
+                        <div className="inventory-list-header">
+                            <div>Producto</div>
+                            <div>Codigo</div>
+                            <div>Unidad</div>
+                            <div className="text-right">Stock Inicial</div>
+                            <div className="text-right">Entradas</div>
+                            <div className="text-right">Salidas</div>
+                            <div className="text-right">Total</div>
+                            <div className="text-center">Acciones</div>
                         </div>
-                    ))}
-                </div>
+
+                        {inventory.map((item) => (
+                            <div className="inventory-list-row" key={item.id}>
+                                <div>{item.supply_name}</div>
+                                <div>{item.supply_code}</div>
+                                <div>{item.supply_unit}</div>
+                                <div className="text-right">{item.supply_initial_stock}</div>
+                                <div className="text-right">{item.supply_input}</div>
+                                <div className="text-right">{item.supply_output}</div>
+                                <div className="text-right">{item.supply_total}</div>
+
+                                <div className="col-actions text-center">
+                                    <Link
+                                        to={`/inventario/editar/${item.id}`}
+                                        className="action-icon"
+                                    >
+                                        <MdEdit />
+                                    </Link>
+
+                                    <button
+                                        className="action-icon delete"
+                                        onClick={() => handleDelete(item.id)}
+                                    >
+                                        <MdDelete />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
             </div>
         </div>
     );
