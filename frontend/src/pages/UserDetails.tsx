@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import '../css/userdetails.css';
+import { getUser } from '../api/admin'; // <-- IMPORTAMOS LA FUNCIÓN
 
 interface UserDetailsData {
   rut: string;
@@ -16,7 +16,6 @@ interface UserDetailsData {
 export const UserDetails: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const token = localStorage.getItem('access');
 
   const [userData, setUserData] = useState<UserDetailsData>({
     rut: '',
@@ -25,7 +24,7 @@ export const UserDetails: React.FC = () => {
     direccion: '',
     first_name: '',
     last_name: '',
-    profile_image: null,
+    profile_image: null
   });
 
   const [loading, setLoading] = useState(true);
@@ -35,14 +34,8 @@ export const UserDetails: React.FC = () => {
       if (!userId) return;
 
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/administrator/users/${userId}/`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const data = response.data;
+        // USAMOS LA FUNCIÓN DE LA API
+        const data = await getUser(userId);
 
         setUserData({
           rut: data.rut || '',
@@ -51,7 +44,7 @@ export const UserDetails: React.FC = () => {
           direccion: data.address || '',
           first_name: data.first_name || '',
           last_name: data.last_name || '',
-          profile_image: data.profile_image || null,
+          profile_image: data.profile_image || null
         });
       } catch (error) {
         console.error('Error al cargar usuario:', error);
@@ -62,7 +55,7 @@ export const UserDetails: React.FC = () => {
     };
 
     fetchUser();
-  }, [userId, token]);
+  }, [userId]);
 
   const handleBack = () => navigate(-1);
 
@@ -89,7 +82,10 @@ export const UserDetails: React.FC = () => {
               <span>Foto de Perfil</span>
             </div>
           )}
-          <h3 className="profile-name">{userData.first_name} {userData.last_name}</h3>
+
+          <h3 className="profile-name">
+            {userData.first_name} {userData.last_name}
+          </h3>
         </div>
 
         <div className="details-info-box">
