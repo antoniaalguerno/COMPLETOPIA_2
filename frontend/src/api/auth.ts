@@ -1,13 +1,34 @@
 // src/api/auth.ts
-export async function login(email: string, password: string) {
-  const response = await fetch("http://127.0.0.1:8000/api/login/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+import api from './client'; // <-- 1. Importa nuestro cliente
 
-  if (!response.ok) throw new Error("Credenciales inválidas");
-  const data = await response.json();
-  localStorage.setItem("access", data.access);
-  return data;
+// Tu función login ahora usa 'api.post'
+export async function login(email: string, password: string) {
+  try {
+    // 2. Usa 'api.post' y la ruta relativa (la base ya está en el cliente)
+    const response = await api.post("login/", { email, password });
+
+    // 3. Con Axios, los datos están en 'response.data'
+    const data = response.data;
+    localStorage.setItem("access", data.access);
+    localStorage.setItem("refresh", data.refresh); // <-- Asegúrate de guardar el refresh token
+    localStorage.setItem("user", JSON.stringify(data.user)); // <-- También lo guardamos
+
+    return data;
+
+  } catch (error: any) {
+    // 4. Si falla, lanza un error para que el componente lo atrape
+    console.error("Error en login (auth.ts):", error);
+    const errorMsg = error.response?.data?.detail || "Credenciales inválidas";
+    throw new Error(errorMsg);
+  }
+}
+
+// Puedes añadir la función de logout aquí también
+export function logout() {
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+  localStorage.removeItem("user");
+  // Opcional: llamar a un endpoint de 'blacklist' si lo tienes
+  // api.post('/logout/'); 
+  window.location.href = "/login";
 }

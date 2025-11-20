@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/newuser.css';
 import { buildRegionOptions, buildCommuneOptions } from '../data/todochile';
+import { createUser } from '../api/admin'; // <-- IMPORTAMOS LA FUNCIÓN
 
 export const NewUser: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,6 @@ export const NewUser: React.FC = () => {
   const [comunasOptions, setComunasOptions] = useState<{ value: string; label: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Cuando cambia la región, actualizamos las comunas
   useEffect(() => {
     if (formData.region) {
       setComunasOptions(buildCommuneOptions(formData.region));
@@ -34,10 +34,11 @@ export const NewUser: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [id]: value,
-      ...(id === 'region' ? { comuna: '' } : {}), // reset comuna si cambia región
+      ...(id === 'region' ? { comuna: '' } : {}),
     }));
 
     if (id === 'region') {
@@ -55,8 +56,6 @@ export const NewUser: React.FC = () => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('access');
-
       const data = new FormData();
       data.append('first_name', formData.first_name);
       data.append('last_name', formData.last_name);
@@ -71,25 +70,14 @@ export const NewUser: React.FC = () => {
       data.append('comuna', formData.comuna);
       if (formData.profile_image) data.append('profile_image', formData.profile_image);
 
-      const response = await fetch('http://127.0.0.1:8000/api/administrator/users/create/', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: data,
-      });
+      await createUser(data);
 
-      const result = await response.json();
-
-      if (response.ok) {
-        alert('✅ Usuario creado correctamente');
-        navigate('/usuarios');
-      } else {
-        alert(`❌ Error: ${result.error || 'No se pudo crear el usuario'}`);
-      }
-    } catch (error) {
+      alert('✅ Usuario creado correctamente');
+      navigate('/usuarios');
+    } catch (error: any) {
       console.error('Error creando usuario:', error);
-      alert('❌ Error al conectar con el servidor');
+      const errorMsg = error.response?.data?.error || 'No se pudo crear el usuario';
+      alert(`❌ Error: ${errorMsg}`);
     } finally {
       setLoading(false);
     }
@@ -100,25 +88,52 @@ export const NewUser: React.FC = () => {
   return (
     <div className="new-user-page">
       <h2>Nuevo usuario</h2>
+
       <form className="user-form-card" onSubmit={handleSubmit}>
         <div className="form-grid">
-          {/* --- TODOS TUS CAMPOS EXISTENTES --- */}
           <div className="form-group">
             <label htmlFor="first_name">Nombre</label>
-            <input type="text" id="first_name" value={formData.first_name} onChange={handleChange} required />
+            <input
+              type="text"
+              id="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+              required
+            />
           </div>
+
           <div className="form-group">
             <label htmlFor="last_name">Apellido</label>
-            <input type="text" id="last_name" value={formData.last_name} onChange={handleChange} required />
+            <input
+              type="text"
+              id="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+              required
+            />
           </div>
+
           <div className="form-group">
             <label htmlFor="run">RUN</label>
-            <input type="text" id="run" value={formData.run} onChange={handleChange} />
+            <input
+              type="text"
+              id="run"
+              value={formData.run}
+              onChange={handleChange}
+            />
           </div>
+
           <div className="form-group">
             <label htmlFor="email">Correo</label>
-            <input type="email" id="email" value={formData.email} onChange={handleChange} required />
+            <input
+              type="email"
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
+
           <div className="form-group">
             <label htmlFor="group">Cargo</label>
             <select id="group" value={formData.group} onChange={handleChange}>
@@ -127,22 +142,37 @@ export const NewUser: React.FC = () => {
               <option value="3">Bodeguero</option>
             </select>
           </div>
+
           <div className="form-group">
             <label htmlFor="mobile">Teléfono</label>
-            <input type="tel" id="mobile" value={formData.mobile} onChange={handleChange} />
-          </div>
-          <div className="form-group span-2">
-            <label htmlFor="direccion">Dirección</label>
-            <input type="text" id="direccion" value={formData.direccion} onChange={handleChange} />
+            <input
+              type="tel"
+              id="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+            />
           </div>
 
-          {/* --- REGIÓN Y COMUNA --- */}
+          <div className="form-group span-2">
+            <label htmlFor="direccion">Dirección</label>
+            <input
+              type="text"
+              id="direccion"
+              value={formData.direccion}
+              onChange={handleChange}
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="region">Región</label>
             <select id="region" value={formData.region} onChange={handleChange}>
-              <option value="" disabled>Seleccione una región</option>
+              <option value="" disabled>
+                Seleccione una región
+              </option>
               {buildRegionOptions().map((r) => (
-                <option key={r.value} value={r.value}>{r.label}</option>
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
               ))}
             </select>
           </div>
@@ -150,15 +180,19 @@ export const NewUser: React.FC = () => {
           <div className="form-group">
             <label htmlFor="comuna">Comuna</label>
             <select id="comuna" value={formData.comuna} onChange={handleChange}>
-              <option value="" disabled>Seleccione una comuna</option>
+              <option value="" disabled>
+                Seleccione una comuna
+              </option>
               {comunasOptions.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
               ))}
             </select>
           </div>
 
           <div className="form-group span-2">
-            <label htmlFor="profile_image">Foto</label>
+            <label htmlFor="foto">Foto</label>
             <input type="file" id="profile_image" onChange={handleFileChange} />
           </div>
         </div>
@@ -167,6 +201,7 @@ export const NewUser: React.FC = () => {
           <button type="submit" className="button-create" disabled={loading}>
             {loading ? 'Creando...' : 'Crear'}
           </button>
+
           <button type="button" className="button-back" onClick={handleBack}>
             Volver
           </button>

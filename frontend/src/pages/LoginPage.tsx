@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/login.css';
-import { MdOutlineEmail, MdLockOutline, MdVisibility, MdVisibilityOff } from 'react-icons/md';
-// Asegúrate de tener este logo en src/assets/
+import {
+  MdOutlineEmail,
+  MdLockOutline,
+  MdVisibility,
+  MdVisibilityOff
+} from 'react-icons/md';
 import logoCompletetopia from '../pages/logo1.png';
+import { login } from '../api/auth'; // <-- IMPORTAMOS NUESTRA FUNCIÓN
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,37 +16,18 @@ export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  try {
-    const response = await fetch('http://127.0.0.1:8000/api/login/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      // Guarda los tokens en localStorage
-      localStorage.setItem('access', data.access);
-      localStorage.setItem('refresh', data.refresh);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      console.log('✅ Login exitoso', data);
-      navigate('/inicio'); // redirige al inicio
-    } else {
-      alert(data.error || 'Error al iniciar sesión');
+    try {
+      await login(email, password);
+      console.log('✅ Login exitoso');
+      navigate('/inicio');
+    } catch (error: any) {
+      console.error('Error en login:', error);
+      alert(error.message || 'Error al iniciar sesión');
     }
-  } catch (error) {
-    console.error('Error en login:', error);
-    alert('Ocurrió un error al intentar iniciar sesión');
-  }
-};
-
+  };
 
   return (
     <div className="login-container">
@@ -78,8 +64,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           <Link to="/recuperar-contrasena" className="forgot-password-link">
-  ¿Olvidaste tu contraseña?
-</Link>
+            ¿Olvidaste tu contraseña?
+          </Link>
 
           <button type="submit" className="login-button">
             Iniciar sesión
@@ -88,7 +74,11 @@ const handleSubmit = async (e: React.FormEvent) => {
       </div>
 
       <div className="logo-panel">
-        <img src={logoCompletetopia} alt="Logo Completetopia" className="logo-image" />
+        <img
+          src={logoCompletetopia}
+          alt="Logo Completetopia"
+          className="logo-image"
+        />
       </div>
     </div>
   );

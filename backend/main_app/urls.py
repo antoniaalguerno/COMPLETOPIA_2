@@ -3,17 +3,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from core.urls import core_urlpatterns
-from inventario.urls import inventario_patterns
 from registration.urls import urlpatterns
 
 
 urlpatterns = [
     path('',include(core_urlpatterns)),
-    path("inventario/",include(inventario_patterns)),
     path('admin/', admin.site.urls),
     path('accounts/',include('django.contrib.auth.urls')),
     path('', include('registration.urls')),
     path('api/administrator/', include('administrator.urls')),
+    path('api/inventario/', include('inventario.urls')),
 
 ]
 
