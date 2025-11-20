@@ -93,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'completopia_2',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': '692001',
         'HOST': 'localhost',
         'PORT': '5432',
     }
