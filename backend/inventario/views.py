@@ -35,19 +35,23 @@ def format_product_id(product):
 # 🔹 1. PERMISO PERSONALIZADO (Sin Cambios)
 # -----------------------------------------------------------------
 class IsAdminUser(permissions.BasePermission):
-    """Permiso personalizado para permitir solo a usuarios del grupo 1 (Admin)."""
+    """
+    Permiso personalizado que verifica si el usuario es un superusuario 
+    O si pertenece al grupo 'Administradores'.
+    """
     message = 'No tienes permisos de administrador para realizar esta acción.'
 
     def has_permission(self, request, view):
         if not request.user or not request.user.is_authenticated:
             return False
-        try:
-            # Asumimos que Profile sigue usando el ORM/Django
-            profile = Profile.objects.get(user=request.user) 
-            return profile.group_id == 1
-        except Profile.DoesNotExist:
-            return False
-
+            
+        # Verifica si es Superusuario (por si acaso) 
+        if request.user.is_superuser:
+            return True
+        
+        # 🚨 Verifica si pertenece al grupo 'Administradores'
+        return request.user.groups.filter(name='Administradores').exists()
+    
 # -----------------------------------------------------------------
 # 🔹 2. SERIALIZER DEL PRODUCTO (Ajustado a Serializer base)
 # -----------------------------------------------------------------

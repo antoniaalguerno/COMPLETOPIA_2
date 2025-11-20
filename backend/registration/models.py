@@ -26,7 +26,6 @@ class Profile(models.Model):
         ordering = ['user__username']
 
 
-
 class Region(models.Model):
     nombre = models.CharField(max_length=100)
     def __str__(self):
@@ -38,6 +37,3 @@ class Comuna(models.Model):
 
     def __str__(self):
         return self.nombre
-
-
-
