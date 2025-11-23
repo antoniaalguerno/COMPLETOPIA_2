@@ -1,58 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom'; // Importamos useLocation
+import { Outlet, useLocation } from 'react-router-dom'; 
+import { MdMenu } from 'react-icons/md';
+
+// Importamos tus componentes
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
-import { MdMenu } from 'react-icons/md';
+import { ChatWidget } from './ChatWidget'; // <--- Nueva importación
+
 import '../../css/Layout.css';
 
 export const Layout: React.FC = () => {
-  const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const location = useLocation();
+    
+    // 1. Estados
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false); // <--- Estado del Chat
 
-  // 1. Detectamos si estamos en la página de inicio
-  const isHomePage = location.pathname === '/inicio';
+    // 2. Detectamos si estamos en la página de inicio
+    const isHomePage = location.pathname === '/inicio' || location.pathname === '/';
 
-  // 2. Calculamos si la barra debe mostrarse.
-  // Si NO es home page, SIEMPRE debe estar abierta (true).
-  // Si ES home page, depende del estado 'isSidebarOpen'.
-  const showSidebar = isHomePage ? isSidebarOpen : true;
+    // 3. Calculamos si la barra debe mostrarse (Lógica Original Conservada)
+    // Si NO es home page, SIEMPRE debe estar abierta (true).
+    // Si ES home page, depende del estado 'isSidebarOpen'.
+    const showSidebar = isHomePage ? isSidebarOpen : true;
 
-  // (Opcional) Efecto para cerrar la sidebar automáticamente al cambiar de ruta
-  // si estabas en inicio y navegas a otra parte, y luego vuelves.
-  useEffect(() => {
-      if (!isHomePage) {
-          setIsSidebarOpen(false); // Reseteamos el estado al salir de inicio
-      }
-  }, [location.pathname, isHomePage]);
+    // 4. Efecto para cerrar la sidebar automáticamente al salir del inicio (Lógica Original)
+    useEffect(() => {
+        if (!isHomePage) {
+            setIsSidebarOpen(false); 
+        }
+    }, [location.pathname, isHomePage]);
 
-  return (
-    // Añadimos una clase extra si estamos en modo 'static' (no home) por si la necesitas en CSS
-    <div className={`app-container ${showSidebar ? 'sidebar-open' : 'sidebar-closed'} ${!isHomePage ? 'sidebar-static' : ''}`}>
-      
-      {/* 3. El botón de hamburguesa SOLO se muestra si estamos en HomePage Y la barra está cerrada */}
-      {isHomePage && !showSidebar && (
-        <button 
-          className="hamburger-button" 
-          onClick={() => setIsSidebarOpen(true)}
-        >
-          <MdMenu />
-        </button>
-      )}
+    // 5. Función para abrir/cerrar el chat
+    const toggleChat = () => {
+        setIsChatOpen(!isChatOpen);
+    };
 
-      <Header />
-      
-      <div className="body-wrapper">
-        {/* 4. Pasamos 'showSidebar' calculado y una nueva prop 'canClose' */}
-        <Sidebar 
-            isOpen={showSidebar} 
-            onClose={() => setIsSidebarOpen(false)}
-            canClose={isHomePage} // Solo se puede cerrar si estamos en HomePage
-        />
-        
-        <main className="content-area">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
+    return (
+        // Mantenemos tus clases originales para no romper el CSS
+        <div className={`app-container ${showSidebar ? 'sidebar-open' : 'sidebar-closed'} ${!isHomePage ? 'sidebar-static' : ''}`}>
+            
+            {/* --- BOTÓN HAMBURGUESA RESTAURADO --- */}
+            {/* Solo se muestra si estamos en HomePage Y la barra está cerrada */}
+            {isHomePage && !showSidebar && (
+                <button 
+                    className="hamburger-button" 
+                    onClick={() => setIsSidebarOpen(true)}
+                >
+                    <MdMenu />
+                </button>
+            )}
+
+            <Header />
+            
+            <div className="body-wrapper">
+                {/* Sidebar con la lógica original + la nueva prop del chat */}
+                <Sidebar 
+                    isOpen={showSidebar} 
+                    onClose={() => setIsSidebarOpen(false)}
+                    canClose={isHomePage} // Solo se cierra en Home
+                    onOpenChat={() => setIsChatOpen(true)} // <--- Conexión al chat
+                />
+                
+                <main className="content-area">
+                    <Outlet />
+                </main>
+            </div>
+
+            {/* --- CHAT WIDGET AÑADIDO --- */}
+            {/* Se renderiza fuera del flow principal para flotar sobre todo */}
+            <ChatWidget 
+                isOpen={isChatOpen} 
+                onToggle={toggleChat} 
+            />
+        </div>
+    );
 };

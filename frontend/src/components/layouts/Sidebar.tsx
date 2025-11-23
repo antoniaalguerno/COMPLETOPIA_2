@@ -4,14 +4,14 @@ import { MdHome, MdGroup, MdInventory, MdChevronLeft } from 'react-icons/md';
 import logo from '../../pages/logo1.png'; 
 import '../../css/Layout.css';
 
-// Añadimos 'canClose' a la interfaz
 interface SidebarProps {
     isOpen: boolean;
     onClose: () => void;
-    canClose: boolean; // Nueva prop
+    canClose: boolean;
+    onOpenChat: () => void; // 1. Nueva prop para abrir el chat
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, canClose }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, canClose, onOpenChat }) => {
     const location = useLocation();
     const currentPath = location.pathname;
 
@@ -24,7 +24,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, canClose }) =
     return (
         <aside className={`sidebar ${isOpen ? '' : 'closed'}`}>
             
-            {/* SOLO mostramos el botón de cerrar si 'canClose' es true */}
             {canClose && (
                 <button className="close-sidebar-button" onClick={onClose}>
                     <MdChevronLeft />
@@ -54,7 +53,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, canClose }) =
                 </ul>
             </nav>
 
-            <div className="floating-logo">
+            {/* 2. Hacemos el logo clickeable */}
+            <div 
+                className="floating-logo" 
+                onClick={onOpenChat} 
+                style={{ cursor: 'pointer' }} // Estilo inline rápido para indicar click
+                title="Haz clic para abrir el asistente"
+            >
                  <img src={logo} alt="Completetopia Logo" />
             </div>
         </aside>
