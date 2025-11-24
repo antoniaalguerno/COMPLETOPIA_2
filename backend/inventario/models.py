@@ -20,6 +20,7 @@ class Product(models.Model):
         return f'{self.supply_name} ({self.supply_unit})'
     
     class Meta:
+        managed = False
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
         ordering = ['supply_name']
