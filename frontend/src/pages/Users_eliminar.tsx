@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // Agregamos el icono de borrado permanente
 import { MdSearch, MdRestore, MdDeleteForever } from 'react-icons/md';
-import axios from 'axios';
 import '../css/users.css';
 // IMPORTAMOS LAS FUNCIONES DE LA API
 import { getBlockedUsers, activateUser } from '../api/admin';
+import api from '../api/client';
 
 type User = {
   id: number;
@@ -61,11 +61,7 @@ export const DeletedUsers: React.FC = () => {
     // Confirmación doble para mayor seguridad
     if (window.confirm('⚠️ ¿Estás completamente seguro? Esta acción NO se puede deshacer y el usuario será eliminado de la base de datos para siempre.')) {
       try {
-        await axios.delete(
-          // Asegúrate de que esta URL coincida con la que configuraste en Django
-          `http://127.0.0.1:8000/api/administrator/users/${id}/delete/`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await api.delete(`/administrator/users/${id}/delete/`);
         alert('Usuario eliminado permanentemente 🗑️');
         fetchDeletedUsers(); // recarga la lista para quitar al usuario borrado
       } catch (error) {

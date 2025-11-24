@@ -5,7 +5,8 @@ import { MdOutlineWarningAmber } from 'react-icons/md';
 import '../css/inventorydashboard.css';
 
 // IMPORTAMOS LA FUNCIÓN DE API Y EL TIPO
-import { getLowStock, InventoryItem } from '../api/inventario';
+import { getLowStock } from '../api/inventario';
+import type { InventoryItem } from '../api/inventario';
 
 // Renombramos el tipo
 type LowStockProduct = InventoryItem;

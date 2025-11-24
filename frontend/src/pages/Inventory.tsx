@@ -12,7 +12,8 @@ import '../css/inventory.css';
 import '../css/inventorydashboard.css';
 
 // IMPORTAMOS LAS FUNCIONES Y EL TIPO
-import { getInventory, deleteProduct, InventoryItem } from '../api/inventario';
+import { getInventory, deleteProduct } from '../api/inventario';
+import type { InventoryItem } from '../api/inventario';
 
 export const Inventory: React.FC = () => {
   const navigate = useNavigate();
