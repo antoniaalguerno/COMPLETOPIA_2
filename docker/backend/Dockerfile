@@ -21,7 +21,7 @@ RUN pip install --upgrade pip && \
 COPY backend/ /app
 
 # Prepare folders used by Django
-RUN mkdir -p /app/staticfiles /app/media
+RUN mkdir -p /app/staticfiles /app/media /app/static
 
 EXPOSE 8000
 
