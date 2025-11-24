@@ -38,7 +38,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onToggle }) => {
         }
     }, [messages, isOpen]);
 
-    const handleSendMessage = (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim()) return;
 
@@ -51,18 +51,44 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ isOpen, onToggle }) => {
         };
 
         setMessages(prev => [...prev, newMessage]);
+        const userInput = input;
         setInput('');
 
-        // 2. Simular respuesta del bot (Aquí conectarás tu lógica real más adelante)
-        setTimeout(() => {
+        // 2. Llamar al backend para obtener respuesta real
+        try {
+            // Ajustado a la ruta que registra Django: /api/chat/
+            const res = await fetch('/api/chat/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userInput })
+            });
+
+            console.log('Chatbot status:', res.status);
+            const text = await res.text();
+            console.log('Chatbot raw body:', text);
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}: ${text}`);
+
+            const data = JSON.parse(text); // backend devuelve { response: '...' }
+            const botText = data.response ?? 'No se obtuvo respuesta del bot.';
+
             const botResponse: Message = {
                 id: Date.now() + 1,
-                text: 'Entendido. Estoy procesando tu solicitud en el sistema Completopia...',
+                text: botText,
                 sender: 'bot',
                 timestamp: new Date()
             };
             setMessages(prev => [...prev, botResponse]);
-        }, 1000);
+        } catch (err) {
+            const errorMsg: Message = {
+                id: Date.now() + 2,
+                text: 'Error al conectar con el servicio de chat.',
+                sender: 'bot',
+                timestamp: new Date()
+            };
+            setMessages(prev => [...prev, errorMsg]);
+            console.error('Chatbot fetch error:', err);
+        }
     };
 
     return (

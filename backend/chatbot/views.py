@@ -1,3 +1,4 @@
+# views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,12 +13,18 @@ class ChatBotView(APIView):
         if not user_message:
             return Response({'error': 'Mensaje vacío'}, status=status.HTTP_400_BAD_REQUEST)
 
-        is_waiting = request.session.get('bot_waiting', False)
+        # RECUPERAMOS EL ESTADO DE LA SESIÓN (Si no existe, iniciamos vacío)
+        # session_data será un diccionario: {'state': 'IDLE', 'order': {}}
+        session_data = request.session.get('bot_context', {})
 
-        bot = CompletoBot(waiting_order_state=is_waiting)
+        # Inicializamos el bot con la memoria de la sesión
+        bot = CompletoBot(context=session_data)
+        
+        # Obtenemos la respuesta
         response_text = bot.handle_message(user_message)
 
-        request.session['bot_waiting'] = bot.new_state
+        # GUARDAMOS EL NUEVO ESTADO EN LA SESIÓN
+        request.session['bot_context'] = bot.get_context()
 
         return Response({
             'response': response_text,
