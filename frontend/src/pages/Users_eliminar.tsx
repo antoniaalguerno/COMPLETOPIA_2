@@ -1,9 +1,12 @@
+// Users_eliminar.tsx (MODIFICADO)
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // Agregamos el icono de borrado permanente
 import { MdSearch, MdRestore, MdDeleteForever } from 'react-icons/md';
 import axios from 'axios';
 import '../css/users.css';
+// IMPORTAMOS LAS FUNCIONES DE LA API
+import { getBlockedUsers, activateUser } from '../api/admin';
 
 type User = {
   id: number;
@@ -18,7 +21,7 @@ export const DeletedUsers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem('access');
+  // YA NO NECESITAMOS EL TOKEN AQUÍ
 
   // 🔹 Cargar usuarios eliminados al inicio
   useEffect(() => {
@@ -28,13 +31,9 @@ export const DeletedUsers: React.FC = () => {
   const fetchDeletedUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        'http://127.0.0.1:8000/api/administrator/users/blocked/',
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setUsers(response.data);
+      // USAMOS LA FUNCIÓN DE LA API
+      const data = await getBlockedUsers();
+      setUsers(data);
     } catch (error) {
       console.error('Error al cargar usuarios eliminados:', error);
     } finally {
@@ -45,11 +44,9 @@ export const DeletedUsers: React.FC = () => {
   const handleRestore = async (id: number) => {
     if (window.confirm('¿Restaurar este usuario?')) {
       try {
-        await axios.post(
-          `http://127.0.0.1:8000/api/administrator/users/${id}/activate/`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        // USAMOS LA FUNCIÓN DE LA API
+        await activateUser(id);
+        
         alert('Usuario restaurado correctamente ✅');
         fetchDeletedUsers(); // recarga la lista
       } catch (error) {
@@ -93,13 +90,14 @@ export const DeletedUsers: React.FC = () => {
         <h2>Usuarios Eliminados</h2>
       </header>
 
+      {/* ... (El resto del JSX no cambia) ... */}
       <div className="toolbar">
         <div className="tabs">
           <Link to="/usuarios" className={location.pathname === '/usuarios' ? 'active' : ''}>
             Activos
           </Link>
           <Link
-            to="/usuarios/eliminados"
+            to="/usuarios/eliminADOS"
             className={location.pathname === '/usuarios/eliminados' ? 'active' : ''}
           >
             Eliminados

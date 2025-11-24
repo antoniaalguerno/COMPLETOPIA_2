@@ -1,8 +1,10 @@
+// Users.tsx (MODIFICADO)
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MdPersonAdd, MdSearch, MdRemoveRedEye, MdEdit, MdDelete } from 'react-icons/md';
-import axios from 'axios';
 import '../css/users.css';
+// IMPORTAMOS LAS FUNCIONES DE LA API
+import { getActiveUsers, blockUser } from '../api/admin';
 
 type User = {
   id: number;
@@ -17,7 +19,7 @@ export const Users: React.FC = () => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem('access');
+  // YA NO NECESITAMOS EL TOKEN AQUÍ
 
   // 🔹 Cargar usuarios al iniciar
   useEffect(() => {
@@ -27,17 +29,9 @@ export const Users: React.FC = () => {
   const fetchUsers = async (searchQuery = '') => {
     setLoading(true);
     try {
-      const endpoint = searchQuery
-        ? `http://127.0.0.1:8000/api/administrator/users/search/?q=${searchQuery}`
-        : `http://127.0.0.1:8000/api/administrator/users/active/`;
-
-      const response = await axios.get(endpoint, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setUsers(response.data);
+      // USAMOS LA FUNCIÓN DE LA API
+      const data = await getActiveUsers(searchQuery);
+      setUsers(data);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
     } finally {
@@ -49,23 +43,21 @@ export const Users: React.FC = () => {
     e.preventDefault();
     fetchUsers(query);
   };
-const handleDelete = async (id: number) => {
-  if (window.confirm('¿Seguro que quieres bloquear (eliminar) este usuario?')) {
-    try {
-      await axios.post(`http://127.0.0.1:8000/api/administrator/users/${id}/block/`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      alert('Usuario bloqueado correctamente ✅');
-      fetchUsers(); // 🔄 Recarga la lista de usuarios activos
-    } catch (error) {
-      console.error('Error al bloquear usuario:', error);
-      alert('Error al bloquear el usuario ❌');
+  const handleDelete = async (id: number) => {
+    if (window.confirm('¿Seguro que quieres bloquear (eliminar) este usuario?')) {
+      try {
+        // USAMOS LA FUNCIÓN DE LA API
+        await blockUser(id);
+        
+        alert('Usuario bloqueado correctamente ✅');
+        fetchUsers(); // 🔄 Recarga la lista de usuarios activos
+      } catch (error) {
+        console.error('Error al bloquear usuario:', error);
+        alert('Error al bloquear el usuario ❌');
+      }
     }
-  }
-};
+  };
 
 
   return (
@@ -77,6 +69,7 @@ const handleDelete = async (id: number) => {
         </Link>
       </header>
 
+      {/* ... (El resto del JSX no cambia) ... */}
       <div className="toolbar">
         <div className="tabs">
           <Link
@@ -95,7 +88,6 @@ const handleDelete = async (id: number) => {
       </div>
 
       <div className="content-card">
-        {/* 🔍 Barra de búsqueda */}
         <form className="search-bar" onSubmit={handleSearch}>
           <input
             type="text"
@@ -109,7 +101,6 @@ const handleDelete = async (id: number) => {
           </button>
         </form>
 
-        {/* 🧾 Lista de usuarios */}
         <div className="user-list">
           <div className="user-list-header">
             <div className="col-name">Nombre</div>

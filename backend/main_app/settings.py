@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
     'administrator',
     'inventario',
     'core',
@@ -110,11 +112,11 @@ WSGI_APPLICATION = 'main_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB_NAME')),
-        'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER')),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASSWORD')),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'NAME': 'completopia_2',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -190,4 +192,21 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+}
+
+# --- CONFIGURACIÓN DE SIMPLE JWT ---
+# Sobreescribe los 5 minutos por defecto
+
+SIMPLE_JWT = {
+    # Este es el token corto que usas para autenticarte.
+    # 5 minutos es muy poco, pongamos 15 minutos o 1 hora.
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
+
+    # Este es el token largo que usas para pedir uno nuevo de acceso.
+    # Pongamos 7 días.
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    
+    # Opcional: permite que el token de refresco se "refresque" también
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
