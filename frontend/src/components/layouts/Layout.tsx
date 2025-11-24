@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'; // Importamos useLocatio
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { MdMenu } from 'react-icons/md';
-import '../../css/Layout.css';
+import '../../css/layout.css';
 
 export const Layout: React.FC = () => {
   const location = useLocation();

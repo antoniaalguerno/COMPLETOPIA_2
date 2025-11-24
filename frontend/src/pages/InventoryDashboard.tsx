@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineWarningAmber } from 'react-icons/md';
-import '../css/InventoryDashboard.css';
+import '../css/inventorydashboard.css';
 
 // IMPORTAMOS LA FUNCIÓN DE API Y EL TIPO
 import { getLowStock, InventoryItem } from '../api/inventario';

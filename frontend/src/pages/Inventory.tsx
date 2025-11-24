@@ -8,8 +8,8 @@ import {
   MdDelete,
   MdArrowBack
 } from 'react-icons/md';
-import '../css/Inventory.css';
-import '../css/InventoryDashboard.css';
+import '../css/inventory.css';
+import '../css/inventorydashboard.css';
 
 // IMPORTAMOS LAS FUNCIONES Y EL TIPO
 import { getInventory, deleteProduct, InventoryItem } from '../api/inventario';

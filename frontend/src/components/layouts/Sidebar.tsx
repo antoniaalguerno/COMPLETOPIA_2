@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MdHome, MdGroup, MdInventory, MdChevronLeft } from 'react-icons/md';
 import logo from '../../pages/logo1.png'; 
-import '../../css/Layout.css';
+import '../../css/layout.css';
 
 // Añadimos 'canClose' a la interfaz
 interface SidebarProps {
