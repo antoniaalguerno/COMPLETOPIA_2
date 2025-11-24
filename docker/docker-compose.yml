@@ -13,6 +13,20 @@ services:
       - db_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  mongo:
+    build:
+      context: ./mongo
+    container_name: completopia_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: completopia_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
   backend:
     build:
       context: ..
@@ -20,13 +34,14 @@ services:
     container_name: completopia_backend
     depends_on:
       - db
+      - mongo
     env_file:
       - ../backend/.env
     environment:
       DB_HOST: db
       DB_PORT: 5432
-    ports:
-      - "8000:8000"
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: completopia_mongo
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
@@ -50,3 +65,4 @@ volumes:
   db_data:
   static_volume:
   media_volume:
+  mongo_data:
