@@ -9,7 +9,7 @@ import {
   MdVisibility,
   MdChevronRight
 } from 'react-icons/md';
-import '../../css/Layout.css'; 
+import '../../css/layout.css'; 
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

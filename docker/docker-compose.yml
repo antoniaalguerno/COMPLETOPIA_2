@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  db:
+    build:
+      context: ./bd
+    container_name: completopia_db
+    env_file:
+      - ../backend/.env
+    ports:
+      - "15432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  mongo:
+    build:
+      context: ./mongo
+    container_name: completopia_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: completopia_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend/Dockerfile
+    container_name: completopia_backend
+    depends_on:
+      - db
+      - mongo
+    env_file:
+      - ../backend/.env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: completopia_mongo
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile
+    container_name: completopia_frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - static_volume:/var/www/static:ro
+      - media_volume:/var/www/media:ro
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  static_volume:
+  media_volume:
+  mongo_data:

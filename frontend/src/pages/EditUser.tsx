@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import '../css/EditUser.css';
+import '../css/edituser.css';
 import { buildRegionOptions, buildCommuneOptions } from '../data/todochile';
 import { getUser, updateUser } from '../api/admin';
 
