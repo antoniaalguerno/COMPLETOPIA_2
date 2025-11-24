@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { MdOutlineEmail } from 'react-icons/md';
 import '../../css/forgotpassword.css';
 import logo from '../../pages/logo1.png';
