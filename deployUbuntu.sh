@@ -5,6 +5,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="${SCRIPT_DIR}/docker/docker-compose.yml"
 CREATE_ENV_SCRIPT="${SCRIPT_DIR}/createEnv.sh"
 ENV_FILE="${SCRIPT_DIR}/backend/.env"
+OTHER_SCRIPTS=(
+  "${CREATE_ENV_SCRIPT}"
+  "${SCRIPT_DIR}/deployDocker.sh"
+  "${SCRIPT_DIR}/dockerInstall.sh"
+)
 
 ensure_ubuntu() {
   if [ ! -r /etc/os-release ]; then
@@ -45,6 +50,22 @@ load_env_file() {
   # shellcheck disable=SC1091
   . "${ENV_FILE}"
   set +a
+}
+
+ensure_executable_permissions() {
+  for script in "${OTHER_SCRIPTS[@]}"; do
+    if [ ! -f "${script}" ]; then
+      echo "Advertencia: no se encontró ${script} para ajustar permisos." >&2
+      continue
+    fi
+
+    if [ ! -x "${script}" ]; then
+      chmod +x "${script}"
+      echo "Otorgados permisos de ejecución a ${script}."
+    else
+      echo "${script} ya tiene permisos de ejecución."
+    fi
+  done
 }
 
 ensure_docker() {
@@ -89,6 +110,7 @@ run_compose() {
 main() {
   ensure_ubuntu
   require_file "${COMPOSE_FILE}" "No se encontró ${COMPOSE_FILE}. Ejecuta el script desde la raíz del repositorio."
+  ensure_executable_permissions
   ensure_env_file
   load_env_file
   ensure_docker
