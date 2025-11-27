@@ -16,7 +16,6 @@ COPY backend/ /app
 
 EXPOSE 8000
 
-# Add entrypoint to wait for DB, migrate and run Gunicorn
 COPY docker/backend/docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
