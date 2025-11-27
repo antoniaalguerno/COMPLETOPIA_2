@@ -1,7 +1,6 @@
 #!/usr/bin/env sh
 set -e
 
-# wait for Postgres if host is provided
 if [ -n "${DB_HOST}" ]; then
   echo "Esperando a Postgres en ${DB_HOST}:${DB_PORT:-5432}..."
   python - <<'PYCODE'
@@ -23,13 +22,35 @@ sys.exit(1)
 PYCODE
 fi
 
-# Apply migrations and collect static files
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
-# Start Gunicorn
+if [ -n "${DJANGO_SUPERUSER_USERNAME}" ] && \
+   [ -n "${DJANGO_SUPERUSER_EMAIL}" ] && \
+   [ -n "${DJANGO_SUPERUSER_PASSWORD}" ]; then
+  echo "Verificando superusuario predeterminado..."
+  python manage.py shell <<'PYCODE'
+import os
+from django.contrib.auth import get_user_model
+
+username = os.environ.get("DJANGO_SUPERUSER_USERNAME")
+email = os.environ.get("DJANGO_SUPERUSER_EMAIL")
+password = os.environ.get("DJANGO_SUPERUSER_PASSWORD")
+
+User = get_user_model()
+if User.objects.filter(username=username).exists():
+    print(f"Superusuario '{username}' ya existe, omitiendo creación")
+else:
+    User.objects.create_superuser(username=username, email=email, password=password)
+    print(f"Superusuario '{username}' creado automáticamente")
+PYCODE
+else
+  echo "Variables DJANGO_SUPERUSER_* ausentes; omitiendo creación de superusuario"
+fi
+
 exec gunicorn main_app.wsgi:application \
   --bind 0.0.0.0:8000 \
   --workers "${GUNICORN_WORKERS:-3}" \
   --timeout "${GUNICORN_TIMEOUT:-60}"
+
 

@@ -1,4 +1,3 @@
-version: "3.9"
 
 services:
   db:
@@ -17,10 +16,8 @@ services:
     build:
       context: ./mongo
     container_name: completopia_mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: completopia_mongo
+    env_file:
+      - ../backend/.env
     ports:
       - "27017:27017"
     volumes:
@@ -37,11 +34,6 @@ services:
       - mongo
     env_file:
       - ../backend/.env
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      MONGO_URI: mongodb://mongo:27017
-      MONGO_DB: completopia_mongo
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
