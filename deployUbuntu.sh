@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="${SCRIPT_DIR}/docker/docker-compose.yml"
 CREATE_ENV_SCRIPT="${SCRIPT_DIR}/createEnv.sh"
+DOCKER_INSTALL_SCRIPT="${SCRIPT_DIR}/dockerInstall.sh"
 ENV_FILE="${SCRIPT_DIR}/backend/.env"
 
 ensure_ubuntu() {
@@ -48,8 +49,15 @@ load_env_file() {
 }
 
 ensure_docker() {
+  require_file "${DOCKER_INSTALL_SCRIPT}" "No se encontró ${DOCKER_INSTALL_SCRIPT}."
+
   if ! command -v docker >/dev/null 2>&1; then
-    echo "Docker no está instalado. Ejecuta ./dockerInstall.sh y vuelve a intentar." >&2
+    echo "Docker no está instalado. Ejecutando dockerInstall.sh..."
+    bash "${DOCKER_INSTALL_SCRIPT}"
+  fi
+
+  if ! command -v docker >/dev/null 2>&1; then
+    echo "Tras intentar instalar Docker, el comando 'docker' sigue sin estar disponible." >&2
     exit 1
   fi
 
@@ -69,8 +77,12 @@ ensure_docker() {
   fi
 
   if ! "${DOCKER_CMD[@]}" compose version >/dev/null 2>&1; then
-    echo "El plugin 'docker compose' no está disponible. Instálalo antes de continuar." >&2
-    exit 1
+    echo "El plugin 'docker compose' no está disponible. Ejecutando dockerInstall.sh..."
+    bash "${DOCKER_INSTALL_SCRIPT}"
+    if ! "${DOCKER_CMD[@]}" compose version >/dev/null 2>&1; then
+      echo "Incluso tras la instalación no está disponible 'docker compose'." >&2
+      exit 1
+    fi
   fi
 }
 
