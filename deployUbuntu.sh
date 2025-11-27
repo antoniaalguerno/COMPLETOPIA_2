@@ -112,6 +112,7 @@ Los servicios están corriendo. Comandos útiles:
   docker compose -f docker/docker-compose.yml logs -f backend    # Ver logs del backend
   docker compose -f docker/docker-compose.yml down               # Apagar la infraestructura
 
+La aplicación web está disponible en http://localhost:8080 (o la IP del servidor en el puerto 8080).
 EOF
 }
 
