@@ -4,6 +4,8 @@
 `gh repo clone antoniaalguerno/COMPLETOPIA_2`
 `cd /COMPLETOPIA_2`
 `CHMOD AL SCRIPT 1`
+`./script`
+`clave sudo`
 - Explicación de los archivos clave de despliegue:
     - docker-compose.yml
     - Dockerfile de cada servicio (frontend, backend, DB relacional, DB documental, servidor web, servidor de correo).
